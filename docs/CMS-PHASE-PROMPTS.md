@@ -1,3 +1,5 @@
+> Latest user-authorized change (12 November 2026): name/password owner login only, minimum four characters, no email or authenticator requirement. This supersedes the earlier MFA/recovery-code requirements below; keep password hashing, throttling, sessions, CSRF/origin checks, owner authorization and private password recovery.
+
 # EdFund CMS — five implementation prompts
 
 Prepared 12 November 2026. Run these prompts in order, one phase at a time. They describe future implementation; creating this guide does not implement the CMS or deploy the website.

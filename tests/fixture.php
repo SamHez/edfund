@@ -2,7 +2,7 @@
 declare(strict_types=1);
 // Isolated MariaDB fixtures only. Never drops, truncates or seeds the edfund database.
 require dirname(__DIR__).'/vendor/autoload.php';
-use EdFund\{Database,Migrations,Passwords,Crypto,Auth,Config,Mfa};
+use EdFund\{Database,Migrations,Passwords,Crypto,Auth,Config};
 $root=dirname(__DIR__);$action=$argv[1] ?? '';
 if ($action==='create') {
     $id='edfund_test_'.bin2hex(random_bytes(6));$directory=$root.'/storage/testing/'.$id;umask(0077);mkdir($directory,0700,true);
@@ -42,6 +42,11 @@ if ($action==='concurrent-bad-password') {
     if($auth->passwordLogin($info['name'],'invalid-fixture-password','127.0.0.2')!==null){throw new RuntimeException('Bad password accepted');}exit;
 }
 if ($action==='attempt-count') {echo (int)$db->query('SELECT COALESCE(MAX(total),0) FROM (SELECT COUNT(*) AS total FROM cms_auth_attempts GROUP BY bucket) counts')->fetchColumn();exit;}
+if (in_array($action,['legacy-pending-session','legacy-factor-session'],true)) {
+    session_save_path($config['storage_path'].'/sessions');session_name('edfund_owner');session_id(bin2hex(random_bytes(16)));session_start();$owner=$db->query('SELECT id,session_version FROM cms_users LIMIT 1')->fetch();$_SESSION=['started'=>time(),'seen'=>time(),'csrf'=>bin2hex(random_bytes(32))];
+    if($action==='legacy-pending-session'){$_SESSION+=['pending_id'=>(int)$owner['id'],'pending_version'=>(int)$owner['session_version'],'pending_since'=>time()];}else{$_SESSION+=['owner_id'=>(int)$owner['id'],'version'=>(int)$owner['session_version']];}session_write_close();echo session_id();exit;
+}
+if ($action==='legacy-factor-data') {$secret=(new Crypto(base64_decode($config['app_key'])))->seal(base64_encode(random_bytes(32)));$s=$db->prepare('UPDATE cms_users SET mfa_secret=?,mfa_enabled_at=UTC_TIMESTAMP()');$s->execute([$secret]);exit;}
 if ($action==='reset-factor-step') {$db->exec('UPDATE cms_users SET last_totp_step=-1');exit;}
 if ($action==='clear-attempts') {$db->exec('DELETE FROM cms_auth_attempts');exit;}
 if ($action==='snapshot') {

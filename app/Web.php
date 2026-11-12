@@ -34,27 +34,21 @@ final class Web
     private function clear(): void {$_SESSION=[];session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));$_SESSION['started']=time();$_SESSION['seen']=time();}
     private function redirect(string $path): never {header('Location: '.$path,true,303);exit;}
     private function abort(int $status,string $message): never {http_response_code($status);echo htmlspecialchars($message,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');exit;}
-    private function rotate(): void {session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));}
     private function csrf(): void
     {
         if (($_SERVER['HTTP_ORIGIN'] ?? $this->config['base_url'])!==$this->config['base_url'] || !is_string($_POST['csrf'] ?? null) || !hash_equals($_SESSION['csrf'],$_POST['csrf'])) {$this->abort(403,'This form expired. Reload the page and try again.');}
     }
     private function input(string $key,int $max=200): string { $value=$_POST[$key] ?? '';return is_string($value) && strlen($value)<=$max ? $value : ''; }
-    private function pending(): array
-    {
-        $user=$this->auth->user((int)($_SESSION['pending_id'] ?? 0));
-        if (!$user || time()-(int)($_SESSION['pending_since'] ?? 0)>600 || (int)$user['session_version']!==(int)($_SESSION['pending_version'] ?? 0)) {$this->clear();$this->redirect('/admin/login');}
-        return $user;
-    }
     private function signedIn(): array
     {
         $user=$this->auth->user((int)($_SESSION['owner_id'] ?? 0));
-        if (!$user || !$user['mfa_enabled_at'] || (int)$user['session_version']!==(int)($_SESSION['version'] ?? 0)) {$this->clear();$this->redirect('/admin/login');}
+        if (!$user || ($_SESSION['auth_method'] ?? '')!=='password' || (int)$user['session_version']!==(int)($_SESSION['version'] ?? 0)) {$this->clear();$this->redirect('/admin/login');}
         return $user;
     }
-    private function finish(int $id): void
+    private function finish(array $user): void
     {
-        $user=$this->auth->user($id);$this->clear();$_SESSION['owner_id']=$id;$_SESSION['version']=(int)$user['session_version'];
+        // Keep the verified version: a concurrent password reset must revoke this login.
+        $this->clear();$_SESSION['owner_id']=(int)$user['id'];$_SESSION['version']=(int)$user['session_version'];$_SESSION['auth_method']='password';
     }
     private function formToken(): string {return '<input type="hidden" name="csrf" value="'.self::e($_SESSION['csrf']).'">';}
     private static function e(string $value): string {return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
@@ -76,33 +70,17 @@ final class Web
             $error='';
             if ($method==='POST') {
                 $user=$this->auth->passwordLogin($this->input('name',400),$this->input('password',128),$this->source);
-                if ($user) {$this->clear();$_SESSION['pending_id']=(int)$user['id'];$_SESSION['pending_since']=time();$_SESSION['pending_version']=(int)$user['session_version'];$this->redirect($user['mfa_enabled_at']?'/admin/mfa':'/admin/enroll');}
+                if ($user) {$this->auth->audit('login.password',(int)$user['id'],$this->source);$this->finish($user);$this->redirect('/admin/');}
                 http_response_code(422);$error='Sign-in could not be completed. Check your details or wait 15 minutes before trying again.';
             }
-            $this->render('Sign in','<p>Use your owner account to manage EdFund.</p><form method="post">'.$this->formToken().'<label>Name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form><p class="help">Your authenticator or a recovery code is required after your password. For a forgotten password, use the private account recovery procedure.</p>',null,$error);return;
+            $this->render('Sign in','<p>Use your owner account to manage EdFund.</p><form method="post">'.$this->formToken().'<label>Name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form><p class="help">For a forgotten password, use the private account recovery procedure.</p>',null,$error);return;
         }
-        if ($path==='/admin/mfa') {
-            $user=$this->pending();if (!$user['mfa_enabled_at']) {$this->redirect('/admin/enroll');}$error='';
-            if ($method==='POST') {
-                $result=$this->auth->verifyFactor((int)$user['id'],$this->input('code',64),$this->source);
-                if ($result==='totp') {$this->finish((int)$user['id']);$this->redirect('/admin/');}
-                if ($result==='recovery') {$new=$this->auth->user((int)$user['id']);$this->clear();$_SESSION['pending_id']=(int)$user['id'];$_SESSION['pending_since']=time();$_SESSION['pending_version']=(int)$new['session_version'];$this->redirect('/admin/enroll');}
-                http_response_code(422);$error='The code could not be accepted. Use a fresh code, or wait before trying again.';
-            }
-            $this->render('Verify your identity','<p>Enter the current six-digit authenticator code, or one of your saved recovery codes. A recovery code will require you to set up your authenticator again.</p><form method="post">'.$this->formToken().'<label>Authenticator or recovery code<input name="code" maxlength="64" autocomplete="one-time-code" required></label><button>Verify</button></form><a href="/admin/login">Back to sign in</a>',null,$error);return;
-        }
-        if ($path==='/admin/enroll') {
-            $user=$this->pending();if ($user['mfa_enabled_at']) {$this->redirect('/admin/mfa');}
-            $_SESSION['enroll_secret'] ??= Mfa::generate();$secret=$_SESSION['enroll_secret'];$error='';
-            if ($method==='POST') {
-                $codes=$this->auth->enroll((int)$user['id'],$secret,$this->input('code',6),$this->source);
-                if ($codes) {$this->finish((int)$user['id']);$_SESSION['new_codes']=$codes;$_SESSION['codes_since']=time();$this->redirect('/admin/recovery-codes');}
-                http_response_code(422);$error='The authenticator code could not be accepted. Check the account key and your device time, then use a fresh code.';
-            }
-            $this->render('Set up your authenticator','<p>In your authenticator app, add an account manually with these settings. This key is shown only during setup; keep it private.</p><dl><dt>Account</dt><dd>'.self::e($user['name']).'</dd><dt>Issuer</dt><dd>EdFund Uganda Foundation</dd><dt>Setup key</dt><dd><code class="setup-key">'.self::e($secret).'</code></dd><dt>Type</dt><dd>Time-based · 6 digits · 30 seconds · SHA-1</dd></dl><form method="post">'.$this->formToken().'<label>Current authenticator code<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label><button>Confirm authenticator</button></form>',null,$error);return;
+        // Retired MFA URLs never authorize a legacy pending session.
+        if (in_array($path,['/admin/mfa','/admin/enroll','/admin/recovery-codes'],true)) {
+            if(isset($_SESSION['owner_id'])){$this->signedIn();$this->redirect('/admin/');}
+            $this->clear();$this->redirect('/admin/login');
         }
         $user=$this->signedIn();
-        if (isset($_SESSION['new_codes']) && $path!=='/admin/recovery-codes' && $path!=='/admin/logout') {$this->redirect('/admin/recovery-codes');}
         if (in_array($path,['/admin/posts-data','/admin/media-data'],true) || str_starts_with($path,'/admin/media-file/')) {PublishingAdmin::api($this->config,$path,$method,$user);return;}
         if ($method==='GET' && in_array($path,['/admin/posts','/admin/post','/admin/media'],true)) {$title=match($path){'/admin/posts'=>'Posts','/admin/post'=>'Story editor',default=>'Media'};$content=match($path){'/admin/posts'=>PublishingAdmin::postsScreen(),'/admin/post'=>PublishingAdmin::editorScreen(),default=>PublishingAdmin::mediaScreen()};$this->render($title,$this->formToken().$content,$user);return;}
         if (in_array($path,['/admin/content','/admin/preview'],true)) {Editor::handle($this->config,$path,$method,(int)$user['id']);return;}
@@ -111,20 +89,9 @@ final class Web
             if ($method!=='POST') {header('Allow: POST');$this->abort(405,'Use the sign-out button.');}
             $this->auth->audit('logout',(int)$user['id'],$this->source);$_SESSION=[];session_destroy();setcookie(session_name(),'', ['expires'=>time()-3600,'path'=>'/admin','secure'=>parse_url($this->config['base_url'],PHP_URL_SCHEME)==='https','httponly'=>true,'samesite'=>'Strict']);$this->redirect('/admin/login');
         }
-        if ($path==='/admin/recovery-codes') {
-            if (!isset($_SESSION['new_codes']) || time()-(int)($_SESSION['codes_since'] ?? 0)>600) {unset($_SESSION['new_codes'],$_SESSION['codes_since']);$this->redirect('/admin/security');}
-            if ($method==='POST') {unset($_SESSION['new_codes'],$_SESSION['codes_since']);$this->rotate();$this->redirect('/admin/');}
-            $list=implode('',array_map(fn($code)=>'<li><code>'.self::e($code).'</code></li>',$_SESSION['new_codes']));
-            $this->render('Save your recovery codes','<p>Store these codes in your password manager or another secure place. Each works once, together with your password. They will not be displayed again after you continue.</p><ul class="recovery-list">'.$list.'</ul><form method="post">'.$this->formToken().'<button>I have saved my codes</button></form>',$user);return;
-        }
         if ($path==='/admin/security') {
-            $error='';
-            if ($method==='POST') {
-                $codes=$this->auth->regenerateCodes((int)$user['id'],$this->input('password',128),$this->input('code',6),$this->source);
-                if ($codes) {$_SESSION['new_codes']=$codes;$_SESSION['codes_since']=time();$this->rotate();$this->redirect('/admin/recovery-codes');}
-                http_response_code(422);$error='Your password or code could not be accepted. Wait for a fresh authenticator code before trying again.';
-            }
-            $this->render('Account security','<p>Two-factor authentication is active. You have <strong>'.$this->auth->remainingCodes((int)$user['id']).'</strong> unused recovery codes.</p><h2>Replace recovery codes</h2><p>This immediately invalidates the old set. Enter your password and a fresh authenticator code.</p><form method="post">'.$this->formToken().'<label>Current password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><label>Authenticator code<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label><button>Generate new codes</button></form>',$user,$error);return;
+            if($method!=='GET'){header('Allow: GET');$this->abort(405,'Method not allowed.');}
+            $this->render('Account security','<p>Sign in with your owner name and password. New passwords must contain at least four characters.</p><p>For a forgotten password, the site maintainer can use the private owner recovery command to set a new password and revoke previous sessions.</p>',$user);return;
         }
         if ($path==='/admin/health') {
             if ($method!=='GET') {$this->abort(405,'Method not allowed.');}
@@ -132,7 +99,7 @@ final class Web
             $this->render('System status','<table>'.$rows.'</table>',$user);return;
         }
         if ($path==='/admin/' && $method==='GET') {
-            $this->render('Welcome, '.$user['name'],'<p>Your owner account is protected with two-factor authentication.</p><div class="status-card"><h2>Manage your website</h2><p><a class="button" href="/admin/pages">Open visual page editor</a></p><p>Keep your recovery codes in a secure place and check your account security settings when you change devices.</p><a class="button" href="/admin/security">Manage account security</a></div><p><a href="/admin/health">View system status</a></p>',$user);return;
+            $this->render('Welcome, '.$user['name'],'<p>You are signed in with your owner name and password.</p><div class="status-card"><h2>Manage your website</h2><p><a class="button" href="/admin/pages">Open visual page editor</a></p><p>Use the page editor, posts and media library to manage your website.</p><a class="button" href="/admin/security">Manage account security</a></div><p><a href="/admin/health">View system status</a></p>',$user);return;
         }
         $this->abort(404,'Page not found.');
     }

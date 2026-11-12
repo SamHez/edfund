@@ -1,3 +1,5 @@
+> Current source uses name/password only (minimum four characters); no authenticator is required. The earlier generated ZIP has not been rebuilt for this change. Follow the current source policy during the next explicitly requested build.
+
 # EdFund CMS cPanel installation, release and recovery
 
 Target: **https://edfundfoundation.org/** at the domain root. This package is PHP/MariaDB, not the retired static ZIP. Read this before uploading. A package test is not a live deployment report.
@@ -31,7 +33,7 @@ In cPanel confirm:
 - Private storage writable by the account (0700 directories, 0600 configuration/keys); ordinary public code/assets 0644/0755 as needed. No 0777. Daily cron/CLI, offsite backup transfer, disk monitoring and owner recovery-key custody.
 - Protected staging hostname/directory. Enable cPanel Directory Privacy for the whole staging document root, including static assets. PHP also protects staging content while `public_indexing=false`. No staging URL should be indexed. Check any Nginx/CDN/provider cache: bypass `/admin` (including previews/APIs), `/media`, authenticated/Authorization/cookie requests and query requests; respect dynamic Cache-Control/no-store, and purge old public HTML during cutover. Prove same-URL edits appear after Publish. If the host is Nginx-only, .htaccess is ineffective: the provider must install equivalent routing/deny/cache rules before deployment.
 
-SMTP is not used: contact links open the visitor’s mail app and account recovery uses MFA/recovery codes/private CLI. Search Console ownership is needed separately for verification/submitting the final sitemap, not for running the CMS.
+SMTP is not used: contact links open the visitor’s mail app and account recovery uses the private CLI. Search Console ownership is needed separately for verification/submitting the final sitemap, not for running the CMS.
 
 ## Back up and compare before touching production
 
@@ -44,7 +46,7 @@ SMTP is not used: contact links open the visitor’s mail app and account recove
 Use the correct provider PHP CLI path (`PHP=/opt/cpanel/ea-php83/root/usr/bin/php` is an example only; verify actual patched version). Commands below are examples with private paths; edit ACCOUNT and code-folder names without putting passwords on command lines.
 
 1. Verify the downloaded ZIP SHA256 against its companion checksum. Extract privately and place `edfund-app` outside every web root. Create `/home/ACCOUNT/edfund-data` with 0700 permissions. Copy `config/production.example.php` to `/home/ACCOUNT/edfund-data/config.php`, 0600, and edit privately: environment, staging origin, actual `document_root`, any overlapping public roots, private storage/backup-key paths and database array. Create a separate 0600 `migration.php` returning only `dsn`, `user`, `password` for the migration account.
-2. On a genuinely fresh install, generate `app_key` using `base64_encode(random_bytes(32))` **privately**, and staging password hash using `password_hash()` privately. Never regenerate the app key on an existing site or restore. Existing MFA/recovery information depends on it. Configure staging username/hash. Keep `public_indexing=false`.
+2. On a genuinely fresh install, generate `app_key` using `base64_encode(random_bytes(32))` **privately**, and staging password hash using `password_hash()` privately. Never regenerate the app key on an existing site or restore. Existing Legacy encrypted information and audit digests depend on it. Configure staging username/hash. Keep `public_indexing=false`.
 3. Install only the public payload into an empty protected staging root. Keep the actual live root unchanged. Configure the public path mapping if not using the default sibling folders. Production dependencies are already bundled; no Composer, Node, Python, worker or build process is needed on the host.
 4. Set trusted CLI environment paths and run explicit operations:
 
@@ -63,9 +65,9 @@ PHP=/path/to/verified/patched/php
 
 Migrations are additive and checksum-verified. The content commands import current project snapshots once and skip existing data; they are **not** automatic startup/deployment hooks. Do not bulk import the WordPress SQL dump. Four recovered team biographies and the three agreed stories are already in the trusted snapshots. Additional historical articles require explicit editorial selection.
 
-5. Sign in to staging with the actual owner, enroll the authenticator, privately save recovery codes, and complete the editing checks below. No seeded/demo owner is included. Runtime DB permissions must remain DML-only; migration privileges are not required by the web application.
-6. Run `preflight`, then the fail-closed `release:check`. It must exit zero on the **actual patched host**. Review its booleans; do not bypass failed checks. It verifies PHP/extensions, outside-root writable storage, backup key, nine published pages, owner MFA, unchanged applied migrations, advisory locks, retired stale entries and the private/public release file hashes. It does not replace HTTPS/Apache/browser checks or an actual backup restore. It is CLI-only and does not create an owner or import content.
-7. Run `backup:create`. Download the `.efb` and independent backup key securely. Test `backup:restore` into a **different empty staging database and new private folder**; verify the restored content/media/MFA. See [Phase 4 recovery](CMS-PHASE-4-OPERATIONS.md). The restore command works without source-database/config access and refuses source/edfund/nonempty targets. Keep matching code/dependencies. Re-provision a restricted runtime account after restore.
+5. Sign in to staging with the actual owner using name/password and complete the editing checks below. No seeded/demo owner is included. Runtime DB permissions must remain DML-only; migration privileges are not required by the web application.
+6. Run `preflight`, then the fail-closed `release:check`. It must exit zero on the **actual patched host**. Review its booleans; do not bypass failed checks. It verifies PHP/extensions, outside-root writable storage, backup key, nine published pages, owner login, unchanged applied migrations, advisory locks, retired stale entries and the private/public release file hashes. It does not replace HTTPS/Apache/browser checks or an actual backup restore. It is CLI-only and does not create an owner or import content.
+7. Run `backup:create`. Download the `.efb` and independent backup key securely. Test `backup:restore` into a **different empty staging database and new private folder**; verify the restored content/media/owner login. See [Phase 4 recovery](CMS-PHASE-4-OPERATIONS.md). The restore command works without source-database/config access and refuses source/edfund/nonempty targets. Keep matching code/dependencies. Re-provision a restricted runtime account after restore.
 
 ## Browser and HTTP acceptance checks
 
@@ -73,11 +75,11 @@ Record date, release commit/checksum, host PHP web/CLI versions, database versio
 
 - Home, About, Our Work, Team, Volunteer, Contact, Gallery, Privacy Policy and Stories & Updates load at the domain root. Homepage title begins `ED Fund Uganda Foundation | Education`; preserve exact narrative, image choices/order and captions.
 - Hero slideshow/arrows, sticky Why Uganda chapter controls, grouped lightboxes, kitchen/dining/dormitory/classroom before/after images, team biography dialogs, gallery and click-to-load YouTube work. Check 390px and 320px layouts and keyboard close/focus behaviour.
-- Owner password/MFA login works with secure cookies. Anonymous callers cannot fetch admin APIs, draft previews or draft-only uploads. Originals/private configuration/storage/code paths are inaccessible. Reject unsafe image types/oversized uploads; a valid JPEG/PNG/WebP upload and publication works.
+- Owner name/password login works with secure cookies. Anonymous callers cannot fetch admin APIs, draft previews or draft-only uploads. Originals/private configuration/storage/code paths are inaccessible. Reject unsafe image types/oversized uploads; a valid JPEG/PNG/WebP upload and publication works.
 - Perform an actual page **edit → draft → private preview → publish → restore as draft → publish** cycle. Confirm draft isolation and that public caches show the published version. Use a reversible agreed test field and restore it afterwards.
 - Publish a test post with image/YouTube/basic formatting, verify home/listing/article, then restore/trash as agreed so no unwanted test content stays live. Confirm title/description/social metadata, article dates and image access. Restore a revision and confirm previous URL redirects after a deliberate slug rename.
 - Verify HTTPS/www/index/slash redirects, preserved legacy aliases, unknown-page 404 and trashed-post 410. `/sitemap.xml` contains published canonical routes with accurate UTC dates, excludes drafts/trashed content, and changes only for publication. `/robots.txt`, OG/Twitter and JSON-LD match intended launch state. Admin/previews remain no-store/noindex.
-- Run a code-update rehearsal in staging: save/publish a unique field and upload, install the same/new code into a different private code folder, switch the bridge path, rerun migrations/preflight, and confirm revisions, published field, media hash and owner MFA survive. Do not run fresh imports on updates.
+- Run a code-update rehearsal in staging: save/publish a unique field and upload, install the same/new code into a different private code folder, switch the bridge path, rerun migrations/preflight, and confirm revisions, published field, media hash and owner login survive. Do not run fresh imports on updates.
 
 A local machine rehearsal is useful, but does not establish production PHP patches, TLS, reverse-proxy behaviour, filesystem permissions, provider backups or Search Console validation.
 
@@ -97,7 +99,7 @@ Retain the previous code/public release for rollback. Restrict database credenti
 
 ## Backups, cron and rollback
 
-The encrypted CMS key is separate from application/MFA keys and lives in `backup_key_file`, outside release code. Keep a secure offsite copy. Example daily cron (verify all paths and monitor errors privately):
+The encrypted CMS key is separate from application keys and lives in `backup_key_file`, outside release code. Keep a secure offsite copy. Example daily cron (verify all paths and monitor errors privately):
 
 ```sh
 EDFUND_CONFIG=/home/ACCOUNT/edfund-data/config.php /path/to/patched/php /home/ACCOUNT/edfund-app/bin/cms.php backup:create >> /home/ACCOUNT/edfund-data/backup-job.log 2>&1
@@ -105,7 +107,7 @@ EDFUND_CONFIG=/home/ACCOUNT/edfund-data/config.php /path/to/patched/php /home/AC
 
 Run it manually first. Configure independent offsite transfer/retention and failed-job alerts through the provider, then verify a scheduled run actually happened. Local retention keeps seven completed encrypted files by default; it is not offsite protection. Keep provider full-site/database backups as well. No cron, offsite target or production backup can be claimed configured until tested on the real account.
 
-For **code-only rollback** with compatible schema: freeze editing, back up current state, switch to the retained private code/public assets and bridge mapping, leaving config/database/uploads in place; verify login, public content, media and metadata, then reopen. For **database/media recovery**: restore the selected encrypted backup into a different empty database/new private folder, validate with a protected process, assign a restricted runtime account, then privately switch config to the restored database/storage/app key. Do not erase live data to test recovery. Capture any edits made after the backup before switching. Old sessions are revoked by restore; the retained app key keeps MFA/recovery data usable. For an initial WordPress/static cutover rollback, restore the archived old root/handler/config and retained old database from the provider backup, without deleting the new CMS data. Recheck HTTPS/URLs and stop writes until ownership is clear.
+For **code-only rollback** with compatible schema: freeze editing, back up current state, switch to the retained private code/public assets and bridge mapping, leaving config/database/uploads in place; verify login, public content, media and metadata, then reopen. For **database/media recovery**: restore the selected encrypted backup into a different empty database/new private folder, validate with a protected process, assign a restricted runtime account, then privately switch config to the restored database/storage/app key. Do not erase live data to test recovery. Capture any edits made after the backup before switching. Old sessions are revoked by restore; the retained app key keeps legacy encrypted data usable. For an initial WordPress/static cutover rollback, restore the archived old root/handler/config and retained old database from the provider backup, without deleting the new CMS data. Recheck HTTPS/URLs and stop writes until ownership is clear.
 
 ## Maintenance and handover
 

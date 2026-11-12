@@ -7,9 +7,6 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parent.parent;PHP=shutil.which('php')
 def run(*args,env=None):return subprocess.check_output([PHP,*map(str,args)],cwd=ROOT,env=env,text=True).strip()
-def otp(secret):
- key=base64.b32decode(secret+'='*((-len(secret))%8));d=hmac.new(key,struct.pack('>Q',int(time.time())//30),hashlib.sha1).digest();o=d[-1]&15
- return f'{(struct.unpack(">I",d[o:o+4])[0]&0x7fffffff)%1000000:06d}'
 def picture(width=800,height=600,fmt='JPEG'):
  b=io.BytesIO();Image.new('RGB',(width,height),'#11766e').save(b,format=fmt);return b.getvalue()
 with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
@@ -24,7 +21,7 @@ try:
  p=sync_playwright().start();browser=p.chromium.launch(executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless=True);ctx=browser.new_context(viewport={'width':1500,'height':1050});page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)));anon=browser.new_context().request
  for path in ['/admin/posts','/admin/post?id=1','/admin/media','/admin/posts-data','/admin/media-data']:
   assert anon.get(base+path,max_redirects=0).status==303
- page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click()
+ page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();assert page.url.endswith('/admin/')
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
  def api(path,body):return page.request.post(base+path,form={'csrf':csrf(),'data':json.dumps(body)})
  def upload(name,mime,data,token=True):return page.request.post(base+'/admin/media-data',multipart={**({'csrf':csrf()} if token else {}),'action':'upload','image':{'name':name,'mimeType':mime,'buffer':data}})

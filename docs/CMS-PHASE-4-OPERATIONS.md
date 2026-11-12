@@ -11,7 +11,7 @@ cd '/Users/samhez/Documents/Swave Media/ED Fund Foundation/edfund'
 /usr/local/bin/php -S 127.0.0.1:8089 -t public router.php
 ```
 
-Open `http://127.0.0.1:8089/admin/login`. The real owner still needs to provision credentials privately with `php bin/cms.php owner:create` and complete MFA enrollment. No credentials were invented. See [the editing guide](CMS-EDITING-GUIDE.md).
+Open `http://127.0.0.1:8089/admin/login`. The real owner still needs to provision credentials privately with `php bin/cms.php owner:create` and sign in with name/password. No credentials were invented. See [the editing guide](CMS-EDITING-GUIDE.md).
 
 The existing `edfund` database was preserved. Migration 004 adds `cms_pages` and `cms_redirects`; it does not rewrite earlier migrations or alter legacy tables. Eight remaining pages and nine page-route/SEO mappings were explicitly imported. The original home/shared revisions remain unchanged. Rerunning `pages:import` skips existing mappings and revisions. Normal HTTP requests, code upgrades and migrations never import/reset content. `layouts:sync` only registers approved templates, and `media:index` adds historical usage references.
 
@@ -36,11 +36,11 @@ Structured data describes the actual NGO, website, page, breadcrumbs and publish
 
 The PHP controller handles canonical slash/index aliases, verified old navigation/story aliases, real 404 and trashed-story 410 responses. Unknown historical URLs are not indiscriminately redirected to the homepage. Stale HTML files cannot bypass PHP under the new Apache rules. `public/.htaccess` and `public/index.php` are code only at this stage; the actual cPanel rewrite/cutover test belongs to Phase 5.
 
-Local pages are noindex. In production, `public_indexing=false` defaults to protected staging: a private `staging_user` and `staging_password_hash` must be supplied, otherwise access is refused. Canonicals still point to the agreed production root. Only an authorised release enables `public_indexing=true`. Admin/private previews remain MFA/session protected, no-store and noindex regardless. Do not treat robots.txt as authentication.
+Local pages are noindex. In production, `public_indexing=false` defaults to protected staging: a private `staging_user` and `staging_password_hash` must be supplied, otherwise access is refused. Canonicals still point to the agreed production root. Only an authorised release enables `public_indexing=true`. Admin/private previews remain password/session protected, no-store and noindex regardless. Do not treat robots.txt as authentication.
 
 The public HTML cache is outside the web root: five-minute lifetime, at most 64 entries/32 MiB, at most 1 MiB per entry. Keys cover published page/shared/post pointers and application/frontend code hashes. Draft saves do not replace live HTML. Cookie, Authorization and query-string requests bypass caching; admin/previews never enter it. Failed cache writes fall back to rendering. Publication locks and repeatable-read snapshots keep cache keys/content and page/shared pointers coherent. `X-EdFund-Cache` reports HIT, MISS or BYPASS. Public responses revalidate; there is no long browser cache hiding published edits.
 
-Errors return generic references; detailed exception class/location is logged privately without credentials or submitted text. Page/post publication and restoration have owner audit records. Original upload security, throttling, CSRF/origin checks and MFA/recovery policies remain active.
+Errors return generic references; detailed exception class/location is logged privately without credentials or submitted text. Page/post publication and restoration have owner audit records. Original upload security, throttling, CSRF/origin checks and password recovery/session policies remain active.
 
 ## Encrypted backup and recovery
 
@@ -71,9 +71,9 @@ php bin/cms.php backup:restore \
   --output=/private/path/new-restore-folder
 ```
 
-The entire encrypted stream authenticates before any target schema/data writes. Migration checksums must match versioned code. Schemas come from those migrations, never arbitrary SQL in the archive. Data pointers/relationships and media hashes are verified. The new private folder contains restored media and `restored-config.php`; it uses alternate DB credentials, retains the original application key for MFA, disables indexing and revokes prior sessions. Protect it as a secret. On failed restore, the new isolated output/target may contain incomplete recovery artifacts: inspect and remove only that disposable target before retrying. The source is untouched.
+The entire encrypted stream authenticates before any target schema/data writes. Migration checksums must match versioned code. Schemas come from those migrations, never arbitrary SQL in the archive. Data pointers/relationships and media hashes are verified. The new private folder contains restored media and `restored-config.php`; it uses alternate DB credentials, retains the original application key for legacy encrypted-data compatibility, disables indexing and revokes prior sessions. Protect it as a secret. On failed restore, the new isolated output/target may contain incomplete recovery artifacts: inspect and remove only that disposable target before retrying. The source is untouched.
 
-Point a separate loopback/staging process at that configuration and verify pages, owner MFA/recovery, editing, media and publication. Set up a dedicated runtime DML account rather than retaining the restore administrator. Production recovery cutover is a separately authorised operation with a fresh pre-cutover backup. Do not replace the live application key with a random one after restore: it protects MFA/recovery digests.
+Point a separate loopback/staging process at that configuration and verify pages, owner login/private recovery, editing, media and publication. Set up a dedicated runtime DML account rather than retaining the restore administrator. Production recovery cutover is a separately authorised operation with a fresh pre-cutover backup. Do not replace the live application key with a random one after restore: it protects audit digests and legacy encrypted data.
 
 ## WordPress export review
 
@@ -89,7 +89,7 @@ The dump additionally contains published stories about refresher training for te
 - Create the cPanel database and scoped runtime user privately; provide database name/host/user/password via the private configuration. Use a separate temporary migration/restore credential. Verify InnoDB transactions, advisory locks and MariaDB compatibility on the host (local 10.4.27; screenshot 10.11.19). Never ship root/XAMPP credentials.
 - Enable cPanel Directory Privacy on a staging hostname if bundled static assets must also require sign-in (the PHP staging gate protects dynamic content; Apache serves trusted bundled assets directly). Confirm HTTPS, canonical root `https://edfundfoundation.org`, secure cookies, protected noindex staging, writable private storage (0700 directories/0600 secret files where supported), and no execution/direct access to uploads/originals.
 - Provide cron/CLI access, independent backup-key custody, offsite backup destination, disk monitoring and a successful host restore rehearsal. If CLI/cron is unavailable, agree a secure hosting-supported backup/migration method before release; do not add a public installer.
-- Provision the actual owner privately and retain recovery codes. SMTP remains unused: there is no public email password-reset or server-side contact-mail feature. Existing contact links open the visitor’s email app. SMTP is required only if a separately agreed feature needs it.
+- Provision the actual owner name/password privately. SMTP remains unused: there is no public email password-reset or server-side contact-mail feature. Existing contact links open the visitor’s email app. SMTP is required only if a separately agreed feature needs it.
 - Review the editable Privacy Policy (its current manually supplied text still describes the earlier static demonstration), outstanding historical articles and donation links with the client before launch. Content was preserved rather than silently rewritten.
 - Phase 5 still needs the production release package, staging/Apache/media/extension verification, protected import/cutover, real HTTPS/redirect/SEO checks, Search Console access/submission and production rollback rehearsal. No ZIP or deployment is included in Phase 4.
 

@@ -1,3 +1,5 @@
+> Current authentication policy (12 November 2026): the owner signs in with name/password only. Authenticator setup and recovery-code flows have been removed at the user’s request. Earlier implementation/verification notes are historical.
+
 # Phase 1: local setup and account recovery
 
 Completed 12 November 2026. This is the secure foundation and owner dashboard. Page editing is Phase 2; production hosting/cPanel packaging is Phase 5. Public pages continue using the existing HTML and Apache routing.
@@ -18,9 +20,7 @@ Use `/usr/local/bin/php`, currently PHP 8.5.7, or another supported project-comp
 
 The real owner account has deliberately not been preassigned a developer-chosen name/password. Run owner:create in your own terminal. It asks for name and a password of at least four characters, with password echo disabled. Do not paste credentials in chat, shell arguments or Git. Sign in using that name and password; email is not required. The command refuses a second owner. If you interrupt it, no partial owner is committed.
 
-After password sign-in, add the displayed key manually to your authenticator (issuer EdFund Uganda Foundation, time-based, SHA-1, 6 digits, 30 seconds). Confirm a current code, then save the ten recovery codes in your password manager. They appear only until acknowledged, for at most ten minutes. No key is sent to an external QR service.
-
-Use the same clock/time synchronization on the server and phone. The login accepts the adjacent time step for ordinary clock drift but refuses reuse of an accepted step. Use a fresh code when regenerating recovery codes.
+After password sign-in, the dashboard opens directly. Refresh an old enrollment page and sign in again with your existing name/password; an account reset is not needed.
 
 Stop the local server with Ctrl+C. Bind it to 127.0.0.1 only. Do not expose this local development server over a public tunnel or network interface.
 
@@ -36,7 +36,7 @@ The existing `edfund` database was inspected before changes: it contained no tab
 
 No WordPress dump was imported, and no existing database/table was recreated, truncated or deleted. A randomly named local runtime user was granted DML only on these CMS tables (SELECT only for cms_migrations). It has no schema-wide CREATE, DROP or ALTER rights.
 
-Private configuration is in ignored `config/local.php`; CLI migration credentials are separately in ignored `config/migrations.local.php`. Files are mode 0600. Storage/sessions/logs are outside public in ignored `storage/`, with private directories. Never commit these files. Back up the app key securely along with the eventual database backups; it protects MFA secrets and recovery-code digests.
+Private configuration is in ignored `config/local.php`; CLI migration credentials are separately in ignored `config/migrations.local.php`. Files are mode 0600. Storage/sessions/logs are outside public in ignored `storage/`, with private directories. Never commit these files. Back up the app key securely along with the eventual database backups; it protects audit digests and any legacy encrypted records.
 
 For a fresh checkout on the same local environment, run:
 
@@ -56,21 +56,17 @@ Migrations are numbered SQL files with SHA256 checksums, run under a database ad
 
 ## Recovery
 
-### Lost authenticator, password still known
+### Forgotten password
 
-Sign in with the password and an unused recovery code. It is consumed atomically, previous sessions are revoked and the account must enroll a new authenticator before reaching the dashboard. Enrollment replaces the remaining old recovery codes with a new set. Save the new codes; old codes will no longer work.
-
-### Lost password or no recovery codes
-
-A maintainer with legitimate filesystem/CLI access can run:
+A maintainer with legitimate local/hosting filesystem and terminal access can run:
 
 ```sh
 php bin/cms.php owner:recover
 ```
 
-Type RESET when asked and choose a new passphrase privately. This updates the existing owner, revokes sessions and pending sign-ins, deletes old recovery codes and requires fresh authenticator enrollment. It does not provide a public bypass or print credentials. Store host/CLI access securely.
+Type RESET when asked and choose a new password privately (minimum four characters). The command updates the existing owner and revokes earlier sessions. Sign in directly with the existing name and new password; there is no authenticator or recovery-code step. There is no public reset endpoint or seeded credential. Login throttling remains persistent for fifteen minutes.
 
-Email password recovery is disabled until SMTP is configured and tested in a later agreed phase. There is no public reset token/installer endpoint in Phase 1. Login and MFA throttles persist in MariaDB for fifteen minutes, including across browser restarts.
+Legacy MFA database columns and encrypted records remain compatible with older backups, but are not used for authentication. No migration or account recreation is needed. Keep the existing private application key for audit digests and legacy encrypted-data compatibility.
 
 ## Current runtime findings and production requirements
 
@@ -95,4 +91,4 @@ python3 source/check_seo.py
 
 The browser suite needs Python Playwright and the existing Google Chrome application. It creates a randomly named isolated edfund_test_* database and runtime user, verifies an existing-content sentinel survives migrations, runs auth/recovery tests, then drops only that newly created test database/user. It never creates a real owner in edfund. Secrets remain in private temporary fixture files and are removed after tests; they are not printed.
 
-Coverage: authenticated encryption/tampering, passwords, login/MFA throttling (including eight concurrent password attempts bounded to six reservations), TOTP replay, CSRF/origin rejection, cookie flags/session renewal, protected routes, one-time codes, mandatory re-enrollment, private CLI reset, old-session rejection, private-path denial and all four team modals at desktop/mobile widths with no-JavaScript fallback. This is application verification, not an independent penetration test or a guarantee about untested hosting configuration.
+Coverage: native password hashing and four-character minimum, authenticated legacy-data encryption/tampering, account/IP throttling (including eight concurrent password attempts bounded to six reservations), CSRF/origin rejection, cookie flags/session renewal, protected routes, retired factor URL/session denial, private CLI reset and session revocation, private-path denial and all four team modals at desktop/mobile widths with no-JavaScript fallback. This is application verification, not an independent penetration test or a guarantee about untested hosting configuration.

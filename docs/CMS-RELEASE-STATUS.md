@@ -2,7 +2,7 @@
 
 Date: 12 November 2026.
 
-**Source update after the packaged release:** owner setup/login now uses name/password with a four-character minimum. The existing ZIP still represents its earlier tested commit; it has not been rebuilt for this adjustment. A requested future rebuild and archive test must include this change. **Production deployment has not been performed.** The requested domain is known, but no confirmed hosting account/document-root mapping or secure SSH/SFTP/cPanel connection is available in this workspace. No remote writes, owner provisioning, indexing change or production database migration has occurred.
+**Source update after the packaged release:** owner setup/login now uses name/password with a four-character minimum, and authenticator/recovery-code steps have been removed. The existing ZIP still represents its earlier tested commit; it has not been rebuilt for this adjustment. A requested future rebuild and archive test must include this change. **Production deployment has not been performed.** The requested domain is known, but no confirmed hosting account/document-root mapping or secure SSH/SFTP/cPanel connection is available in this workspace. No remote writes, owner provisioning, indexing change or production database migration has occurred.
 
 ## Deliverables
 
@@ -10,13 +10,13 @@ Date: 12 November 2026.
 - [Installation, cutover, upgrade, rollback and maintenance](CMS-CPANEL-RELEASE.md).
 - [Client editing guide](CMS-EDITING-GUIDE.md).
 - [Encrypted backup/restore details](CMS-PHASE-4-OPERATIONS.md).
-- CLI `release:check` is fail-closed. Its optional `--local-rehearsal` works only in loopback local mode and never reports production ready. Applied migration checksums, restricted DB privileges, file integrity, MFA owner, backup key, stale entry points and outside-root storage are checked.
+- CLI `release:check` is fail-closed. Its optional `--local-rehearsal` works only in loopback local mode and never reports production ready. Applied migration checksums, restricted DB privileges, file integrity, password owner, backup key, stale entry points and outside-root storage are checked.
 
 ## Verification performed locally
 
 The actual extracted ZIP was installed into new private/public directories and exercised using an isolated Apache 2.4.68 / PHP-CGI 8.5.7 instance and disposable MariaDB databases. No global Apache/PHP configuration or sibling project was changed. It ran using only bundled vendor code and PHP/MariaDB; no server-side Node, Composer, Python or worker was needed for application requests/installation commands.
 
-Checks cover ZIP CRC/SHA256/manifest and secret/runtime exclusions; explicit migrations and repeat-safe imports; Apache .htaccess routing/public bridge/redirects/404/private-path denial; owner MFA and actual draft/preview/publish/restore; validated image upload and draft-only media privacy; content, revision and uploaded-image survival after code-folder update and public-path rollback; encrypted backup and isolated restoration with retained MFA/app keys and revoked sessions; hero, Why Uganda lightbox and team dialogs at 390/320px. Tests clean up their own databases/server instances. Full Phase 1–4 regressions are also run against isolated databases.
+Checks cover ZIP CRC/SHA256/manifest and secret/runtime exclusions; explicit migrations and repeat-safe imports; Apache .htaccess routing/public bridge/redirects/404/private-path denial; owner login and actual draft/preview/publish/restore; validated image upload and draft-only media privacy; content, revision and uploaded-image survival after code-folder update and public-path rollback; encrypted backup and isolated restoration with retained MFA/app keys and revoked sessions; hero, Why Uganda lightbox and team dialogs at 390/320px. Tests clean up their own databases/server instances. Full Phase 1–4 regressions are also run against isolated databases.
 
 This does **not** verify the actual provider’s patched PHP, HTTPS/reverse-proxy behaviour, production filesystem/DB privileges, client credentials or scheduled/offsite backups. PHP 8.3 execution was not available here. Development PHP 8.5.7 fails the production patch floor; no guard was bypassed to claim a production test. A successful local package test is not a live login/editing/backup test.
 
@@ -35,7 +35,7 @@ A read-only response showed Nginx with `X-Cache: HIT from Backend`, HSTS and HTT
 1. Confirm the hosting panel/account, domain’s absolute document root, all overlapping account web roots, and a secure SSH/SFTP alias or ignored private access-file path. Verify the host fingerprint and account permissions. If only File Manager is available, arrange provider/cPanel Terminal execution of the private PHP CLI steps. Do not paste passwords, API tokens or private keys into chat.
 2. Provide/configure a patched supported PHP web and CLI path (8.3.36 / 8.4.27 / 8.5.12 minimum floors plus current provider updates), required extensions, Apache/equivalent rewrites, HTTPS, account-owned private storage, PHP limits and Nginx/CDN cache rules. Confirm that the actual handler can read the private application/data directories.
 3. Privately configure database host/name/user/password, distinguishing existing CMS data from WordPress data. Back up first. Use a restricted runtime user and separate migration/restore privilege. Do not recreate or replace a populated CMS database or upload the local database.
-4. Have the actual owner choose credentials through private `owner:create`, enroll MFA and retain recovery codes. If an owner already exists, preserve that identity/app key. No owner account or credential is included in the ZIP.
+4. Have the actual owner choose name/password credentials through private `owner:create`. If an owner already exists, preserve that identity/app key. No owner account or credential is included in the ZIP.
 5. Secure the independent backup key, choose/configure the offsite destination, daily cron and monitoring, and perform a real host restore rehearsal. Retain the current website/account/database backup for rollback.
 6. Review the preserved static-demo Privacy Policy wording, donation link destinations and any additional historical WordPress articles before public launch. This release deliberately does not rewrite client prose.
 

@@ -8,9 +8,6 @@ from PIL import Image
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parent.parent;PHP=shutil.which('php');HTTPD=shutil.which('httpd');CGI=shutil.which('php-cgi')
 def run(*args,env=None,cwd=ROOT):return subprocess.check_output([PHP,*map(str,args)],cwd=cwd,env=env,text=True).strip()
-def otp(secret):
- key=base64.b32decode(secret+'='*((-len(secret))%8));d=hmac.new(key,struct.pack('>Q',int(time.time())//30),hashlib.sha1).digest();o=d[-1]&15
- return f'{(struct.unpack(">I",d[o:o+4])[0]&0x7fffffff)%1000000:06d}'
 with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
 f=Path(run('tests/fixture.php','create',port));info=json.loads((f/'fixture.json').read_text());stage=f/'extracted';server=None;p=None;browser=None
 try:
@@ -56,7 +53,7 @@ try:
  assert anon.get(base+'/sitemap.xml').status==200
  challenge=web/'.well-known/acme-challenge/test-token';challenge.parent.mkdir(parents=True);challenge.write_text('provider-validation');assert anon.get(base+'/.well-known/acme-challenge/test-token').text()=='provider-validation'
  print('PASS extracted ZIP, bundled dependencies, explicit imports, actual Apache .htaccess/bridge routing, canonical redirects and private path denial',flush=True)
- page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click();page.on('dialog',lambda d:d.accept());page.goto(base+'/admin/pages');page.wait_for_selector('.section-choice')
+ page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();assert page.url.endswith('/admin/');page.on('dialog',lambda d:d.accept());page.goto(base+'/admin/pages');page.wait_for_selector('.section-choice')
  token=lambda:page.locator('input[name=csrf]').first.get_attribute('value')
  def api(slug,body):return page.request.post(base+'/admin/content?document='+slug,form={'csrf':token(),'data':json.dumps(body)})
  state=page.request.get(base+'/admin/content').json()['state'];original=json.loads(json.dumps(state['content']));templates=page.request.get(base+'/admin/content').json()['templates'];section=state['content']['sections'][1];key=next(k for k,v in templates[section['template']]['fields'].items() if v['type']=='heading');section['values'][key]='A client edit surviving release updates'
@@ -95,8 +92,8 @@ try:
  for width in [390,320]:
   page.set_viewport_size({'width':width,'height':850});page.goto(base+'/');assert page.evaluate('document.documentElement.scrollWidth<=innerWidth');page.locator('[data-hero-next]').click();page.locator('#why-tab-3').click();page.locator('.response-project .kitchen-photo-link').first.click();assert page.locator('#why-lightbox').evaluate('(e)=>e.open');page.keyboard.press('Escape');page.goto(base+'/our-team/');page.locator('.team-card a').first.click();assert page.locator('#team-profile-dialog').evaluate('(e)=>e.open');page.keyboard.press('Escape')
  assert not errors,errors
- print('PASS Apache/CGI owner MFA, draft/preview/publication/restoration, image upload, fail-closed production preflight, content/media survival across code update and rollback, encrypted recovery and mobile interactions',flush=True)
- (ROOT/'deployment/phase5-validation.json').write_text(json.dumps({'checked_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'archive_sha256':hashlib.sha256((ROOT/'deployment/edfund-cpanel-ready.zip').read_bytes()).hexdigest(),'source_commit':manifest['source_commit'],'apache_version':subprocess.check_output([HTTPD,'-v'],text=True).splitlines()[0],'php_version':run('-r','echo PHP_VERSION;'),'scope':'isolated loopback Apache/CGI; not production TLS/hosting','passed':True,'deployed':False,'checks':['zip/integrity/secrets exclusions','bundled vendor/no server build tools','explicit repeat-safe migration/import','Apache htaccess/bridge/redirect/private paths','owner MFA/page+post draft/preview/publish/restore', 'preflight rejects stale PHP/tampered/unapproved payloads', 'provider TLS challenge routing','safe image upload/private media','code update+rollback preserves content/media','encrypted backup/isolated restore','390/320px hero/Why Uganda/team interactions']},indent=2)+'\n')
+ print('PASS Apache/CGI owner login, draft/preview/publication/restoration, image upload, fail-closed production preflight, content/media survival across code update and rollback, encrypted recovery and mobile interactions',flush=True)
+ (ROOT/'deployment/phase5-validation.json').write_text(json.dumps({'checked_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'archive_sha256':hashlib.sha256((ROOT/'deployment/edfund-cpanel-ready.zip').read_bytes()).hexdigest(),'source_commit':manifest['source_commit'],'apache_version':subprocess.check_output([HTTPD,'-v'],text=True).splitlines()[0],'php_version':run('-r','echo PHP_VERSION;'),'scope':'isolated loopback Apache/CGI; not production TLS/hosting','passed':True,'deployed':False,'checks':['zip/integrity/secrets exclusions','bundled vendor/no server build tools','explicit repeat-safe migration/import','Apache htaccess/bridge/redirect/private paths','owner login/page+post draft/preview/publish/restore', 'preflight rejects stale PHP/tampered/unapproved payloads', 'provider TLS challenge routing','safe image upload/private media','code update+rollback preserves content/media','encrypted backup/isolated restore','390/320px hero/Why Uganda/team interactions']},indent=2)+'\n')
 finally:
  if browser:browser.close()
  if p:p.stop()

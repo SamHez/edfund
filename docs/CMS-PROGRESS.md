@@ -2,6 +2,8 @@
 
 Updated 12 November 2026.
 
+**Current authentication: name/password only, minimum four characters, no email/authenticator requirement (latest user instruction). Earlier MFA entries below are historical.**
+
 **Current state: Phase 5 release prepared and validated locally; production deployment pending secure access and confirmed hosting configuration.**
 
 ## Phase 1 — implemented and verified locally
@@ -138,3 +140,12 @@ See CMS-RELEASE-STATUS.md for the exact private checklist: secure SSH/SFTP/cPane
 - Passwords remain natively hashed with existing byte limits/NUL checks; the minimum counts UTF-8 characters. Password/MFA throttling, CSRF, session controls and MFA/recovery remain active. All name spelling/case attempts share the single-owner account limit.
 - Verified with isolated core/CLI/browser checks: three-character rejection/four-character hashing, name-only CLI provisioning, four-character login, case/whitespace normalization, email/wrong-name denial, concurrent throttling and MFA/recovery flows. Existing visual editor/publishing regressions use the new name field.
 - This local source adjustment does not rebuild or deploy the existing Phase 5 ZIP. Rebuild and validate a new archive only when requested; the earlier archive remains the previously tested release.
+
+
+## Authenticator removal — 12 November 2026
+
+- Per the user’s explicit request, password verification now establishes the owner session directly. Removed authenticator enrollment/verification/recovery-code screens, account-security factor controls, MFA service methods and OTP dependency/helper. Retired factor URLs redirect to sign-in or the current authenticated dashboard. Name/password and four-character minimum remain.
+- Existing accounts, password hashes and client content are preserved without migrations or account resets. Legacy factor columns/data remain in the unchanged schema for backup compatibility; no active login path consults them. Release preflight now requires one named/password owner, not MFA enrollment. Native password hashing, account/IP throttling, CSRF/origin checks, session rotation/expiry, auditing and private CLI password recovery remain.
+- Old pending or factor-authenticated sessions cannot become password-only sessions automatically: a fresh password sign-in is required. Password-verified sessions retain the verified account version so concurrent private resets revoke them. Rehash writes compare the prior hash/version to avoid overwriting a simultaneous password reset.
+- Updated isolated browser tests cover direct dashboard access, no factor fields, retired routes, old pending/completed-session denial, previously enrolled account compatibility, private four-character password reset and stale-session/old-password denial. Editing, publishing, media, page SEO and encrypted recovery use password-only sessions. Legacy encrypted backup material remains readable.
+- No website content/image edits, schema changes, local owner resets, ZIP rebuild or production deployment were performed. The existing archive still represents its earlier authentication policy until a rebuild is explicitly requested.

@@ -1,6 +1,6 @@
 # EdFund Uganda Foundation
 
-A purpose-specific PHP/MariaDB CMS for the existing EdFund website. Phases 1–4 are implemented and verified locally: secure owner/MFA login, visual page editing, posts/media/YouTube blocks, SEO and encrypted recovery. The Phase 5 cPanel release can now be built and validated; production deployment remains pending confirmed secure hosting access. Nothing has been deployed.
+A purpose-specific PHP/MariaDB CMS for the existing EdFund website. Phases 1–4 are implemented and verified locally: owner name/password login, visual page editing, posts/media/YouTube blocks, SEO and encrypted recovery. The Phase 5 cPanel release can now be built and validated; production deployment remains pending confirmed secure hosting access. Nothing has been deployed.
 
 Start with the [client editing guide](docs/CMS-EDITING-GUIDE.md), [local operation and hosting requirements](docs/CMS-PHASE-4-OPERATIONS.md), and [progress record](docs/CMS-PROGRESS.md).
 
@@ -73,4 +73,4 @@ php bin/cms.php owner:create
 php -d session.upload_progress.enabled=0 -S 127.0.0.1:8089 -t public router.php
 ```
 
-Open http://127.0.0.1:8089/admin/login. Use the project-compatible `php` binary, not the old XAMPP PHP executable. The existing local database is configured privately; choose your own owner credentials in the terminal and complete MFA. Page editing begins in Phase 2. The static release command above remains the legacy static-site packager; it is not a PHP CMS deployment package. Public CMS hosting requires the supported patched runtime and separate private/public deployment documented for Phase 5.
+Open http://127.0.0.1:8089/admin/login. Use the project-compatible `php` binary, not the old XAMPP PHP executable. The existing local database is configured privately; choose your own owner credentials in the terminal and sign in with name/password. Page editing begins in Phase 2. The static release command above remains the legacy static-site packager; it is not a PHP CMS deployment package. Public CMS hosting requires the supported patched runtime and separate private/public deployment documented for Phase 5.

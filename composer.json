@@ -10,7 +10,6 @@
     "ext-mbstring": "*",
     "ext-fileinfo": "*",
     "ext-gd": "*",
-    "spomky-labs/otphp": "^11.3",
     "ext-dom": "*",
     "ext-sodium": "*"
   },

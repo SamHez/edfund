@@ -7,9 +7,6 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parent.parent
 PHP=shutil.which('php')
 def run(*args,env=None):return subprocess.check_output([PHP,*map(str,args)],cwd=ROOT,env=env,text=True).strip()
-def otp(secret):
- key=base64.b32decode(secret+'='*((-len(secret))%8));digest=hmac.new(key,struct.pack('>Q',int(time.time())//30),hashlib.sha1).digest();offset=digest[-1]&15
- return f'{(struct.unpack(">I",digest[offset:offset+4])[0]&0x7fffffff)%1000000:06d}'
 with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
 fixture=Path(run('tests/fixture.php','create',port));info=json.loads((fixture/'fixture.json').read_text());env=dict(os.environ,EDFUND_CONFIG=str(fixture/'config.php'))
 server=None
@@ -32,7 +29,7 @@ try:
  anonymous=browser.new_context();anon=anonymous.request
  for path in ['/admin/pages','/admin/content','/admin/preview?token='+'a'*32]:assert anon.get(base+path,max_redirects=0).status==303
  page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click()
- secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click()
+ assert page.url.endswith('/admin/')
  page.goto(base+'/admin/pages');page.wait_for_selector('.section-choice');page.wait_for_function("() => document.querySelector('#page-preview').contentDocument?.querySelector('.hero-slider')")
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
  def api(body,slug='home',token=None):return page.request.post(base+'/admin/content?document='+slug,form={'csrf':token or csrf(),'data':json.dumps(body)})

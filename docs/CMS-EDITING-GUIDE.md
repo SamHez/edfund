@@ -1,6 +1,6 @@
 # EdFund client editing guide
 
-Open `/admin/login`, enter your owner name, password and authenticator code. Email is not required; new passwords have a minimum of four characters. On your first sign-in, enroll your authenticator and store the recovery codes privately. One owner account manages the site. A lost authenticator can be replaced using an unused recovery code; lost credentials require the maintainer’s private CLI recovery procedure.
+Open `/admin/login` and enter your owner name and password. Email and authenticator setup/codes are not required. New passwords have a minimum of four characters. One owner account manages the site. If you forget the password, ask the maintainer to use the private owner recovery command; it sets a new password and revokes old sessions.
 
 ## Pages
 

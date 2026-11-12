@@ -61,70 +61,10 @@ final class Auth
         $valid=self::passwordMatches($password,$hash);
         if (!$nameMatches || !$valid) {$this->audit('login.password_failed',null,$source);return null;}
         if (password_needs_rehash($user['password_hash'],Passwords::algorithm(),Passwords::options())) {
-            $s=$this->db->prepare('UPDATE cms_users SET password_hash=?,updated_at=UTC_TIMESTAMP() WHERE id=?');$s->execute([Passwords::hash($password),$user['id']]);
+            $s=$this->db->prepare('UPDATE cms_users SET password_hash=?,updated_at=UTC_TIMESTAMP() WHERE id=? AND password_hash=? AND session_version=?');$s->execute([Passwords::hash($password),$user['id'],$user['password_hash'],$user['session_version']]);if($s->rowCount()!==1){return null;}
         }
         $this->releaseSuccessfulAttempt($ticket);
         return $user;
-    }
-    public function enroll(int $id,string $secret,string $code,string $source): ?array
-    {
-        $ticket=$this->reserveAttempt('mfa',(string)$id,$source);if($ticket===null){return null;}
-        $this->db->beginTransaction();
-        try {
-            $user=$this->user($id,true);
-            $step=Mfa::matchedStep($secret,$code,-1);
-            if (!$user || $user['mfa_enabled_at']!==null || $step===null) {$this->db->rollBack();return null;}
-            $s=$this->db->prepare('UPDATE cms_users SET mfa_secret=?,mfa_enabled_at=UTC_TIMESTAMP(),last_totp_step=?,updated_at=UTC_TIMESTAMP() WHERE id=?');$s->execute([$this->crypto->seal($secret),$step,$id]);
-            $codes=$this->replaceRecoveryCodes($id);$this->audit('mfa.enrolled',$id,$source);$this->releaseSuccessfulAttempt($ticket);$this->db->commit();return $codes;
-        } catch (\Throwable $e) {if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}
-    }
-    public function verifyFactor(int $id,string $code,string $source): ?string
-    {
-        $ticket=$this->reserveAttempt('mfa',(string)$id,$source);if($ticket===null){return null;}
-        $this->db->beginTransaction();
-        try {
-            $user=$this->user($id,true);$result=null;
-            if ($user && $user['mfa_enabled_at']!==null) {
-                $step=Mfa::matchedStep($this->crypto->open($user['mfa_secret']),trim($code),(int)$user['last_totp_step']);
-                if ($step!==null) {
-                    $s=$this->db->prepare('UPDATE cms_users SET last_totp_step=? WHERE id=?');$s->execute([$step,$id]);$result='totp';
-                } else {
-                    $normal=Mfa::normalizeRecovery($code);
-                    if ($normal!=='') {
-                        $s=$this->db->prepare('SELECT id FROM cms_recovery_codes WHERE user_id=? AND code_hash=? AND used_at IS NULL FOR UPDATE');$s->execute([$id,$this->crypto->digest('recovery:'.$normal)]);$recovery=$s->fetchColumn();
-                        if ($recovery) {
-                            $s=$this->db->prepare('UPDATE cms_recovery_codes SET used_at=UTC_TIMESTAMP() WHERE id=?');$s->execute([$recovery]);
-                            // Recovery requires new authenticator enrollment and revokes prior sessions.
-                            $s=$this->db->prepare('UPDATE cms_users SET mfa_secret=NULL,mfa_enabled_at=NULL,last_totp_step=-1,session_version=session_version+1,updated_at=UTC_TIMESTAMP() WHERE id=?');$s->execute([$id]);$result='recovery';
-                        }
-                    }
-                }
-            }
-            if ($result===null) {$this->db->rollBack();$this->audit('login.factor_failed',$id,$source);return null;}
-            $this->audit('login.'.$result,$id,$source);$this->releaseSuccessfulAttempt($ticket);$this->db->commit();return $result;
-        } catch (\Throwable $e) {if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}
-    }
-    public function replaceRecoveryCodes(int $id): array
-    {
-        $codes=Mfa::recoveryCodes();$s=$this->db->prepare('DELETE FROM cms_recovery_codes WHERE user_id=?');$s->execute([$id]);
-        $s=$this->db->prepare('INSERT INTO cms_recovery_codes (user_id,code_hash,created_at) VALUES (?,?,UTC_TIMESTAMP())');
-        foreach ($codes as $code) {$s->execute([$id,$this->crypto->digest('recovery:'.Mfa::normalizeRecovery($code))]);}
-        return $codes;
-    }
-    public function regenerateCodes(int $id,string $password,string $code,string $source): ?array
-    {
-        $ticket=$this->reserveAttempt('mfa',(string)$id,$source);if($ticket===null){return null;}
-        $this->db->beginTransaction();
-        try {
-            $user=$this->user($id,true);
-            $step=$user && $user['mfa_secret'] ? Mfa::matchedStep($this->crypto->open($user['mfa_secret']),$code,(int)$user['last_totp_step']) : null;
-            if (!$user || !self::passwordMatches($password,$user['password_hash']) || $step===null) {$this->db->rollBack();return null;}
-            $s=$this->db->prepare('UPDATE cms_users SET last_totp_step=? WHERE id=?');$s->execute([$step,$id]);$codes=$this->replaceRecoveryCodes($id);$this->audit('recovery.rotated',$id,$source);$this->releaseSuccessfulAttempt($ticket);$this->db->commit();return $codes;
-        } catch (\Throwable $e) {if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}
-    }
-    public function remainingCodes(int $id): int
-    {
-        $s=$this->db->prepare('SELECT COUNT(*) FROM cms_recovery_codes WHERE user_id=? AND used_at IS NULL');$s->execute([$id]);return (int)$s->fetchColumn();
     }
     public function prune(): void
     {

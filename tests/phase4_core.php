@@ -22,3 +22,5 @@ check(Content::url('mailto:info@edfundfoundation.org?subject=Giving%20to%20EdFun
 $production=array_replace($config,['environment'=>'production','public_indexing'=>true]);$rendered=(new Seo($db,$production))->render($pages->render('home'),'/',$seo->pageData('home'));
 check(str_contains($rendered,'index,follow,max-image-preview:large') && !str_contains($rendered,'noindex'),'explicit production indexing policy renders correctly');
 $staging=array_replace($production,['public_indexing'=>false]);check(str_contains((new Seo($db,$staging))->render($pages->render('home'),'/',$seo->pageData('home')),'noindex,nofollow,noarchive'),'production staging stays noindex');
+
+$gate=EdFund\ReleaseCheck::run($config,true);check($gate['checks']['one_owner_with_password'] && !isset($gate['checks']['one_owner_with_mfa']),'release preflight accepts a password owner without authenticator enrollment');

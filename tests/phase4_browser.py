@@ -8,9 +8,6 @@ import xml.etree.ElementTree as ET
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parent.parent;PHP=shutil.which('php')
 def run(*args,env=None):return subprocess.check_output([PHP,*map(str,args)],cwd=ROOT,env=env,text=True).strip()
-def otp(secret):
- key=base64.b32decode(secret+'='*((-len(secret))%8));d=hmac.new(key,struct.pack('>Q',int(time.time())//30),hashlib.sha1).digest();o=d[-1]&15
- return f'{(struct.unpack(">I",d[o:o+4])[0]&0x7fffffff)%1000000:06d}'
 with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
 f=Path(run('tests/fixture.php','create',port));info=json.loads((f/'fixture.json').read_text());env=dict(os.environ,EDFUND_CONFIG=str(f/'config.php'));server=None;p=None;browser=None
 try:
@@ -42,7 +39,7 @@ try:
  r=anon.get(base+'/about-us/');assert r.headers['x-edfund-cache']=='HIT';assert anon.get(base+'/about-us/?preview=1').headers['x-edfund-cache']=='BYPASS';assert anon.get(base+'/about-us/',headers={'Cookie':'test=1'}).headers['x-edfund-cache']=='BYPASS'
  print('PASS exact manual content/images/anchors, unique synchronized metadata, structured data, sitemap, canonical redirects, private paths and bounded cache routing',flush=True)
  # Actual owner/editor workflow.
- page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click();page.on('dialog',lambda d:d.accept())
+ page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();assert page.url.endswith('/admin/');page.on('dialog',lambda d:d.accept())
  page.goto(base+'/admin/pages?document=about-us');page.wait_for_selector('.section-choice');assert page.locator('#document option').count()==10
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
  def api(slug,body):return page.request.post(base+'/admin/content?document='+slug,form={'csrf':csrf(),'data':json.dumps(body)})
@@ -56,7 +53,7 @@ try:
  shared=page.request.get(base+'/admin/content?document=shared').json()['state'];shared['content']['sections'][0]['values']=dict(shared['content']['sections'][0]['values']);values=shared['content']['sections'][0]['values'];k=next(k for k,v in values.items() if v=='Kamuli, Uganda');values[k]='Kamuli, Eastern Uganda';r=api('shared',{'action':'publish','version':shared['version'],'content':shared['content']});assert r.status==200,r.text()
  assert all('Kamuli, Eastern Uganda' in anon.get(base+x).text() for x in ['/', '/contact/','/our-team/','/stories-updates/community-digital-training/'])
  page.screenshot(path=str(f/'phase4-editor.png'))
- # New real uploaded image must survive encrypted restoration with MFA, revisions and app key.
+ # New real uploaded image must survive encrypted restoration with owner credentials, revisions and app key.
  image=io.BytesIO();Image.new('RGB',(800,600),'#14776e').save(image,format='JPEG');r=page.request.post(base+'/admin/media-data',multipart={'csrf':csrf(),'action':'upload','image':{'name':'restore-check.jpg','mimeType':'image/jpeg','buffer':image.getvalue()}});assert r.status==200,r.text()
  # Publish a real owner-created post after all page mappings exist; sitemap and both listings follow it.
  def post_api(body):return page.request.post(base+'/admin/posts-data',form={'csrf':csrf(),'data':json.dumps(body)})
@@ -66,6 +63,7 @@ try:
   assert '/stories-updates/phase-4-owner-workflow/' in anon.get(base+route).text(),route
  article=anon.get(base+'/stories-updates/phase-4-owner-workflow/');assert article.status==200;schema=json.loads(BeautifulSoup(article.text(),'html.parser').select_one('script[type="application/ld+json"]').string);assert any(x['@type']=='BlogPosting' and x.get('datePublished') and x.get('dateModified') for x in schema['@graph'])
  trashed=post_api({'action':'trash','id':new['id'],'version':published.json()['state']['version']});assert trashed.status==200;assert anon.get(base+'/stories-updates/phase-4-owner-workflow/').status==410 and 'phase-4-owner-workflow' not in anon.get(base+'/sitemap.xml').text()
+ run('tests/fixture.php','legacy-factor-data',f) # Historical encrypted records remain recoverable without enabling a factor flow.
  print(run('tests/phase4_backup.php',env=env),flush=True)
  # Desktop/mobile interaction and no-JS fallbacks on migrated pages.
  for width in [1500,390,320]:
@@ -74,7 +72,7 @@ try:
    page.goto(base+route);assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),(width,route)
   page.goto(base+'/');page.locator('[data-hero-next]').click();page.locator('#why-tab-3').click();page.locator('.response-project .kitchen-photo-link').first.click();assert page.locator('#why-lightbox').evaluate('(e)=>e.open');page.keyboard.press('Escape');page.goto(base+'/our-team/');page.locator('.team-card a').first.click();assert page.locator('#team-profile-dialog').evaluate('(e)=>e.open');page.keyboard.press('Escape')
  nojs=browser.new_context(java_script_enabled=False);np=nojs.new_page();np.goto(base+'/our-team/');assert np.locator('.team-profile-fallback').count()>0;nojs.close();assert not errors,errors
- print('PASS actual About edit/preview/draft/publish/restore, all page previews, site-wide shared publication, anonymous preview denial, encrypted media/MFA recovery and 1500/390/320px interactions',flush=True)
+ print('PASS actual About edit/preview/draft/publish/restore, all page previews, site-wide shared publication, anonymous preview denial, encrypted media/owner recovery and 1500/390/320px interactions',flush=True)
 finally:
  if browser:browser.close()
  if p:p.stop()
