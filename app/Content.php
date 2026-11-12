@@ -50,10 +50,11 @@ final class Content
             if(count($section['values'])!==count($t['fields'])){throw new \InvalidArgumentException('Section fields have changed. Reload the editor.');}
             foreach($t['fields'] as $key=>$f){
                 $v=$section['values'][$key] ?? null;
-                if(!is_string($v) || !mb_check_encoding($v,'UTF-8') || mb_strlen($v)>($f['max'] ?? 5000) || preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f]/',$v)){throw new \InvalidArgumentException($f['label'].': invalid or oversized value.');}
+                if(!is_string($v) || !mb_check_encoding($v,'UTF-8') || mb_strlen($v)>($f['type']==='youtube'?1000:($f['max'] ?? 5000)) || preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f]/',$v)){throw new \InvalidArgumentException($f['label'].': invalid or oversized value.');}
                 if($f['type']==='image' && !isset($media[$v])){throw new \InvalidArgumentException('Choose an image from the existing media library.');}
+                if($f['type']==='image'){$q=$this->db->prepare('SELECT deleted_at FROM cms_media_details WHERE media_id=?');$q->execute([$v]);if($q->fetchColumn()){throw new \InvalidArgumentException('This image has been removed from the library.');}}
                 if($f['type']==='url' && !self::url($v)){throw new \InvalidArgumentException($f['label'].': enter a local link, HTTPS URL, email or telephone link.');}
-                if($f['type']==='youtube' && !preg_match('/\A[A-Za-z0-9_-]{11}\z/',$v)){throw new \InvalidArgumentException('Use an eleven-character YouTube video ID.');}
+                if($f['type']==='youtube'){$section['values'][$key]=YouTube::id($v);}
                 if($f['type']==='heading' && trim($v)===''){throw new \InvalidArgumentException('Headings cannot be empty.');}
             }
         }unset($section);
@@ -91,7 +92,7 @@ final class Content
             $s=$this->db->prepare('SELECT version FROM cms_documents WHERE slug=? FOR UPDATE');$s->execute([$slug]);$current=$s->fetchColumn();
             if($current===false || (int)$current!==$version){throw new ContentConflict('A newer version exists. Reload to review it; your unsaved fields have not been overwritten.');}
             $data=$this->validate($action==='restore'?$this->revision($revision ?? 0,$slug):($data ?? []),$slug);
-            $s=$this->db->prepare('INSERT INTO cms_revisions (document_slug,content,action,owner_id,created_at) VALUES (?,?,?,?,UTC_TIMESTAMP())');$s->execute([$slug,json_encode($data,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),$action,$owner]);$id=(int)$this->db->lastInsertId();
+            $s=$this->db->prepare('INSERT INTO cms_revisions (document_slug,content,action,owner_id,created_at) VALUES (?,?,?,?,UTC_TIMESTAMP())');$s->execute([$slug,json_encode($data,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),$action,$owner]);$id=(int)$this->db->lastInsertId();Media::lockReferences($this->db,$data);Media::reference($this->db,'page',(string)$id,$data);
             $s=$this->db->prepare('UPDATE cms_documents SET version=version+1,draft_id=?,'.($action==='publish'?'published_id=?,':'').'updated_at=UTC_TIMESTAMP() WHERE slug=?');$s->execute($action==='publish'?[$id,$id,$slug]:[$id,$slug]);
             $s=$this->db->prepare('INSERT INTO cms_audit (user_id,event,source_hash,created_at) VALUES (?,?,?,UTC_TIMESTAMP())');$s->execute([$owner,'content.'.$slug.'.'.$action,$this->crypto?->digest('ip:'.($_SERVER['REMOTE_ADDR'] ?? 'cli')) ?? hash('sha256','cli')]);$this->db->commit();return $this->state($slug);
         }catch(\Throwable $e){if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}
@@ -101,12 +102,13 @@ final class Content
         $t=$this->template($section['template']);$dom=self::dom($t['html']);$xp=new \DOMXPath($dom);$media=array_column($this->media(),null,'id');
         foreach($t['fields'] as $key=>$f){$node=$xp->query($f['path'])->item(0);if(!$node){throw new \RuntimeException('Template binding no longer exists.');}$v=$section['values'][$key];
             if($f['type']==='image'){
-                $m=$media[$v];$node->setAttribute('src',$m['path']);
+                $m=$media[$v];if($preview && str_starts_with($m['path'],'/media/')){$m['path']='/admin/media-file/'.$v.'/large.webp';$m['srcset']='';}$node->setAttribute('src',$m['path']);
                 // Retain the exact imported responsive markup until a different image is selected.
-                if($v!==$t['defaults'][$key]){$node->setAttribute('width',(string)$m['width']);$node->setAttribute('height',(string)$m['height']);if($m['srcset']){$node->setAttribute('srcset',$m['srcset']);}else{$node->removeAttribute('srcset');}}
+                if($v!==$t['defaults'][$key] || str_starts_with($m['path'],'/admin/media-file/')){$node->setAttribute('width',(string)$m['width']);$node->setAttribute('height',(string)$m['height']);if($m['srcset']){$node->setAttribute('srcset',$m['srcset']);}else{$node->removeAttribute('srcset');}}
                 $p=$node->parentNode;if($p instanceof \DOMElement && $p->tagName==='a' && (str_contains($p->getAttribute('class'),'lightbox') || $p->hasAttribute('data-why-gallery') || $p->hasAttribute('data-project-title') || str_starts_with($p->getAttribute('href'),'/assets/images/'))){$p->setAttribute('href',$m['path']);}
-            }elseif($f['attribute'] ?? false){$node->setAttribute($f['attribute'],$v);}else{$node->nodeValue=$v;}
+            }elseif($f['type']==='youtube'){$v=YouTube::id($v);$node->setAttribute($f['attribute'],$v);$links=(new \DOMXPath($dom))->query('.//a[contains(@href,"youtube.com/watch")]',$node);foreach($links as $a){$a->setAttribute('href','https://www.youtube.com/watch?v='.$v);}}elseif($f['attribute'] ?? false){$node->setAttribute($f['attribute'],$v);}else{$node->nodeValue=$v;}
         }
+        $vx=new \DOMXPath($dom);foreach($vx->query('//*[@data-video-id]') as $frame){foreach($vx->query('.//a[contains(@href,"youtube.com/watch")]',$vx->query('ancestor::article[1]',$frame)->item(0) ?? $frame) as $a){$a->setAttribute('href','https://www.youtube.com/watch?v='.$frame->getAttribute('data-video-id'));}}
         $root=$dom->getElementById('cms-root');if($preview){foreach($root->childNodes as $child){if($child instanceof \DOMElement){$child->setAttribute('data-cms-section',$section['id']);}}}return self::inner($root);
     }
     public function fragments(array $data,bool $preview=false): string {return implode("\n",array_map(fn($s)=>$this->section($s,$preview),$data['sections']));}
@@ -119,7 +121,7 @@ final class Content
             $html=strtr($h['shell'],['<!--CMS:main-->'=>$this->fragments($home,$preview),'<!--CMS:topbar-->'=>$parts['topbar'],'<!--CMS:header-->'=>$parts['header'],'<!--CMS:footer-->'=>$parts['footer'],'<!--CMS:seo-->'=>$parts['seo']]);
             // Code assets can change without reseeding any client fields or template snapshot.
             foreach(['css/styles.css','js/main.js'] as $asset){$hash=substr(hash_file('sha256',dirname(__DIR__).'/public/assets/'.$asset),0,12);$html=preg_replace_callback('~(/assets/'.preg_quote($asset,'~').'\?v=)[a-f0-9]+~',fn($m)=>$m[1].$hash,$html);}
-            if($own){$this->db->commit();}return $html;
+            if($own){$this->db->commit();}return PostView::updateCards($this->db,$html,true);
         }catch(\Throwable $e){if($own && $this->db->inTransaction()){$this->db->rollBack();}throw $e;}
     }
 }

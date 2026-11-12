@@ -5,6 +5,8 @@ $public=__DIR__.'/public';
 $path=rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '/',PHP_URL_PATH) ?: '/');
 if (str_contains($path,"\0") || preg_match('~(?:^|/)\.[^/]*~',$path) || str_contains($path,'\\')) {http_response_code(404);exit('Page not found.');}
 if ($path==='/admin' || str_starts_with($path,'/admin/')) {require $public.'/index.php';return true;}
+if(preg_match('~\A/media/[a-f0-9]{64}/(?:large|small|thumb)\.webp\z~',$path)){require __DIR__.'/app/public.php';return true;}
+if(preg_match('~\A/stories-updates/([a-z0-9]+(?:-[a-z0-9]+)*)(?:/|/index\.html)?\z~',$path,$match)){$storySlug=$match[1];$candidate=$public.'/stories-updates/'.$storySlug.'/index.html';$postUnknown=!is_file($candidate);$publicPage=$postUnknown?$public.'/404.html':$candidate;require __DIR__.'/app/public.php';return true;}
 $file=realpath($public.$path);
 if ($file && str_starts_with($file,$public.'/') && is_dir($file)) {$file=realpath($file.'/index.html');}
 if ($path==='/') {$file=$public.'/index.html';}

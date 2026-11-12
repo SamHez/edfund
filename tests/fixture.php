@@ -14,7 +14,7 @@ if ($action==='create') {
     $applied=Migrations::run($fixture);if(count($applied)!==count(glob($root.'/database/migrations/*.sql')) || Migrations::run($fixture)!==[] || $fixture->query('SELECT content FROM legacy_sentinel')->fetchColumn()!=='preserve existing content'){throw new RuntimeException('Migrations failed preservation/idempotence.');}
     $user='edfund_test_'.bin2hex(random_bytes(4));$pass=bin2hex(random_bytes(24));
     $db->exec('CREATE USER '.$db->quote($user)."@'localhost' IDENTIFIED BY ".$db->quote($pass));
-    foreach (['cms_users','cms_recovery_codes','cms_auth_attempts','cms_audit','cms_templates','cms_media','cms_documents','cms_revisions'] as $table) {$db->exec('GRANT SELECT,INSERT,UPDATE,DELETE ON `'.$id.'`.`'.$table.'` TO '.$db->quote($user)."@'localhost'");}
+    foreach (['cms_users','cms_recovery_codes','cms_auth_attempts','cms_audit','cms_templates','cms_media','cms_documents','cms_revisions','cms_media_details','cms_posts','cms_post_revisions','cms_post_routes','cms_media_usage'] as $table) {$db->exec('GRANT SELECT,INSERT,UPDATE,DELETE ON `'.$id.'`.`'.$table.'` TO '.$db->quote($user)."@'localhost'");}
     $db->exec('GRANT SELECT ON `'.$id.'`.`cms_migrations` TO '.$db->quote($user)."@'localhost'");
     $runtime=['dsn'=>$dsn,'user'=>$user,'password'=>$pass];$app=Database::connect($runtime);
     try {$app->exec('CREATE TABLE forbidden_probe (id INT)');throw new RuntimeException('Runtime user unexpectedly has DDL rights');}catch(PDOException $expected){}
@@ -30,6 +30,7 @@ if(!$directory || !$base || !str_starts_with($directory,$base.'/')){throw new Ru
 $info=json_decode(file_get_contents($directory.'/fixture.json'),true,512,JSON_THROW_ON_ERROR);
 if(!preg_match('/\Aedfund_test_[a-f0-9]{12}\z/',$info['database'])){throw new RuntimeException('Invalid test database');}
 $config=require $directory.'/config.php';$db=Database::connect($config['db']);
+if (in_array($action,['media-quota-low','media-quota-reset'],true)) {if($action==='media-quota-low'){$config['media_quota_bytes']=1024;}else{unset($config['media_quota_bytes']);}file_put_contents($directory.'/config.php',"<?php\nreturn ".var_export($config,true).";\n");exit;}
 if ($action==='empty-owner-for-cli-test') {$db->exec('DELETE FROM cms_users');exit;}
 if ($action==='concurrent-bad-password') {
     $auth=new Auth($db,new Crypto(base64_decode($config['app_key'])));

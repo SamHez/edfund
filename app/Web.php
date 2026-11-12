@@ -28,7 +28,7 @@ final class Web
     {
         header('Cache-Control: no-store, private, max-age=0');header('Pragma: no-cache');header('Expires: 0');
         header('X-Robots-Tag: noindex, nofollow, noarchive');header('X-Content-Type-Options: nosniff');header('Referrer-Policy: same-origin');
-        header("Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
+        header("Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
         header('X-Frame-Options: DENY');header('Content-Type: text/html; charset=utf-8');
     }
     private function clear(): void {$_SESSION=[];session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));$_SESSION['started']=time();$_SESSION['seen']=time();}
@@ -60,14 +60,14 @@ final class Web
     private static function e(string $value): string {return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
     private function render(string $title,string $content,?array $user=null,string $error=''): void
     {
-        $token=$this->formToken();$nav=$user ? '<nav aria-label="Admin"><a href="/admin/">Dashboard</a><a href="/admin/pages">Pages</a><a href="/admin/pages?document=shared">Settings</a><a href="/admin/security">Account security</a><a href="/">Visit website ↗</a><form action="/admin/logout" method="post">'.$token.'<button class="text-button">Sign out</button></form></nav>' : '<a href="/">← Website</a>';
+        $token=$this->formToken();$nav=$user ? '<nav aria-label="Admin"><a href="/admin/">Dashboard</a><a href="/admin/pages">Pages</a><a href="/admin/posts">Posts</a><a href="/admin/media">Media</a><a href="/admin/pages?document=shared">Settings</a><a href="/admin/security">Account security</a><a href="/">Visit website ↗</a><form action="/admin/logout" method="post">'.$token.'<button class="text-button">Sign out</button></form></nav>' : '<a href="/">← Website</a>';
         $alert=$error!=='' ? '<p class="alert" role="alert">'.self::e($error).'</p>' : '';
-        echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>'.self::e($title).' | EdFund administration</title><link rel="stylesheet" href="/assets/css/admin.css?v='.substr(hash_file('sha256',dirname(__DIR__).'/public/assets/css/admin.css'),0,12).'"></head><body><header><a class="brand" href="/admin/"><img src="/assets/images/logo-web.png" alt="EdFund Foundation" width="500" height="282"></a>'.$nav.'</header><main id="main" class="'.($title==='Pages'?'editor-main':'').'"><p class="eyebrow">EdFund administration</p><h1>'.self::e($title).'</h1>'.$alert.$content.'</main></body></html>';
+        echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>'.self::e($title).' | EdFund administration</title><link rel="stylesheet" href="/assets/css/admin.css?v='.substr(hash_file('sha256',dirname(__DIR__).'/public/assets/css/admin.css'),0,12).'"></head><body><header><a class="brand" href="/admin/"><img src="/assets/images/logo-web.png" alt="EdFund Foundation" width="500" height="282"></a>'.$nav.'</header><main id="main" class="'.(in_array($title,['Pages','Story editor','Media'],true)?'editor-main':'').'"><p class="eyebrow">EdFund administration</p><h1>'.self::e($title).'</h1>'.$alert.$content.'</main></body></html>';
     }
     public function run(string $path): void
     {
         $method=$_SERVER['REQUEST_METHOD'] ?? 'GET';
-        if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0)>($path==='/admin/content'?1500000:16384)) {$this->abort(413,'Request too large.');}
+        if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0)>(($path==='/admin/media-data'?3145728:(in_array($path,['/admin/content','/admin/posts-data'],true)?1500000:16384)))) {$this->abort(413,'Request too large.');}
         if (!in_array($method,['GET','POST'],true)) {header('Allow: GET, POST');$this->abort(405,'Method not allowed.');}
         if ($method==='POST') {$this->csrf();}
         if ($path==='/admin') {$this->redirect('/admin/');}
@@ -103,6 +103,8 @@ final class Web
         }
         $user=$this->signedIn();
         if (isset($_SESSION['new_codes']) && $path!=='/admin/recovery-codes' && $path!=='/admin/logout') {$this->redirect('/admin/recovery-codes');}
+        if (in_array($path,['/admin/posts-data','/admin/media-data'],true) || str_starts_with($path,'/admin/media-file/')) {PublishingAdmin::api($this->config,$path,$method,$user);return;}
+        if ($method==='GET' && in_array($path,['/admin/posts','/admin/post','/admin/media'],true)) {$title=match($path){'/admin/posts'=>'Posts','/admin/post'=>'Story editor',default=>'Media'};$content=match($path){'/admin/posts'=>PublishingAdmin::postsScreen(),'/admin/post'=>PublishingAdmin::editorScreen(),default=>PublishingAdmin::mediaScreen()};$this->render($title,$this->formToken().$content,$user);return;}
         if (in_array($path,['/admin/content','/admin/preview'],true)) {Editor::handle($this->config,$path,$method,(int)$user['id']);return;}
         if ($path==='/admin/pages' && $method==='GET') {$this->render('Pages',$this->formToken().Editor::screen(),$user);return;}
         if ($path==='/admin/logout') {

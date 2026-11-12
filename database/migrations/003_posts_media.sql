@@ -1,0 +1,44 @@
+CREATE TABLE IF NOT EXISTS cms_media_details (
+ media_id CHAR(64) PRIMARY KEY,
+ alt VARCHAR(500) NOT NULL DEFAULT '',
+ caption TEXT NOT NULL,
+ storage_key CHAR(48) NULL,
+ bytes BIGINT UNSIGNED NOT NULL DEFAULT 0,
+ deleted_at DATETIME NULL,
+ created_at DATETIME NOT NULL,
+ FOREIGN KEY (media_id) REFERENCES cms_media(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS cms_posts (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ version INT NOT NULL DEFAULT 1,
+ draft_id BIGINT UNSIGNED NULL,
+ published_id BIGINT UNSIGNED NULL,
+ published_slug VARCHAR(150) NULL UNIQUE,
+ trashed_at DATETIME NULL,
+ imported_path VARCHAR(255) NULL UNIQUE,
+ imported_html MEDIUMTEXT NULL,
+ updated_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS cms_post_revisions (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ post_id BIGINT UNSIGNED NOT NULL,
+ content MEDIUMTEXT NOT NULL,
+ action VARCHAR(20) NOT NULL,
+ owner_id BIGINT UNSIGNED NULL,
+ created_at DATETIME NOT NULL,
+ INDEX post_history (post_id,id),
+ FOREIGN KEY (post_id) REFERENCES cms_posts(id),
+ FOREIGN KEY (owner_id) REFERENCES cms_users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS cms_post_routes (
+ slug VARCHAR(150) PRIMARY KEY,
+ post_id BIGINT UNSIGNED NOT NULL,
+ FOREIGN KEY (post_id) REFERENCES cms_posts(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS cms_media_usage (
+ media_id CHAR(64) NOT NULL,
+ scope VARCHAR(12) NOT NULL,
+ revision_key VARCHAR(255) NOT NULL,
+ PRIMARY KEY (media_id,scope,revision_key),
+ FOREIGN KEY (media_id) REFERENCES cms_media(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

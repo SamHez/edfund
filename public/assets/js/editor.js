@@ -2,7 +2,7 @@
 (() => {
   const $=id=>document.getElementById(id), frame=$('page-preview');
   let slug=new URLSearchParams(location.search).get('document')==='shared'?'shared':'home';
-  let state,templates,media,selected,dirty=false,timer,previewSequence=0,busy=false;
+  let pickerKey;let state,templates,media,selected,dirty=false,timer,previewSequence=0,busy=false;
   $('document').value=slug;
   const token=document.querySelector('input[name="csrf"]').value;
   const notice=message=>$('editor-notice').textContent=message;
@@ -38,7 +38,7 @@
         const image=media.find(m=>m.id===section.values[key]);const thumbnail=document.createElement('img');thumbnail.src=image.path;thumbnail.alt='Selected picture';thumbnail.className='field-picture';label.append(thumbnail);
         const button=document.createElement('button');button.type='button';button.textContent='Choose picture';button.setAttribute('aria-label','Choose picture');button.onclick=()=>pickMedia(key);label.append(button);
       }else{
-        const input=document.createElement(f.type==='text'&&section.values[key].length>100?'textarea':'input');input.value=section.values[key];input.maxLength=f.max;input.dataset.field=key;
+        const input=document.createElement(f.type==='text'&&section.values[key].length>100?'textarea':'input');input.value=section.values[key];input.maxLength=f.type==='youtube'?1000:f.max;if(f.type==='youtube'){input.value=/^[A-Za-z0-9_-]{11}$/.test(input.value)?'https://www.youtube.com/watch?v='+input.value:input.value;label.firstChild.textContent='YouTube link';}input.dataset.field=key;
         if(input.tagName==='TEXTAREA')input.rows=5;
         input.addEventListener('input',()=>{section.values[key]=input.value;markDirty();});label.append(input);
       }
@@ -46,10 +46,10 @@
     }
   }
   function pickMedia(key){
-    const picker=$('media-picker');$('media-search').value='';
+    pickerKey=key;const picker=$('media-picker');$('media-search').value='';
     const draw=()=>{
       $('media-grid').replaceChildren();const term=$('media-search').value.toLowerCase();
-      media.filter(m=>m.label.toLowerCase().includes(term)).forEach(m=>{const b=document.createElement('button');b.type='button';const img=document.createElement('img');img.src=m.path;img.loading='lazy';img.alt='';const text=document.createElement('span');text.textContent=m.label;b.append(img,text);b.onclick=()=>{active().values[key]=m.id;picker.close();fields();markDirty();};$('media-grid').append(b);});
+      media.filter(m=>!m.deleted_at&&m.label.toLowerCase().includes(term)).forEach(m=>{const b=document.createElement('button');b.type='button';const img=document.createElement('img');img.src=m.thumbnail||m.path;img.loading='lazy';img.alt='';const text=document.createElement('span');text.textContent=m.label;b.append(img,text);b.onclick=()=>{active().values[key]=m.id;picker.close();fields();markDirty();};$('media-grid').append(b);});
     };$('media-search').oninput=draw;draw();picker.showModal();
   }
   async function preview(){
@@ -77,6 +77,7 @@
     finally{busy=false;$('editor').inert=false;['save','publish','restore'].forEach(id=>$(id).disabled=false);}
   }
   $('save').onclick=()=>mutate('save');$('publish').onclick=()=>mutate('publish');$('restore').onclick=()=>mutate('restore');$('refresh').onclick=preview;
+  $('page-upload').onsubmit=async event=>{event.preventDefault();const file=$('page-upload-file').files[0];if(!file)return;const data=new FormData();data.set('csrf',token);data.set('action','upload');data.set('image',file);const button=event.target.querySelector('button');button.disabled=true;try{const response=await fetch('/admin/media-data',{method:'POST',body:data,redirect:'error'});const r=await response.json();if(!response.ok)throw Error(r.error||'Upload failed.');media=r.media;active().values[pickerKey]=r.id;$('media-picker').close();fields();markDirty();event.target.reset();$('page-upload-status').textContent='';}catch(e){$('page-upload-status').textContent=e.message;}finally{button.disabled=false;}};
   $('field-group').onchange=fields;$('close-media').onclick=()=>$('media-picker').close();
   $('desktop').onclick=()=>{frame.classList.remove('mobile-preview');$('desktop').setAttribute('aria-pressed','true');$('mobile').setAttribute('aria-pressed','false');};
   $('mobile').onclick=()=>{frame.classList.add('mobile-preview');$('mobile').setAttribute('aria-pressed','true');$('desktop').setAttribute('aria-pressed','false');};

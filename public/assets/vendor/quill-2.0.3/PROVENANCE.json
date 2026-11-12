@@ -1,0 +1,11 @@
+{
+  "name": "quill",
+  "version": "2.0.3",
+  "source": "https://registry.npmjs.org/quill/-/quill-2.0.3.tgz",
+  "integrity": "sha512-xEYQBqfYx/sfb33VJiKnSJp8ehloavImQ2A6564GAbqG55PGw1dAWUn1MUbQB62t0azawUS2CZZhWCjO8gRvTw==",
+  "files": {
+    "quill.js": "f6157c72ac9b3f51cdead426335688a027b12405d9d6a4daadd38a676b2d7ff2",
+    "LICENSE": "395c12b616d6f58238b4be39284d4d9221b58dd6e1f1e34d9ab537e34abbb022",
+    "quill.snow.css": "1c7948cd13aa92fac6390319bc1e5e461823da171519d3a768db56164f871636"
+  }
+}
