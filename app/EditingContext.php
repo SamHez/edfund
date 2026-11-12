@@ -12,7 +12,7 @@ final class EditingContext
     public static function editor(\PDO $db,array $config,string $path): ?array
     {
         if($path==='/admin/pages'){
-            $slug=is_string($_GET['document'] ?? null)?$_GET['document']:'home';$routes=self::pageRoutes($db);
+            if(!isset($_GET['document'])){return null;}$slug=is_string($_GET['document'])?$_GET['document']:'home';$routes=self::pageRoutes($db);
             if(!isset($routes[$slug])){return null;}
             return ['url'=>$routes[$slug],'label'=>'Return to page','kind'=>'page','routes'=>$routes];
         }

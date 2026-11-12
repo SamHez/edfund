@@ -268,3 +268,21 @@ if (teamProfileDialog && typeof teamProfileDialog.showModal === 'function') {
     if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) teamProfileDialog.close();
   });
 }
+
+// Scroll-to-top button: appears after scrolling down, returns to the top of the page.
+(() => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'to-top';
+  button.setAttribute('aria-label', 'Scroll to top');
+  button.hidden = true;
+  button.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';
+  document.body.append(button);
+  const update = () => { button.hidden = window.scrollY < 600; };
+  window.addEventListener('scroll', update, { passive: true });
+  button.addEventListener('click', () => {
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+  });
+  update();
+})();

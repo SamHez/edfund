@@ -29,8 +29,8 @@ final class PublicToolbar
             if($id){$edit='/admin/post?id='.(int)$id;$label='Edit Story';}
         }
         $token='<input type="hidden" name="csrf" value="'.self::e($this->csrf).'">';
-        $icon=AdminLayout::icon(...);
-        $toolbar='<div id="edfund-admin-toolbar" data-public-route="'.self::e($path).'"><nav aria-label="Website administration"><a class="toolbar-dashboard" href="/admin/" aria-label="EdFund Dashboard">'.$icon('dashboard').'<span>EdFund <span class="toolbar-wide">/ Dashboard</span></span></a>'.($edit?'<a id="toolbar-edit" href="'.self::e($edit).'">'.$icon('pages').'<span>'.self::e($label).'</span></a>':'').'<form action="/admin/new-story" method="post">'.$token.'<button type="submit">'.$icon('stories').'<span>Create <span class="toolbar-wide">New </span>Story</span></button></form><a class="toolbar-media" href="/admin/media">'.$icon('media').'<span>Media Library</span></a><details class="toolbar-account"><summary aria-label="Account menu">'.$icon('user').'<span>Account</span>'.$icon('chevron').'</summary><div class="toolbar-dropdown"><p>Signed in as<strong>'.self::e($this->user['name']).'</strong></p><a href="/admin/security">Account security</a><a class="toolbar-mobile-media" href="/admin/media">Media Library</a><form action="/admin/logout" method="post">'.$token.'<button type="submit">Sign out</button></form></div></details></nav></div>';
+        $pages=$this->db->query("SELECT slug,label FROM cms_documents WHERE slug<>'shared' ORDER BY slug='home' DESC,label")->fetchAll();
+        $toolbar=AdminLayout::shell(['token'=>$token,'pages'=>$pages,'user'=>$this->user['name'],'route'=>$path,'edit'=>$edit?['url'=>$edit,'label'=>$label]:null]);
         // Only the private owner response is annotated. Anonymous HTML and cached
         // snapshots retain their exact markup; no template or content is updated.
         $dom=PostView::dom($html);$body=$dom->getElementsByTagName('body')->item(0);$head=$dom->getElementsByTagName('head')->item(0);if(!$body || !$head){return $html;}
@@ -39,7 +39,7 @@ final class PublicToolbar
             if($main){$children=array_values(array_filter(iterator_to_array($main->childNodes),fn($n)=>$n instanceof \DOMElement));if(count($children)===count($data['sections'])){foreach($children as $index=>$child){$child->setAttribute('data-cms-section',$data['sections'][$index]['id']);}}}
         }
         $fragment=Content::dom($toolbar);foreach(iterator_to_array($fragment->getElementById('cms-root')->childNodes) as $node){$body->insertBefore($dom->importNode($node,true),$body->firstChild);}
-        foreach(['css/public-toolbar.css'=>'link','js/public-toolbar.js'=>'script'] as $file=>$tag){$asset=$dom->createElement($tag);$url='/assets/'.$file.'?v='.substr(hash_file('sha256',dirname(__DIR__).'/public/assets/'.$file),0,12);if($tag==='link'){$asset->setAttribute('rel','stylesheet');$asset->setAttribute('href',$url);}else{$asset->setAttribute('src',$url);$asset->setAttribute('defer','');}$head->appendChild($asset);}
+        foreach(['css/admin-shell.css'=>'link','css/public-toolbar.css'=>'link','js/admin-shell.js'=>'script','js/public-toolbar.js'=>'script'] as $file=>$tag){$asset=$dom->createElement($tag);$url='/assets/'.$file.'?v='.substr(hash_file('sha256',dirname(__DIR__).'/public/assets/'.$file),0,12);if($tag==='link'){$asset->setAttribute('rel','stylesheet');$asset->setAttribute('href',$url);}else{$asset->setAttribute('src',$url);$asset->setAttribute('defer','');}$head->appendChild($asset);}
         return PostView::output($dom);
     }
 }

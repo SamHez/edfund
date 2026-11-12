@@ -48,7 +48,7 @@ final class Web
     private static function e(string $value): string {return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
     private function render(string $title,string $content,?array $user=null,string $error=''): void
     {
-        AdminLayout::render($title,$content,$user,$this->formToken(),$error,$user?EditingContext::editor(Database::connect($this->config['db']),$this->config,parse_url($_SERVER['REQUEST_URI'] ?? '',PHP_URL_PATH) ?: ''):null);
+        AdminLayout::render($title,$content,$user,$this->formToken(),$error,$user?EditingContext::editor(Database::connect($this->config['db']),$this->config,parse_url($_SERVER['REQUEST_URI'] ?? '',PHP_URL_PATH) ?: ''):null,$user?Database::connect($this->config['db'])->query("SELECT slug,label FROM cms_documents WHERE slug<>'shared' ORDER BY slug='home' DESC,label")->fetchAll():[]);
     }
     public function run(string $path): void
     {
@@ -65,7 +65,7 @@ final class Web
                 if ($user) {$this->auth->audit('login.password',(int)$user['id'],$this->source);$this->finish($user);$this->redirect('/admin/');}
                 http_response_code(422);$error='Sign-in could not be completed. Check your details or wait 15 minutes before trying again.';
             }
-            $this->render('Sign in','<p>Use your owner account to manage EdFund.</p><form method="post">'.$this->formToken().'<label>Name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form><p class="help">For a forgotten password, use the private account recovery procedure.</p>',null,$error);return;
+            $this->render('Sign in','<form method="post">'.$this->formToken().'<label>Name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form>',null,$error);return;
         }
         // Retired MFA URLs never authorize a legacy pending session.
         if (in_array($path,['/admin/mfa','/admin/enroll','/admin/recovery-codes'],true)) {
@@ -80,14 +80,17 @@ final class Web
         if (in_array($path,['/admin/posts-data','/admin/media-data'],true) || str_starts_with($path,'/admin/media-file/')) {PublishingAdmin::api($this->config,$path,$method,$user);return;}
         if ($method==='GET' && in_array($path,['/admin/posts','/admin/post','/admin/media'],true)) {$title=match($path){'/admin/posts'=>'Posts','/admin/post'=>'Story editor',default=>'Media'};$content=match($path){'/admin/posts'=>PublishingAdmin::postsScreen(),'/admin/post'=>PublishingAdmin::editorScreen(),default=>PublishingAdmin::mediaScreen()};$this->render($title,$this->formToken().$content,$user);return;}
         if (in_array($path,['/admin/content','/admin/preview'],true)) {Editor::handle($this->config,$path,$method,(int)$user['id']);return;}
-        if ($path==='/admin/pages' && $method==='GET') {$this->render('Pages',$this->formToken().Editor::screen(),$user);return;}
+        if ($path==='/admin/pages' && $method==='GET') {
+            $document=$_GET['document'] ?? null;
+            if($document===null){$this->render('Pages',Editor::index($this->config),$user);return;}
+            $row=is_string($document)?Database::connect($this->config['db'])->prepare('SELECT slug,label FROM cms_documents WHERE slug=?'):null;
+            if($row){$row->execute([$document]);$row=$row->fetch();}
+            if(!$row){$this->abort(404,'Page not found.');}
+            $this->render('Pages',$this->formToken().Editor::screen($row['slug'],$row['slug']==='shared'?'Website Settings':$row['label']),$user);return;
+        }
         if ($path==='/admin/logout') {
             if ($method!=='POST') {header('Allow: POST');$this->abort(405,'Use the sign-out button.');}
             $this->auth->audit('logout',(int)$user['id'],$this->source);OwnerSession::logout();$this->redirect('/admin/login');
-        }
-        if ($path==='/admin/security') {
-            if($method!=='GET'){header('Allow: GET');$this->abort(405,'Method not allowed.');}
-            $this->render('Account security','<p>Sign in with your owner name and password. New passwords must contain at least four characters.</p><p>For a forgotten password, the site maintainer can use the private owner recovery command to set a new password and revoke previous sessions.</p>',$user);return;
         }
         if ($path==='/admin/health') {
             if ($method!=='GET') {$this->abort(405,'Method not allowed.');}
@@ -95,7 +98,7 @@ final class Web
             $this->render('System status','<table>'.$rows.'</table>',$user);return;
         }
         if ($path==='/admin/' && $method==='GET') {
-            $this->render('Dashboard',AdminLayout::dashboard($user['name']),$user);return;
+            $this->render('Dashboard',AdminLayout::dashboard($user['name'],Analytics::summary(Database::connect($this->config['db']))),$user);return;
         }
         $this->abort(404,'Page not found.');
     }

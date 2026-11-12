@@ -1,0 +1,99 @@
+/* Owner shell shared by the admin and the public website: white top bar + compact sidebar. Self-contained. */
+:root{--sh-top-h:56px;--sh-side-w:72px;--sh-navy:#0f2b3d;--sh-ink:#102e41;--sh-teal:#11766e;--sh-line:#dde5e8;--sh-soft:#f4f7f8;--sh-muted:#62747e}
+.sh-top,.sh-top *,.sh-side,.sh-side *{box-sizing:border-box}
+.sh-top{position:fixed;inset:0 0 auto;z-index:1000;height:var(--sh-top-h);display:flex;align-items:center;gap:14px;padding:0 18px 0 14px;background:#fff;color:var(--sh-ink);border-bottom:1px solid var(--sh-line);box-shadow:0 6px 22px #0b1f2b1f;font:600 13px/1.4 Manrope,Arial,sans-serif;letter-spacing:normal;text-align:left}
+.sh-top a,.sh-top button,.sh-top summary,.sh-side a,.sh-side button{font:inherit;text-decoration:none;margin:0}
+.sh-icon{width:17px;height:17px;flex:none}
+.sh-top .admin-icon,.sh-side .admin-icon{width:17px;height:17px;flex:none}
+.sh-logo{display:flex;align-items:center;flex:none;padding:2px 4px;border-radius:6px}
+.sh-logo img{display:block;height:34px;width:auto}
+.sh-title{margin:0 0 0 6px;padding-left:16px;border-left:1px solid var(--sh-line);font-size:14px;font-weight:750;color:var(--sh-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-icon-btn{display:inline-grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid var(--sh-line);border-radius:8px;background:#fff;color:var(--sh-ink);cursor:pointer}
+.sh-icon-btn:hover{background:var(--sh-soft)}
+.sh-burger,.sh-close{display:none}
+.sh-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;padding:4px;background:linear-gradient(180deg,#fff,#f1f6f7);border:1px solid var(--sh-line);border-radius:999px;box-shadow:0 4px 14px #102e4118,inset 0 1px 0 #fff}
+.sh-pill{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 15px;border-radius:999px;border:1px solid transparent;font-size:12.5px;font-weight:750;line-height:1;white-space:nowrap;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s;color:var(--sh-ink)}
+.sh-pill:hover{transform:translateY(-1px)}
+.sh-edit,.sh-edit-here{background:#fff;border-color:#d3e0e3;color:var(--sh-ink)}
+.sh-edit:hover,.sh-edit-here:hover{background:#eaf5f2;border-color:#9fd0c4;color:var(--sh-ink)}
+.sh-new{background:linear-gradient(135deg,#17958b,#0d6a60);color:#fff;box-shadow:0 3px 10px #0d6a6045}
+.sh-new:hover{background:linear-gradient(135deg,#1aa79c,#0f7c71);color:#fff}
+.sh-visit{background:linear-gradient(135deg,#17384b,#0b2230);color:#fff;box-shadow:0 3px 10px #0b223040}
+.sh-visit:hover{color:#fff}
+.sh-form{margin:0;padding:0}
+.sh-menu-wrap{position:relative}
+.sh-menu-wrap summary,.sh-account summary{list-style:none}
+.sh-menu-wrap summary::-webkit-details-marker,.sh-account summary::-webkit-details-marker{display:none}
+.sh-menu-wrap[open]>summary,.sh-account[open]>summary{margin:0}
+.sh-menu-wrap summary .admin-icon:last-child{width:13px;height:13px}
+.sh-menu-wrap[open] summary .admin-icon:last-child{transform:rotate(180deg)}
+.sh-menu{position:absolute;left:0;top:calc(100% + 12px);min-width:230px;max-height:70vh;overflow:auto;background:#fff;border:1px solid var(--sh-line);border-radius:12px;box-shadow:0 16px 40px #102e4130;padding:6px}
+.sh-menu a{display:block;padding:10px 14px;border-radius:8px;color:var(--sh-ink);font-size:13px;font-weight:650}
+.sh-menu a:hover{background:#eaf5f2;color:var(--sh-teal)}
+.sh-right{display:flex;align-items:center;gap:16px;margin-left:auto;min-width:0}
+.sh-context{display:inline-flex;align-items:center;gap:7px;color:var(--sh-muted);font-size:12px;font-weight:650;white-space:nowrap}
+.sh-context:hover{color:var(--sh-teal)}
+.sh-account{position:relative}
+.sh-account summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:700;padding:3px 0;color:var(--sh-ink)}
+.sh-avatar{display:grid;place-items:center;width:30px;height:30px;border:1px solid #d9e9e5;background:#eaf5f2;color:var(--sh-teal);border-radius:50%}
+.sh-name{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sh-dropdown{position:absolute;right:0;top:calc(100% + 12px);width:240px;background:#fff;border:1px solid var(--sh-line);border-radius:10px;box-shadow:0 12px 36px #102e411f;padding:6px;color:var(--sh-ink)}
+.sh-dropdown p{margin:0 0 5px;padding:10px 10px 14px;font-size:10px;border-bottom:1px solid var(--sh-line);color:var(--sh-muted)}
+.sh-dropdown strong{display:block;color:var(--sh-ink);font-size:12px;overflow-wrap:anywhere}
+.sh-dropdown a,.sh-dropdown button{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;padding:10px;border:0;border-radius:6px;background:transparent;color:var(--sh-ink);font-size:12px;font-weight:600;cursor:pointer;min-height:0}
+.sh-dropdown a:hover,.sh-dropdown button:hover{background:var(--sh-soft);color:var(--sh-ink)}
+.sh-dropdown form{margin:0}
+.sh-account-mobile{display:none;padding:4px 0 6px;border-bottom:1px solid var(--sh-line);margin-bottom:5px}
+.sh-account-mobile form{margin:0}
+
+/* Sidebar */
+.sh-side{position:fixed;top:var(--sh-top-h);bottom:0;left:0;width:var(--sh-side-w);z-index:900;display:flex;flex-direction:column;background:var(--sh-navy);color:#bed0db;border-right:1px solid #203d4c;font:650 12px/1.4 Manrope,Arial,sans-serif}
+.sh-side nav{display:grid;gap:6px;padding:14px 10px}
+.sh-side-bottom{margin-top:auto;padding:14px 10px;border-top:1px solid #2b4554}
+.sh-link{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;min-height:44px;padding:11px 0;border-radius:9px;color:#bed0db;white-space:nowrap}
+.sh-link span{display:none}
+.sh-link:hover{background:#1b3a4a;color:#fff}
+.sh-link[aria-current=page]{background:#147b74;color:#fff}
+.sh-side .admin-icon{width:20px;height:20px}
+.sh-link:hover::after,.sh-link:focus-visible::after{content:attr(aria-label);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);z-index:60;padding:7px 12px;border-radius:7px;background:#0b1f2b;color:#fff;font-size:12px;font-weight:700;box-shadow:0 8px 22px #0b1f2b55;pointer-events:none}
+.sh-link:hover::before,.sh-link:focus-visible::before{content:'';position:absolute;left:calc(100% + 6px);top:50%;transform:translateY(-50%);border:6px solid transparent;border-right-color:#0b1f2b;border-left-width:0;z-index:60;pointer-events:none}
+.sh-backdrop{position:fixed;inset:0;z-index:850;background:#102e4180;border:0;border-radius:0}
+.sh-top :focus-visible,.sh-side :focus-visible{outline:3px solid #e8a23a;outline-offset:2px}
+
+/* Admin pages: content sits below the bar and beside the sidebar. */
+.admin-workspace{margin-left:var(--sh-side-w);padding-top:var(--sh-top-h);min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.sidebar-open{overflow:hidden}
+
+/* Public website (owner view). */
+body.edfund-owner-view{padding-top:var(--sh-top-h);padding-left:var(--sh-side-w)}
+.edfund-owner-view .site-header{top:var(--sh-top-h)}
+.edfund-owner-view .why-workspace .why-tabs{top:calc(125px + var(--sh-top-h))}
+
+@media(max-width:1180px){.sh-center .sh-pill span{display:none}.sh-center .sh-pill{padding:0 12px}.sh-title{display:none}}
+@media(max-width:560px){.sh-edit-here span{display:none}.sh-edit-here{padding:0 10px}}
+@media(max-width:900px){
+  .sh-center{display:none}
+  .sh-burger{display:inline-grid}
+  .sh-account-mobile{display:block}
+  .sh-name{display:none}
+  .sh-side{width:260px;max-width:86vw;transform:translateX(-102%);visibility:hidden;transition:transform .18s,visibility .18s;z-index:1100;top:0;padding-top:var(--sh-top-h)}
+  .sidebar-open .sh-side{transform:none;visibility:visible}
+  .sh-close{display:inline-grid;position:absolute;right:10px;top:calc(var(--sh-top-h) + 8px)}
+  .sh-side nav{margin-top:40px}
+  .sh-link{justify-content:flex-start;padding:11px 14px}
+  .sh-link span{display:inline}
+  .sh-link:hover::after,.sh-link:hover::before{display:none}
+  .sh-side-bottom{padding:14px 10px}
+  .admin-workspace{margin-left:0}
+  body.edfund-owner-view{padding-left:0}
+  .sh-context span{display:none}
+  .sh-title{display:none}
+}
+
+/* Without JavaScript the navigation stays visible as a simple list. */
+@media(max-width:900px){
+  .admin-app:not(.admin-ready) .sh-side{position:static;transform:none;visibility:visible;width:100%;max-width:none;margin-top:var(--sh-top-h);padding-top:0}
+  .admin-app:not(.admin-ready) .sh-side nav{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0}
+  .admin-app:not(.admin-ready) .sh-close,.admin-app:not(.admin-ready) .sh-burger,.admin-app:not(.admin-ready) .sh-side-bottom{display:none}
+  .admin-app:not(.admin-ready) .admin-workspace{padding-top:0}
+}

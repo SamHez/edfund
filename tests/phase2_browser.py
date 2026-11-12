@@ -30,40 +30,40 @@ try:
  for path in ['/admin/pages','/admin/content','/admin/preview?token='+'a'*32]:assert anon.get(base+path,max_redirects=0).status==303
  page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click()
  assert page.url.endswith('/admin/')
- page.goto(base+'/admin/pages');page.wait_for_selector('.section-choice');page.wait_for_function("() => document.querySelector('#page-preview').contentDocument?.querySelector('.hero-slider')")
+ page.goto(base+'/admin/pages?document=home');page.wait_for_selector('.pe-row');page.wait_for_function("() => document.querySelector('#pe-frame').contentDocument?.querySelector('.hero-slider')")
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
  def api(body,slug='home',token=None):return page.request.post(base+'/admin/content?document='+slug,form={'csrf':token or csrf(),'data':json.dumps(body)})
  state=page.request.get(base+'/admin/content').json()['state'];initial=state['content'];assert len(initial['sections'])==11
  missing=page.request.post(base+'/admin/content',form={'data':'{}'});assert missing.status==403
  before=anon.get(base+'/').text()
- preview=page.frame_locator('#page-preview');preview.locator('.who-section h2').click();page.wait_for_function("() => document.querySelector('#field-title').textContent.includes('Who We Are')")
- page.locator('#field-group').select_option(label='Who We Are');heading=page.locator('#fields input').first;heading.fill('Learning starts here');page.wait_for_timeout(1000)
- page.wait_for_function("() => document.querySelector('#page-preview').contentDocument?.querySelector('.who-section h2')?.textContent==='Learning starts here'")
+ preview=page.frame_locator('#pe-frame');preview.locator('.who-section h2').click();page.wait_for_function("() => document.querySelector('#pe-settings-title').textContent.includes('Who We Are')")
+ heading=page.locator('#pe-settings-body .pe-field',has=page.get_by_text('Headline',exact=True)).first.locator('input');heading.fill('Learning starts here');page.wait_for_timeout(1000)
+ page.wait_for_function("() => document.querySelector('#pe-frame').contentDocument?.querySelector('.who-section h2')?.textContent==='Learning starts here'")
  assert 'Learning starts here' not in anon.get(base+'/').text()
- page.locator('#save').click();page.wait_for_function("() => document.querySelector('#save-status').textContent.startsWith('Draft saved')")
+ page.locator('#pe-save').click();page.wait_for_function("() => document.querySelector('#pe-status').textContent.startsWith('Draft saved')")
  draft=page.request.get(base+'/admin/content').json()['state'];assert draft['draft']!=draft['published']
  # Editing again after Save must use the new revision's field bindings.
- page.locator('#fields input').first.fill('Learning starts here — updated after saving')
+ heading.fill('Learning starts here — updated after saving')
  # Image picker updates actual preview, then stays private until publication.
- groups=page.locator('#field-group option').all_text_contents();page.locator('#field-group').select_option(label=groups[0]);page.get_by_role('button',name='Choose picture',exact=True).first.click();page.locator('#media-search').fill('school-courtyard.webp');page.locator('#media-grid button').first.click();assert not page.locator('#media-picker').is_visible()
+ page.get_by_role('button',name='Change Image',exact=True).first.click();page.locator('#pe-media-search').fill('school-courtyard.webp');page.locator('#pe-media-grid button').first.click();assert not page.locator('#pe-media').is_visible()
  # Reorder and restore the position through real UI controls.
- page.locator('#down').click();page.wait_for_timeout(850);assert page.locator('.section-choice').nth(2).get_attribute('aria-pressed')=='true';page.locator('#up').click()
+ page.locator('.pe-move[aria-label="Move Who We Are, mission and vision down"]').click();page.wait_for_timeout(850);assert page.locator('#pe-section-list .pe-row-name').nth(2).inner_text().startswith('Who We Are');page.locator('.pe-move[aria-label="Move Who We Are, mission and vision up"]').click()
  # Add an approved layout with the existing visual styles.
- page.locator('#layout').select_option(label='Call to action');page.locator('#add').click();assert page.locator('.section-choice').count()==12
- page.locator('#mobile').click();page.wait_for_timeout(250);assert page.locator('#page-preview').evaluate('(e)=>Math.round(e.getBoundingClientRect().width)')==390
- page.locator('#desktop').click();page.wait_for_timeout(250);assert page.locator('#page-preview').evaluate('(e)=>e.getBoundingClientRect().width')>390
+ page.get_by_role('button',name='Add Section').click();page.locator('#pe-add-choices .pe-choice',has_text='Call to Action').click();assert page.locator('#pe-section-list .pe-row').count()==12
+ page.locator('#pe-mobile').click();page.wait_for_timeout(250);assert page.locator('#pe-frame').evaluate('(e)=>Math.round(e.getBoundingClientRect().width)')==390
+ page.locator('#pe-desktop').click();page.wait_for_timeout(250);assert page.locator('#pe-frame').evaluate('(e)=>e.offsetWidth')>390
  page.on('dialog',lambda dialog:dialog.accept())
- page.locator('#publish').click();page.wait_for_function("() => document.querySelector('#save-status').textContent.startsWith('Published')")
+ page.locator('#pe-publish').click();page.locator('#pe-confirm-ok').click();page.wait_for_function("() => document.querySelector('#pe-status').textContent.startsWith('All changes saved')")
  live=anon.get(base+'/').text();assert 'Learning starts here — updated after saving' in live and len(BeautifulSoup(live,'html.parser').select('.final-cta'))==2
  # An old tab cannot silently overwrite this publication.
  stale=api({'action':'save','version':state['version'],'content':initial});assert stale.status==409
  # Authenticated tokenized iframe cannot be reused anonymously, indexed or cached.
- url=page.locator('#page-preview').get_attribute('src');private=page.request.get(base+url);assert private.status==200 and 'no-store' in private.headers['cache-control'] and 'noindex' in private.headers['x-robots-tag'] and "frame-ancestors 'self'" in private.headers['content-security-policy'];assert anon.get(base+url,max_redirects=0).status==303
+ url=page.locator('#pe-frame').get_attribute('src');private=page.request.get(base+url);assert private.status==200 and 'no-store' in private.headers['cache-control'] and 'noindex' in private.headers['x-robots-tag'] and "frame-ancestors 'self'" in private.headers['content-security-policy'];assert anon.get(base+url,max_redirects=0).status==303
  # Ignore forged preview selection from any window other than the actual frame.
- chosen=page.locator('#field-title').inner_text();page.evaluate("id=>window.postMessage({type:'edfund:select',id},location.origin)",initial['sections'][0]['id']);page.wait_for_timeout(50);assert page.locator('#field-title').inner_text()==chosen
+ chosen=page.locator('#pe-settings-title').inner_text();page.evaluate("id=>window.postMessage({type:'edfund:select',id},location.origin)",initial['sections'][0]['id']);page.wait_for_timeout(50);assert page.locator('#pe-settings-title').inner_text()==chosen
  # Restore import, verify it is only a draft, then explicitly republish.
- page.locator('#revision').select_option(str(state['history'][-1]['id']));page.locator('#restore').click();page.wait_for_function("() => document.querySelector('#save-status').textContent.startsWith('Restored')");assert 'Learning starts here' in anon.get(base+'/').text()
- page.locator('#publish').click();page.wait_for_function("() => document.querySelector('#save-status').textContent.startsWith('Published')");assert anon.get(base+'/').text()==before
+ page.locator('#pe-more summary').click();page.locator('#pe-open-history').click();page.locator('.pe-rev[data-revision="'+str(state['history'][-1]['id'])+'"]').get_by_role('button',name='Restore as Draft').click();page.wait_for_function("() => document.querySelector('#pe-status').textContent.startsWith('Draft saved')");assert 'Learning starts here' in anon.get(base+'/').text()
+ page.locator('#pe-publish').click();page.locator('#pe-confirm-ok').click();page.wait_for_function("() => document.querySelector('#pe-status').textContent.startsWith('All changes saved')");assert anon.get(base+'/').text()==before
  # Shared content has independent revisions and publication, used on other page bodies too.
  shared=page.request.get(base+'/admin/content?document=shared').json()['state'];shared_data=shared['content'];key=next(k for k,v in shared_data['sections'][0]['values'].items() if v=='Kamuli, Uganda');shared_data['sections'][0]['values'][key]='Kamuli, Eastern Uganda'
  saved=api({'action':'save','version':shared['version'],'content':shared_data},'shared').json()['state'];assert 'Kamuli, Eastern Uganda' not in anon.get(base+'/about-us/').text()
@@ -81,7 +81,7 @@ try:
   page.set_viewport_size({'width':width,'height':850});page.goto(base+'/');assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
   page.locator('.menu-toggle').click();assert page.locator('.menu-toggle').get_attribute('aria-expanded')=='true'
   page.locator('#why-tab-3').click();page.locator('.response-project .kitchen-photo-link').first.click();assert page.locator('#why-lightbox').evaluate('(e)=>e.open');page.keyboard.press('Escape')
- page.set_viewport_size({'width':1600,'height':1100});page.goto(base+'/admin/pages');page.wait_for_selector('.section-choice');page.wait_for_timeout(800);page.screenshot(path=str(fixture/'editor-desktop.png'))
+ page.set_viewport_size({'width':1600,'height':1100});page.goto(base+'/admin/pages?document=home');page.wait_for_selector('.pe-row');page.wait_for_timeout(800);page.screenshot(path=str(fixture/'editor-desktop.png'))
  assert not errors,errors
  print('PASS click-to-select, edited preview, existing-media picker, ordering, approved layouts, desktop/mobile preview, drafts, publishing, conflict refusal, private previews, revision restore, shared settings and frontend/mobile interactions',flush=True)
  browser.close()

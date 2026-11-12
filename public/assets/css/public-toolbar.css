@@ -1,38 +1,3 @@
-/* Loaded only in a verified owner's private HTML response. */
-:root{--edfund-toolbar-height:40px}
+/* Loaded only in a verified owner's private HTML response; the shell itself lives in admin-shell.css. */
 html{scroll-padding-top:150px}
-body.edfund-owner-view{padding-top:var(--edfund-toolbar-height)}
-.edfund-owner-view .site-header{top:var(--edfund-toolbar-height)}
-.edfund-owner-view .why-workspace .why-tabs{top:calc(125px + var(--edfund-toolbar-height))}
 .edfund-owner-view .anchor-section{scroll-margin-top:150px}
-#edfund-admin-toolbar{position:fixed;inset:0 0 auto;z-index:1000;height:var(--edfund-toolbar-height);background:#102b3b;color:#e2edf0;font:600 11px/1.4 Manrope,Arial,sans-serif;box-shadow:0 1px 5px #102b3b30;text-align:left;letter-spacing:normal}
-#edfund-admin-toolbar nav{height:100%;display:flex;align-items:center;gap:3px;padding:0 18px;max-width:none}
-#edfund-admin-toolbar a,#edfund-admin-toolbar button,#edfund-admin-toolbar summary{display:flex;align-items:center;gap:7px;min-height:32px;margin:0;padding:7px 10px;border:0;border-radius:4px;background:transparent;color:#e2edf0;text-decoration:none;font:inherit;letter-spacing:normal;white-space:nowrap;cursor:pointer}
-#edfund-admin-toolbar a:hover,#edfund-admin-toolbar button:hover,#edfund-admin-toolbar summary:hover{background:#254656;color:white}
-#edfund-admin-toolbar a:focus-visible,#edfund-admin-toolbar button:focus-visible,#edfund-admin-toolbar summary:focus-visible{outline:2px solid #f2c36e;outline-offset:-2px}
-#edfund-admin-toolbar .admin-icon{width:15px;height:15px;flex-shrink:0}
-#edfund-admin-toolbar .toolbar-dashboard{font-weight:800;margin-right:6px}
-#edfund-admin-toolbar form{margin:0;padding:0}
-#edfund-admin-toolbar .toolbar-account{position:relative;margin-left:auto;padding:0}
-#edfund-admin-toolbar summary{list-style:none}
-#edfund-admin-toolbar summary::-webkit-details-marker{display:none}
-#edfund-admin-toolbar .toolbar-dropdown{position:absolute;right:0;top:calc(100% + 4px);width:225px;padding:7px;background:#102b3b;border:1px solid #34505e;border-radius:0 0 6px 6px;box-shadow:0 8px 25px #102b3b38}
-#edfund-admin-toolbar .toolbar-dropdown p{font-size:10px;color:#adc5d0;padding:8px 10px 12px;margin:0 0 5px;border-bottom:1px solid #34505e}
-#edfund-admin-toolbar .toolbar-dropdown strong{display:block;color:white;font-size:11px;margin-top:4px;overflow-wrap:anywhere}
-#edfund-admin-toolbar .toolbar-dropdown button{width:100%;justify-content:flex-start}
-#edfund-admin-toolbar .toolbar-mobile-media{display:none}
-@media(max-width:700px){
- #edfund-admin-toolbar nav{padding:0 7px;gap:1px}
- #edfund-admin-toolbar a,#edfund-admin-toolbar button,#edfund-admin-toolbar summary{padding:7px;gap:5px;font-size:10px}
- #edfund-admin-toolbar .toolbar-wide,#edfund-admin-toolbar .toolbar-media{display:none}
- #edfund-admin-toolbar .toolbar-dashboard{margin-right:0}
- #edfund-admin-toolbar .toolbar-mobile-media{display:flex}
- #edfund-admin-toolbar .toolbar-account summary>span{display:none}
- #toolbar-edit>span{max-width:115px;overflow:hidden;text-overflow:ellipsis}
-}
-@media(max-width:380px){
- #edfund-admin-toolbar .toolbar-dashboard>.admin-icon,#edfund-admin-toolbar .toolbar-account summary>.admin-icon:last-child{display:none}
- #edfund-admin-toolbar a,#edfund-admin-toolbar button,#edfund-admin-toolbar summary{padding-inline:6px}
- #toolbar-edit>span{max-width:90px}
-}
-@media print{#edfund-admin-toolbar{display:none}body.edfund-owner-view{padding-top:0}}

@@ -20,13 +20,13 @@ The toolbar also opens the Dashboard or Media Library. **Create New Story** crea
 
 ## Pages
 
-1. Open **Pages** and choose Homepage, About Us, Our Work, Our Team, Volunteer, Contact, Gallery, Privacy Policy or Stories & Updates.
-2. Click a section in the actual website preview, or select it in the section list. Use **Part of this section** to find its headings, paragraphs, image descriptions, captions and links. The form edits the existing design; it is not an unrestricted Elementor canvas.
-3. Change text or choose/upload an image. Describe meaningful pictures. Images keep the existing layout and responsive delivery. A picture appearing twice, such as a team portrait on its card and full profile, has separate fields: update both occurrences when appropriate. Full team biographies are editable under their member’s group, and feed the existing modal/fallback.
-4. Use **Add approved section**, Move up/down and Remove for extra sections. The banner/hero stays first; navigation/footer structure stays fixed. Desktop/Mobile buttons change the actual preview width.
-5. Open **Search & sharing settings** for this page’s title, description and social picture/description. Keep these specific and distinct. The homepage title must begin `ED Fund Uganda Foundation | Education`.
-6. **Save draft** keeps the public site unchanged. **Publish** makes that snapshot live immediately. Read any validation message and correct the fields. If another tab saved first, reload and review rather than overwriting it.
-7. To undo a published change, select an earlier revision, **Restore as draft**, review it, then Publish. Restoration alone does not change the live site.
+1. Open **Pages** and choose a page; **Back to Pages** returns to the list.
+2. The editor has three areas: **Page Sections** (left), the website preview (centre) and **Section Settings** (right). Click a section in the preview or select it in the list; the preview scrolls to it and its name is shown on the highlighted section. Settings show only that section's fields, grouped into collapsible parts.
+3. Text, picture and link edits appear in the preview immediately, without reloading it. Use **Change Image** to pick or upload a picture and describe meaningful pictures. Link controls pair a button label with its destination (a page such as /contact/, an https:// address, mailto: or tel:). A picture that appears twice, such as a team portrait on its card and full profile, has separate fields.
+4. Use the up/down arrows in the section list to reorder, **Add Section** to insert an approved layout below the selected section, and **Remove Section** (confirmed) in the settings panel. The banner/hero stays first; navigation/footer structure stays fixed. Desktop/Mobile switches the preview width.
+5. **Search & Sharing** in the section list holds this page's title, description and share picture. Keep these specific and distinct. The homepage title must begin `ED Fund Uganda Foundation | Education`.
+6. The toolbar shows **Unsaved changes**, **Draft saved** or **All changes saved**, and whether the page is **Published** or has **Changes not published**. **Save Draft** (also Ctrl/Cmd+S) keeps the public site unchanged; **Preview** opens a clean private tab; **Publish** asks for confirmation then goes live. The browser warns before leaving with unsaved changes. If another tab saved first, load the newest version rather than overwriting it.
+7. **More > Revision History** lists versions with their times, marks the one that is live now and the current draft, and offers **Restore as Draft**. Restoring never changes the live site; publish it as a separate step.
 
 Choose **Navigation, contact & footer** to edit the common contact bar, navigation labels/destinations, footer text, logo and links. Publish shared changes independently; they apply to every page and article. Page-specific content remains in each page. Updating an email address in shared content does not silently change separately written Contact-page paragraphs or enquiry links: review those fields too. Keep the footer’s white logo background.
 

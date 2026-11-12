@@ -21,7 +21,9 @@ final class ContentImport
         $nodes=iterator_to_array($xp->query('//*[@id="cms-root"]//* | //*[@id="cms-root"]//text()'));
         foreach($nodes as $node){
             if($node instanceof \DOMElement && preg_match('/^h[1-6]$/',$node->tagName)){$level=(int)substr($node->tagName,1);foreach(array_keys($headings) as $l){if($l>=$level){unset($headings[$l]);}}$headings[$level]=trim($node->textContent);$group=implode(' / ',$headings);}
-            if($xp->query('ancestor-or-self::script|ancestor-or-self::style|ancestor-or-self::svg|ancestor-or-self::*[@aria-hidden="true"]',$node)->length){continue;}
+            // Slideshow slides after the first are aria-hidden but are real, editable content.
+            $hidden=$kind==='hero'?'ancestor-or-self::*[@aria-hidden="true" and not(contains(concat(" ",normalize-space(@class)," ")," hero-slide "))]':'ancestor-or-self::*[@aria-hidden="true"]';
+            if($xp->query('ancestor-or-self::script|ancestor-or-self::style|ancestor-or-self::svg|'.$hidden,$node)->length){continue;}
             if($node instanceof \DOMText){
                 if(trim($node->nodeValue)==='' || $xp->query('ancestor::button[not(@role="tab")]|ancestor::*[contains(@class,"navigation-status")]|ancestor::*[contains(@class,"hero-counter")]',$node)->length){continue;}
                 $tag=$node->parentNode->nodeName;$type=$xp->query('ancestor::h1|ancestor::h2|ancestor::h3|ancestor::h4',$node)->length?'heading':'text';
@@ -71,6 +73,9 @@ final class ContentImport
             'team'=>['Team member','<section class="section"><div class="container"><h2>Meet our people</h2><div class="team-grid">'.$teamHtml.'</div><p>Describe this team member’s role and contribution.</p></div></section>'],
             'cta'=>['Call to action',$dom->saveHTML($sections[10])]
         ];
+        // Existing sites bound only the first slide. Register the full-slideshow binding beside it; revisions upgrade on read.
+        $legacy=$this->db->query("SELECT html FROM cms_templates WHERE kind='hero' ORDER BY JSON_LENGTH(fields) LIMIT 1")->fetchColumn();
+        if($legacy){$this->template((string)$legacy,'hero','Homepage slideshow');}
         foreach($layouts as $kind=>[$label,$html]){
             // Additional sections must not duplicate original DOM IDs or internal anchor targets.
             $fragment=Content::dom($html);$fx=new \DOMXPath($fragment);foreach($fx->query('//*[@id and not(@id="cms-root")] | //*[@aria-labelledby] | //*[@aria-controls]') as $n){foreach(['id','aria-labelledby','aria-controls'] as $a){$n->removeAttribute($a);}}

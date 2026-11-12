@@ -6,6 +6,7 @@ final class Frontend
     private ?PublicToolbar $toolbar=null;
     public function __construct(private readonly \PDO $db,private readonly array $config) {}
     private function emit(string $body,int $status=200): void {http_response_code($status);if(($_SERVER['REQUEST_METHOD'] ?? 'GET')!=='HEAD'){echo $this->toolbar?$this->toolbar->decorate($body,parse_url($_SERVER['REQUEST_URI'] ?? '/',PHP_URL_PATH) ?: '/'):$body;}}
+    private function count(string $path): void {if(!$this->toolbar && ($_SERVER['REQUEST_METHOD'] ?? 'GET')==='GET'){Analytics::record($this->db,new Crypto($this->config['key_bytes']),$path);}}
     private function redirect(string $target): void {header('Location: '.$target,true,301);header('Cache-Control: '.(OwnerSession::present()?'no-store, private, max-age=0':'no-cache'));}
     private function error(int $code): void
     {
@@ -35,19 +36,19 @@ final class Frontend
         if($original!==$path && ($page || $postRow || $alias)){$this->redirect($path);return;}
         if(!$page && !$postRow){
             // Compatibility for an installation before the explicit Phase 4 page import.
-            $candidate=dirname(__DIR__).'/public'.($path==='/'?'/index.html':$path.'index.html');if(preg_match('~\A/(?:[a-z0-9-]+/)*\z~',$path) && is_file($candidate)){$c=new Content($this->db);$exists=(int)$this->db->query("SELECT COUNT(*) FROM cms_documents WHERE slug='home'")->fetchColumn();$html=$exists?($path==='/'?$c->page():PostView::shared($this->db,file_get_contents($candidate),$path)):file_get_contents($candidate);if($path==='/stories-updates/'){$html=PostView::updateCards($this->db,$html,false);}header('Cache-Control: '.(PublicCache::eligible()?'no-cache':'no-store, private, max-age=0'));$this->emit($html);return;}$this->error(404);return;
+            $candidate=dirname(__DIR__).'/public'.($path==='/'?'/index.html':$path.'index.html');if(preg_match('~\A/(?:[a-z0-9-]+/)*\z~',$path) && is_file($candidate)){$c=new Content($this->db);$exists=(int)$this->db->query("SELECT COUNT(*) FROM cms_documents WHERE slug='home'")->fetchColumn();$html=$exists?($path==='/'?$c->page():PostView::shared($this->db,file_get_contents($candidate),$path)):file_get_contents($candidate);if($path==='/stories-updates/'){$html=PostView::updateCards($this->db,$html,false);}header('Cache-Control: '.(PublicCache::eligible()?'no-cache':'no-store, private, max-age=0'));$this->count($path);$this->emit($html);return;}$this->error(404);return;
         }
         if($page && !$page['published_id']){$this->error(404);return;}
         $eligible=!$this->toolbar && PublicCache::eligible();header('Cache-Control: '.($eligible?'no-cache':'no-store, private, max-age=0'));header('Vary: Cookie, Authorization');$cache=new PublicCache($this->db,$this->config);
         $this->db->beginTransaction();try{
         if($postRow){$postRow=(new Posts($this->db,$this->config))->route($postRow['published_slug']);if(!$postRow || $postRow['trashed_at'] || !$postRow['published_id']){$this->db->commit();$this->error($postRow && $postRow['trashed_at']?410:404);return;}$postData=(new Posts($this->db,$this->config))->revision((int)$postRow['published_id'],(int)$postRow['id']);if($path!=='/stories-updates/'.$postRow['published_slug'].'/'){$this->db->commit();$this->redirect('/stories-updates/'.$postRow['published_slug'].'/');return;}}
         $key=$cache->key($path);
-        if($eligible && ($html=$cache->get($key))!==null){$this->db->commit();header('X-EdFund-Cache: HIT');$this->emit($html);return;}
+        if($eligible && ($html=$cache->get($key))!==null){$this->db->commit();header('X-EdFund-Cache: HIT');$this->count($path);$this->emit($html);return;}
             $seo=new Seo($this->db,$this->config);
             if($postRow){$posts=new Posts($this->db,$this->config);$s=$this->db->prepare('SELECT action,created_at FROM cms_post_revisions WHERE id=?');$s->execute([$postRow['published_id']]);$r=$s->fetch();$html=$r['action']==='import' && $postRow['imported_html']?PostView::shared($this->db,$postRow['imported_html'],'/stories-updates/'):PostView::page($this->db,$this->config,$postData);$meta=['title'=>$postData['seo_title'] ?: $postData['title'].' | EdFund Uganda Foundation','description'=>$postData['seo_description'] ?: $postData['excerpt'],'image'=>$postData['featured_image'],'image_alt'=>$postData['featured_alt']];$modified=$r['action']==='import'?$postData['published_at']:$r['created_at'];$html=$seo->render($html,$path,$meta,$postData,$modified);}
             else{$html=(new Pages($this->db))->render($page['document_slug']);$html=$seo->render($html,$path,$seo->pageData($page['document_slug']),null,max($seo->modified($page['document_slug']),$seo->modified('shared')));}
             $this->db->commit();
         }catch(\Throwable $e){if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}
-        if($eligible){$cache->put($key,$html);}header('X-EdFund-Cache: '.($eligible?'MISS':'BYPASS'));$this->emit($html);
+        if($eligible){$cache->put($key,$html);}header('X-EdFund-Cache: '.($eligible?'MISS':'BYPASS'));$this->count($path);$this->emit($html);
     }
 }

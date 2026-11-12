@@ -34,7 +34,7 @@ try:
         for path in ['/admin/health','/admin/content','/admin/posts-data','/admin/media-data']:
             assert anonymous.request.get(base+path,max_redirects=0).status==303
         anonymous.close();assert page.request.get(base+'/admin/logout',max_redirects=0).status==405
-        page.goto(base+'/admin/security');assert not page.locator('[name=code]').count();assert page.request.post(base+'/admin/security',form={'csrf':csrf(),'code':'123456'}).status==405
+        assert page.request.get(base+'/admin/security').status==404
         print('PASS password-only dashboard access, session rotation, CSRF/origin, throttling, protected APIs and no authenticator controls',flush=True)
         # Neither old partial sessions nor previously completed MFA sessions are promoted.
         for action in ['legacy-pending-session','legacy-factor-session']:
@@ -42,7 +42,7 @@ try:
         fresh=browser.new_context()
         for path in ['/admin/enroll','/admin/mfa','/admin/recovery-codes']:
             r=fresh.request.get(base+path,max_redirects=0);assert r.status==303 and r.headers['location']=='/admin/login'
-        fresh.close();fixture_action('legacy-factor-data');page.locator('.account-menu summary').click();page.get_by_role('button',name='Sign out').click();login();assert page.url.endswith('/admin/')
+        fresh.close();fixture_action('legacy-factor-data');page.locator('.sh-account summary').click();page.get_by_role('button',name='Sign out').click();login();assert page.url.endswith('/admin/')
         print('PASS retired enroll/MFA/recovery URLs and old sessions require a fresh password; legacy enrolled owners can sign in directly',flush=True)
         # Private password recovery revokes earlier sessions without another factor step.
         new_password='1234';master,slave=pty.openpty();child=subprocess.Popen([PHP,'bin/cms.php','owner:recover'],cwd=ROOT,env=env,stdin=slave,stdout=slave,stderr=slave);os.close(slave);buffer=b''

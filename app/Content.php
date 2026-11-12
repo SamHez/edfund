@@ -28,10 +28,12 @@ final class Content
         foreach($this->db->query('SELECT id FROM cms_templates')->fetchAll(\PDO::FETCH_COLUMN) as $id){
             $t=$this->template($id);$dom=self::dom($t['html']);$xp=new \DOMXPath($dom);$groups=[];$headings=[];$group=$t['label'];
             foreach($xp->query('//*[@id="cms-root"]//* | //*[@id="cms-root"]//text()') as $node){
-                if($node instanceof \DOMElement && preg_match('/^h[1-6]$/',$node->tagName)){$level=(int)substr($node->tagName,1);foreach(array_keys($headings) as $l){if($l>=$level){unset($headings[$l]);}}$headings[$level]=trim($node->textContent);$group=implode(' / ',$headings);}
+                if($node instanceof \DOMElement && preg_match('/^h[1-6]$/',$node->tagName)){$level=(int)substr($node->tagName,1);foreach(array_keys($headings) as $l){if($l>=$level){unset($headings[$l]);}}$headings[$level]=trim(preg_replace('/\s+/u',' ',implode(' ',array_map(fn($n)=>(string)$n->nodeValue,iterator_to_array($xp->query('.//text()',$node))))));$group=implode(' / ',$headings);}
                 $groups[$node->getNodePath()]=$group;
             }
-            foreach($t['fields'] as &$field){$bound=$xp->query($field['path'])->item(0);if($bound && $xp->query('ancestor-or-self::article[contains(concat(" ",normalize-space(@class)," ")," story-card ")]',$bound)->length){$field['managed_post']=true;}$field['group']=$groups[$field['path']] ?? $t['label'];unset($field['path']);}unset($field);
+            $guide=FieldGuide::describe($xp,$t['fields'],$t['kind'],array_map(fn($f)=>$groups[$f['path']] ?? $t['label'],$t['fields']));
+            foreach($t['fields'] as $fieldKey=>&$field){$bound=$xp->query($field['path'])->item(0);if($bound && $xp->query('ancestor-or-self::article[contains(concat(" ",normalize-space(@class)," ")," story-card ")]',$bound)->length){$field['managed_post']=true;}$field['group']=$guide[$fieldKey]['group'] ?? ($groups[$field['path']] ?? $t['label']);$field+=array_diff_key($guide[$fieldKey] ?? [],['group'=>1]);unset($field['path']);}unset($field);
+            $t['name']=FieldGuide::sectionName($t['kind'],$t['label']);$t['kind_label']=FieldGuide::kindLabel($t['kind']);$t['description']=FieldGuide::description($t['kind']);
             unset($t['html']);$result[$id]=$t;
         }return $result;
     }
@@ -79,7 +81,24 @@ final class Content
     }
     public function revision(int $id,string $slug): array
     {
-        $s=$this->db->prepare('SELECT content FROM cms_revisions WHERE id=? AND document_slug=?');$s->execute([$id,$slug]);$json=$s->fetchColumn();if(!$json){throw new \InvalidArgumentException('Revision not found.');}return json_decode($json,true,32,JSON_THROW_ON_ERROR);
+        $s=$this->db->prepare('SELECT content FROM cms_revisions WHERE id=? AND document_slug=?');$s->execute([$id,$slug]);$json=$s->fetchColumn();if(!$json){throw new \InvalidArgumentException('Revision not found.');}return $this->upgrade(json_decode($json,true,32,JSON_THROW_ON_ERROR));
+    }
+    private array $upgrades=[];
+    /** A richer binding of the same markup (for example all slideshow slides) replaces the older one when a revision is read; stored history is never rewritten. */
+    private function upgrade(array $data): array
+    {
+        foreach($data['sections'] ?? [] as $i=>$section){
+            $id=$section['template'] ?? null;if(!is_string($id)){continue;}
+            if(!array_key_exists($id,$this->upgrades)){
+                $q=$this->db->prepare("SELECT n.id FROM cms_templates o JOIN cms_templates n ON n.kind=o.kind AND n.html=o.html AND n.id<>o.id WHERE o.id=? AND o.kind='hero' AND JSON_LENGTH(n.fields)>JSON_LENGTH(o.fields) ORDER BY JSON_LENGTH(n.fields) DESC LIMIT 1");$q->execute([$id]);$this->upgrades[$id]=$q->fetchColumn() ?: null;
+            }
+            $newId=$this->upgrades[$id];if(!$newId){continue;}
+            $old=$this->template($id);$new=$this->template($newId);if(count($section['values'] ?? [])!==count($old['fields'])){continue;}
+            $byPath=[];foreach($old['fields'] as $key=>$f){$byPath[$f['path'].'|'.($f['attribute'] ?? '')]=$key;}
+            $values=[];foreach($new['fields'] as $key=>$f){$sig=$f['path'].'|'.($f['attribute'] ?? '');$values[$key]=isset($byPath[$sig])?$section['values'][$byPath[$sig]]:$new['defaults'][$key];}
+            $data['sections'][$i]['template']=$newId;$data['sections'][$i]['values']=$values;
+        }
+        return $data;
     }
     public function state(string $slug): array
     {

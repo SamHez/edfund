@@ -4,7 +4,26 @@
  const fail=e=>$('post-error').textContent=e.message;
  async function request(body,id){const options=body?{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({csrf:token,data:JSON.stringify(body)})}:{};const response=await fetch('/admin/posts-data'+(id?'?id='+id:''),{...options,redirect:'error'});if(!response.headers.get('content-type')?.includes('application/json'))throw Error('The session expired or the editor is unavailable. Reload and sign in.');const r=await response.json();if(!response.ok)throw Error(r.error||'The action could not be completed.');return r;}
  if($('posts-app')){
-  async function load(){$('post-status').textContent='Loading stories…';$('post-list').setAttribute('aria-busy','true');try{const r=await request();$('post-list').replaceChildren();if(!r.posts.length){const empty=document.createElement('div');empty.className='empty-state';const title=document.createElement('h2');title.textContent='Your next story starts here';const text=document.createElement('p');text.textContent='Choose New story to write your first update. You can save it as a draft.';empty.append(title,text);$('post-list').append(empty);}for(const p of r.posts){const card=document.createElement('article');card.className='status-card';const a=document.createElement('a');a.href='/admin/post?id='+p.id;a.textContent=p.title;const text=document.createElement('p');text.textContent=p.trashed?'In trash':p.published?'Published (may also have a draft)':'Draft';card.append(a,text);$('post-list').append(card);}$('post-status').textContent=r.posts.length+' '+(r.posts.length===1?'story':'stories');}catch(e){$('post-status').textContent='';fail(e);}finally{$('post-list').setAttribute('aria-busy','false');}}
+  let all=[],pageNo=1;const PER=12;
+  function drawList(){
+   const term=$('post-search').value.trim().toLowerCase();const hits=all.filter(p=>(p.title+' '+p.category).toLowerCase().includes(term));const pages=Math.max(1,Math.ceil(hits.length/PER));pageNo=Math.min(pageNo,pages);
+   $('post-list').replaceChildren();
+   if(!all.length){const empty=document.createElement('div');empty.className='empty-state';const title=document.createElement('h2');title.textContent='Your next story starts here';const text=document.createElement('p');text.textContent='Choose New story to write your first update. You can save it as a draft.';empty.append(title,text);$('post-list').append(empty);}
+   else if(!hits.length){const empty=document.createElement('p');empty.className='empty-state';empty.textContent='No stories match your search.';$('post-list').append(empty);}
+   const grid=document.createElement('div');grid.className='story-grid-admin';
+   for(const p of hits.slice((pageNo-1)*PER,pageNo*PER)){
+    const card=document.createElement('a');card.className='story-admin-card';card.href='/admin/post?id='+p.id;
+    const thumb=document.createElement('span');thumb.className='story-thumb';if(p.thumb){const img=document.createElement('img');img.src=p.thumb;img.alt='';img.loading='lazy';thumb.append(img);}
+    const body=document.createElement('span');body.className='story-body';const title=document.createElement('strong');title.textContent=p.title;
+    const meta=document.createElement('span');meta.className='story-meta-line';meta.textContent=[p.category,p.updated?new Date(p.updated.replace(' ','T')+'Z').toLocaleDateString(undefined,{dateStyle:'medium'}):''].filter(Boolean).join(' · ');
+    const badge=document.createElement('span');badge.className='pe-badge '+(p.trashed?'':p.published?'is-published':'is-draft');badge.textContent=p.trashed?'In trash':p.published?'Published':'Draft';
+    body.append(title,meta,badge);card.append(thumb,body);grid.append(card);}
+   if(grid.children.length)$('post-list').append(grid);
+   $('post-status').textContent=hits.length+' '+(hits.length===1?'story':'stories');
+   edfundPager($('post-pager'),{page:pageNo,pages,onPage:n=>{pageNo=n;drawList();}});
+  }
+  async function load(){$('post-status').textContent='Loading stories…';$('post-list').setAttribute('aria-busy','true');try{const r=await request();all=r.posts;drawList();}catch(e){$('post-status').textContent='';fail(e);}finally{$('post-list').setAttribute('aria-busy','false');}}
+  $('post-search').oninput=()=>{pageNo=1;drawList();};
   $('new-post').onclick=async()=>{$('new-post').disabled=true;$('post-status').textContent='Creating draft…';try{const r=await request({action:'create'});location.href='/admin/post?id='+r.state.id;}catch(e){$('new-post').disabled=false;$('post-status').textContent='';fail(e);}};load();return;
  }
  const id=Number(new URLSearchParams(location.search).get('id')),frame=$('post-frame');let state,media=[],dirty=false,timer,sequence=0,busy=false;
@@ -28,14 +47,14 @@
  async function preview(){clearTimeout(timer);if(!state)return;const n=++sequence;try{const r=await request({action:'preview',id,content:state.content});if(n===sequence){frame.src=r.url;$('post-error').textContent='';}}catch(e){if(n===sequence)fail(e);}}
  async function load(){try{const r=await request(null,id);state=r.state;media=r.media;dirty=false;controls();$('post-status').textContent=(state.trashed?'In trash':state.draft===state.published?'Published':'Draft')+' · version '+state.version;await preview();}catch(e){fail(e);}}
  async function mutate(action){if(busy||!state)return;let rename=false;
-  if(action==='publish'){if(!confirm('Publish this story?'))return;if(state.published_slug&&state.content.slug!==state.published_slug){rename=confirm('Change the published URL and redirect the previous URL?');if(!rename)return;}}
-  if(['restore','trash','untrash'].includes(action)&&!confirm(action==='trash'?'Move this story to trash? Its public URL will stop serving.':'Restore as an unpublished draft?'))return;
+  if(action==='publish'){if(!await edfundConfirm({title:'Publish this story?',text:'It will go live on the website right away.',ok:'Publish Story'}))return;if(state.published_slug&&state.content.slug!==state.published_slug){rename=await edfundConfirm({title:'Change the published URL?',text:'The previous URL will redirect to the new one.',ok:'Change URL'});if(!rename)return;}}
+  if(['restore','trash','untrash'].includes(action)&&!await edfundConfirm(action==='trash'?{title:'Move this story to trash?',text:'Its public URL will stop working until you restore it.',ok:'Move to Trash',danger:true}:{title:'Restore as an unpublished draft?',text:'The story stays private until you publish it.',ok:'Restore Draft'}))return;
   busy=true;$('post-status').textContent=action==='publish'?'Publishing…':'Saving changes…';clearTimeout(timer);sequence++;$('post-editor').inert=true;
   try{const r=await request({id,version:state.version,action,content:state.content,revision:Number($('post-revision').value),rename});state=r.state;dirty=false;controls();$('post-error').textContent='';$('post-status').textContent=(action==='publish'?'Published':action==='trash'?'In trash':action==='untrash'||action==='restore'?'Restored as draft':'Draft saved')+' · version '+state.version;await preview();}catch(e){$('post-status').textContent='Not saved';fail(e);}finally{busy=false;$('post-editor').inert=false;}
  }
  $('post-save').onclick=()=>mutate('save');$('post-publish').onclick=()=>mutate('publish');$('post-restore').onclick=()=>mutate('restore');$('post-trash').onclick=()=>mutate(state.trashed?'untrash':'trash');$('post-preview').onclick=preview;
  function viewport(mobile){frame.classList.toggle('mobile-preview',mobile);$('post-mobile').setAttribute('aria-pressed',String(mobile));$('post-desktop').setAttribute('aria-pressed',String(!mobile));}viewport(false);$('post-mobile').onclick=()=>viewport(true);$('post-desktop').onclick=()=>viewport(false);
- $('post-reload').onclick=()=>{if(!dirty||confirm('Discard unsaved changes and reload?'))load();};
+ $('post-reload').onclick=async()=>{if(!dirty||await edfundConfirm({title:'Discard unsaved changes?',text:'Your edits will be replaced by the newest saved version.',ok:'Discard and Reload',danger:true}))load();};
  $('post-refresh-media').onclick=async()=>{try{const r=await fetch('/admin/media-data').then(r=>r.json());media=r.media;fillMedia($('post-featured_image'),state.content.featured_image);blocks();featured();}catch(e){fail(e);}};
  $('post-add-block').onclick=()=>{const type=$('post-block-type').value;state.content.blocks.push(type==='text'?{type,delta:{ops:[{insert:'\n'}]}}:type==='image'?{type,media:'',alt:'',caption:''}:{type,video:'',title:'',poster:''});blocks();mark();};
  window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});load();

@@ -168,3 +168,27 @@ See CMS-RELEASE-STATUS.md for the exact private checklist: secure SSH/SFTP/cPane
 - Old pending or factor-authenticated sessions cannot become password-only sessions automatically: a fresh password sign-in is required. Password-verified sessions retain the verified account version so concurrent private resets revoke them. Rehash writes compare the prior hash/version to avoid overwriting a simultaneous password reset.
 - Updated isolated browser tests cover direct dashboard access, no factor fields, retired routes, old pending/completed-session denial, previously enrolled account compatibility, private four-character password reset and stale-session/old-password denial. Editing, publishing, media, page SEO and encrypted recovery use password-only sessions. Legacy encrypted backup material remains readable.
 - No website content/image edits, schema changes, local owner resets, ZIP rebuild or production deployment were performed. The existing archive still represents its earlier authentication policy until a rebuild is explicitly requested.
+
+
+## Page editor redesign — 12 November 2026
+
+- Pages is now a list (`/admin/pages`); each page opens at `/admin/pages?document=slug` in a three-area workspace: section list (reorder arrows, Add Section, Search & Sharing), scaled desktop/mobile preview, and per-section settings with human labels (new `app/FieldGuide.php` derives titles, help text and input types from the bound markup; no template or stored data changed).
+- Live preview: text/image edits are patched in place in the preview frame (new `section` action, fixed attribute allow-list, same-origin message checks); structural changes refresh the frame keeping scroll. Click-to-select, name tag and highlight, list-to-preview scrolling.
+- One toolbar: Back to Pages, page name with Published/Changes-not-published badge, Desktop/Mobile, save state, Save Draft, clean-tab Preview, Publish (confirmed), More (Revision History, Reload, View Live). Revision History is a modal with Live now / Current draft markers and Restore as Draft. Beforeunload warning, link validation, toasts, in-page confirms for publish/remove.
+- Drag-and-drop was not added; move arrows are used instead. Rich text is not offered because the data model stores plain text. Only the hero's first slide is editable (template binds one slide); adding/removing slides needs a template model change.
+- Tests: new tests/page_editor_browser.py; phase2, phase3, phase4, admin layout and public toolbar browser tests updated to the new controls and all pass on isolated databases. No ZIP or deployment.
+
+## Admin shell refinements — 12 November 2026
+
+- Dashboard: action cards (pages, stories, settings), a compact half-width site-analytics placeholder, a Manage your pictures card and a system-status note. Account security was removed (`/admin/security` now 404s); System status sits in the profile menu.
+- Sidebar is collapsed by default (names appear on hover/focus; the choice is still remembered). Left-border accents were removed from nav items, selected sections, notes and alerts.
+- Top bar: centred Edit page dropdown (direct links to each page), New post (CSRF-protected form) and Visit website; narrow screens move them into the profile menu. The public owner toolbar has a stronger shadow and accent edge.
+- Pages list uses compact cards.
+- All native browser `confirm()` dialogs were replaced by a shared modal (`window.edfundConfirm` in admin.js; the page editor has its own equivalent). Story publish/trash/restore/reload and media remove/restore use it.
+
+## Owner shell, analytics and list screens — 12 November 2026
+
+- One shared owner shell (`AdminLayout::shell`, `admin-shell.css/js`): full-width white top bar with logo, Edit page dropdown, New post and Visit website (same tab), plus a fixed compact sidebar (hover names, no expand control, Visit website icon at the bottom). The same shell now appears on the public website for the signed-in owner (replacing the old dark toolbar) and as a drawer on narrow screens.
+- Built-in analytics: migration 005 adds `cms_visit_daily` and `cms_visit_visitors`. `Analytics::record` counts GET page/story views server-side (cache hits included), skips owners, bots and Do-Not-Track, stores only daily per-path totals and a salted one-way daily visitor hash (no IP, user agent or cookies) and prunes old rows. The dashboard shows 30-day views, visitors, top page, stories read, a 14-day chart and top pages; it shows a notice until the migration is applied (`php bin/cms.php migrate`). The runtime database user needs INSERT/UPDATE/DELETE/SELECT on the two new tables.
+- Dashboard action cards are colour-coded with icon and title on one row. Pages list is compact with live search; Stories are cards with live search, New story and View published stories on one row, and pagination (12 per page); Media is paginated (24 per page).
+- Favicon added to every admin page.
