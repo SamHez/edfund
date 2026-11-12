@@ -49,15 +49,17 @@ final class Auth
     {
         $s=$this->db->prepare('DELETE FROM cms_auth_attempts WHERE id=?');foreach($ids as $id){$s->execute([$id]);}
     }
-    public function passwordLogin(string $email,string $password,string $source): ?array
+    public function passwordLogin(string $name,string $password,string $source): ?array
     {
-        $email=strtolower(trim($email));
-        $ticket=$this->reserveAttempt('password',$email,$source);if($ticket===null){return null;}
-        $s=$this->db->prepare('SELECT * FROM cms_users WHERE email=?');$s->execute([$email]);$user=$s->fetch();
+        // One owner: all spelling/case variations share the same account limit.
+        $ticket=$this->reserveAttempt('password','owner',$source);if($ticket===null){return null;}
+        $user=$this->db->query('SELECT * FROM cms_users ORDER BY id LIMIT 1')->fetch();
+        $validName=mb_check_encoding($name,'UTF-8') && mb_strlen($name,'UTF-8')<=100;
+        $nameMatches=$user && $validName && hash_equals(mb_strtolower(trim($user['name']),'UTF-8'),mb_strtolower(trim($name),'UTF-8'));
         // A real password verification also runs for a nonexistent account.
         $hash=$user['password_hash'] ?? (defined('PASSWORD_ARGON2ID') ? self::DUMMY_HASH : self::DUMMY_BCRYPT);
         $valid=self::passwordMatches($password,$hash);
-        if (!$user || !$valid) {$this->audit('login.password_failed',null,$source);return null;}
+        if (!$nameMatches || !$valid) {$this->audit('login.password_failed',null,$source);return null;}
         if (password_needs_rehash($user['password_hash'],Passwords::algorithm(),Passwords::options())) {
             $s=$this->db->prepare('UPDATE cms_users SET password_hash=?,updated_at=UTC_TIMESTAMP() WHERE id=?');$s->execute([Passwords::hash($password),$user['id']]);
         }

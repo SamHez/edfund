@@ -22,7 +22,7 @@ if ($action==='create') {
     file_put_contents($directory.'/config.php',"<?php\nreturn ".var_export($config,true).";\n");
     $password=bin2hex(random_bytes(12)).'!';$email='phase1-test@example.invalid';
     $s=$app->prepare('INSERT INTO cms_users (email,name,password_hash,created_at,updated_at) VALUES (?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP())');$s->execute([$email,'Phase 1 test owner',Passwords::hash($password)]);
-    file_put_contents($directory.'/fixture.json',json_encode(['database'=>$id,'runtime_user'=>$user,'email'=>$email,'password'=>$password]));
+    file_put_contents($directory.'/fixture.json',json_encode(['database'=>$id,'runtime_user'=>$user,'email'=>$email,'name'=>'Phase 1 test owner','password'=>$password]));
     echo $directory;exit;
 }
 $directory=realpath($argv[2] ?? '');$base=realpath($root.'/storage/testing');
@@ -32,9 +32,14 @@ if(!preg_match('/\Aedfund_test_[a-f0-9]{12}\z/',$info['database'])){throw new Ru
 $config=require $directory.'/config.php';$db=Database::connect($config['db']);
 if (in_array($action,['media-quota-low','media-quota-reset'],true)) {if($action==='media-quota-low'){$config['media_quota_bytes']=1024;}else{unset($config['media_quota_bytes']);}file_put_contents($directory.'/config.php',"<?php\nreturn ".var_export($config,true).";\n");exit;}
 if ($action==='empty-owner-for-cli-test') {$db->exec('DELETE FROM cms_users');exit;}
+if ($action==='owner-name-password-policy') {
+    $auth=new Auth($db,new Crypto(base64_decode($config['app_key'])));$user=$db->query('SELECT * FROM cms_users LIMIT 1')->fetch();
+    if(!$user || $user['email']!=='' || !password_verify('1234',$user['password_hash']) || !$auth->passwordLogin(' '.mb_strtoupper($info['name']).' ','1234','127.0.0.2') || $auth->passwordLogin($info['email'],'1234','127.0.0.2')!==null || $auth->passwordLogin('Wrong owner name','1234','127.0.0.2')!==null){throw new RuntimeException('Owner name/password policy failed.');}
+    $db->exec('DELETE FROM cms_auth_attempts');echo 'Name-only owner setup and four-character sign-in verified';exit;
+}
 if ($action==='concurrent-bad-password') {
     $auth=new Auth($db,new Crypto(base64_decode($config['app_key'])));
-    if($auth->passwordLogin($info['email'],'invalid-fixture-password','127.0.0.2')!==null){throw new RuntimeException('Bad password accepted');}exit;
+    if($auth->passwordLogin($info['name'],'invalid-fixture-password','127.0.0.2')!==null){throw new RuntimeException('Bad password accepted');}exit;
 }
 if ($action==='attempt-count') {echo (int)$db->query('SELECT COALESCE(MAX(total),0) FROM (SELECT COUNT(*) AS total FROM cms_auth_attempts GROUP BY bucket) counts')->fetchColumn();exit;}
 if ($action==='reset-factor-step') {$db->exec('UPDATE cms_users SET last_totp_step=-1');exit;}

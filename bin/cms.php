@@ -75,10 +75,10 @@ try {
             $owner=$db->query('SELECT * FROM cms_users ORDER BY id LIMIT 1')->fetch();
             if ($command==='owner:create' && $owner) {throw new RuntimeException('An owner already exists; it was not changed.');}
             if ($command==='owner:recover' && !$owner) {throw new RuntimeException('No owner exists yet; use owner:create.');}
-            $name=$owner['name'] ?? trim(prompt('Owner name: '));$email=$owner['email'] ?? strtolower(trim(prompt('Owner email: ')));
-            if ($name==='' || mb_strlen($name)>100 || !filter_var($email,FILTER_VALIDATE_EMAIL) || strlen($email)>190) {throw new InvalidArgumentException('Enter a valid name and email.');}
+            $name=$owner['name'] ?? trim(prompt('Owner name: '));
+            if ($name==='' || !mb_check_encoding($name,'UTF-8') || mb_strlen($name,'UTF-8')>100 || preg_match('/[\x00-\x1f\x7f]/',$name)) {throw new InvalidArgumentException('Enter a name between 1 and 100 characters, without control characters.');}
             if ($command==='owner:recover' && prompt('Type RESET to revoke all sessions and require a new authenticator: ')!=='RESET') {throw new RuntimeException('Recovery cancelled.');}
-            $password=prompt('New passphrase (at least 12 characters, hidden): ',true);$confirm=prompt('Confirm passphrase (hidden): ',true);
+            $password=prompt('New passphrase (at least 4 characters, hidden): ',true);$confirm=prompt('Confirm passphrase (hidden): ',true);
             if (!hash_equals($password,$confirm)) {throw new InvalidArgumentException('Passphrases do not match.');}
             $hash=Passwords::hash($password);unset($password,$confirm);$db->beginTransaction();
             if ($owner) {
@@ -86,7 +86,7 @@ try {
                 $s=$db->prepare('DELETE FROM cms_recovery_codes WHERE user_id=?');$s->execute([$owner['id']]);$id=(int)$owner['id'];
                 $auth->audit('owner.cli_recovered',$id,'cli');
             } else {
-                $s=$db->prepare('INSERT INTO cms_users (email,name,password_hash,created_at,updated_at) VALUES (?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP())');$s->execute([$email,$name,$hash]);$id=(int)$db->lastInsertId();$auth->audit('owner.cli_created',$id,'cli');
+                $s=$db->prepare('INSERT INTO cms_users (email,name,password_hash,created_at,updated_at) VALUES (?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP())');$s->execute(['',$name,$hash]);$id=(int)$db->lastInsertId();$auth->audit('owner.cli_created',$id,'cli');
             }
             $db->commit();echo "Owner credentials saved. Sign in locally and complete authenticator enrollment.\nNo credentials were printed.\n";
         } finally {if($db->inTransaction()){$db->rollBack();}$s=$db->prepare('SELECT RELEASE_LOCK(?)');$s->execute([$lock]);}

@@ -42,7 +42,7 @@ try:
  r=anon.get(base+'/about-us/');assert r.headers['x-edfund-cache']=='HIT';assert anon.get(base+'/about-us/?preview=1').headers['x-edfund-cache']=='BYPASS';assert anon.get(base+'/about-us/',headers={'Cookie':'test=1'}).headers['x-edfund-cache']=='BYPASS'
  print('PASS exact manual content/images/anchors, unique synchronized metadata, structured data, sitemap, canonical redirects, private paths and bounded cache routing',flush=True)
  # Actual owner/editor workflow.
- page.goto(base+'/admin/login');page.locator('[name=email]').fill(info['email']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click();page.on('dialog',lambda d:d.accept())
+ page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click();page.on('dialog',lambda d:d.accept())
  page.goto(base+'/admin/pages?document=about-us');page.wait_for_selector('.section-choice');assert page.locator('#document option').count()==10
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
  def api(slug,body):return page.request.post(base+'/admin/content?document='+slug,form={'csrf':csrf(),'data':json.dumps(body)})

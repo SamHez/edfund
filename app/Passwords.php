@@ -8,7 +8,7 @@ final class Passwords
     public static function validate(string $value): void
     {
         $max = defined('PASSWORD_ARGON2ID') ? 128 : 72;
-        if (str_contains($value, "\0") || strlen($value)<12 || strlen($value)>$max) { throw new \InvalidArgumentException("Use a passphrase between 12 and {$max} bytes."); }
+        if (str_contains($value, "\0") || !mb_check_encoding($value,'UTF-8') || mb_strlen($value,'UTF-8')<4 || strlen($value)>$max) { throw new \InvalidArgumentException("Use a password of at least 4 characters and no more than {$max} bytes."); }
     }
     public static function hash(string $value): string { self::validate($value); return password_hash($value,self::algorithm(),self::options()); }
 }

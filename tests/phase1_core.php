@@ -15,5 +15,8 @@ check(Mfa::matchedStep($secret,'<script>',-1,$now)===null,'malformed TOTP reject
 $codes=Mfa::recoveryCodes();check(count(array_unique($codes))===10 && strlen(Mfa::normalizeRecovery($codes[0]))===24,'ten independent high-entropy recovery codes');
 check(Mfa::normalizeRecovery('../invalid')==='','malformed recovery input rejected');
 $hash=Passwords::hash('A long unique owner passphrase.');check(password_verify('A long unique owner passphrase.',$hash),'native password hashing');
-try{Passwords::hash('short');throw new LogicException('Weak passphrase accepted');}catch(InvalidArgumentException $expected){check(true,'short passwords rejected');}
+try{Passwords::hash('123');throw new LogicException('Weak passphrase accepted');}catch(InvalidArgumentException $expected){check(true,'short passwords rejected');}
 check(!Preflight::patchFloorMet() || PHP_VERSION_ID>=80336,'public hosting patch policy is explicit');
+
+$four=Passwords::hash('1234');check(password_verify('1234',$four),'four-character password accepted and hashed');
+try{Passwords::hash('éé');throw new LogicException('Two multibyte characters accepted');}catch(InvalidArgumentException $expected){check(true,'password minimum counts characters, not UTF-8 bytes');}

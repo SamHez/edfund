@@ -43,7 +43,7 @@ try:
         page.on('pageerror',lambda e:errors.append(str(e)))
         def csrf():return page.locator('input[name="csrf"]').first.get_attribute('value')
         def login(password=None):
-            page.goto(base+'/admin/login');page.locator('[name=email]').fill(info['email']);page.locator('[name=password]').fill(password or info['password']);page.get_by_role('button',name='Continue',exact=True).click()
+            page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(password or info['password']);page.get_by_role('button',name='Continue',exact=True).click()
         def enrollment():
             assert page.url.endswith('/admin/enroll');secret=page.locator('.setup-key').inner_text()
             page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click()
@@ -52,18 +52,19 @@ try:
             page.get_by_role('button',name='I have saved my codes').click();assert page.url.endswith('/admin/')
             return secret,codes
         response=page.goto(base+'/admin/login');assert response.status==200
+        assert page.locator('[name=email]').count()==0 and page.get_by_label('Name',exact=True).count()==1
         headers=response.headers
         assert 'no-store' in headers['cache-control'] and 'noindex' in headers['x-robots-tag']
         assert "frame-ancestors 'none'" in headers['content-security-policy']
         cookies=context.cookies();assert any(c['httpOnly'] and c['sameSite']=='Strict' for c in cookies)
         first_sid=next(c['value'] for c in cookies if c['name']=='edfund_owner')
-        missing=page.request.post(base+'/admin/login',form={'email':info['email'],'password':info['password']});assert missing.status==403
-        cross=page.request.post(base+'/admin/login',form={'csrf':csrf(),'email':info['email'],'password':info['password']},headers={'Origin':'https://example.invalid'});assert cross.status==403
+        missing=page.request.post(base+'/admin/login',form={'name':info['name'],'password':info['password']});assert missing.status==403
+        cross=page.request.post(base+'/admin/login',form={'csrf':csrf(),'name':info['name'],'password':info['password']},headers={'Origin':'https://example.invalid'});assert cross.status==403
         mutation=page.request.get(base+'/admin/logout',max_redirects=0);assert mutation.status==303
         page.goto(base+'/admin/login')
         for _ in range(6):
-            response=page.request.post(base+'/admin/login',form={'csrf':csrf(),'email':info['email'],'password':'invalid-password'});assert response.status==422
-        blocked=page.request.post(base+'/admin/login',form={'csrf':csrf(),'email':info['email'],'password':info['password']});assert blocked.status==422
+            response=page.request.post(base+'/admin/login',form={'csrf':csrf(),'name':info['name'],'password':'invalid-password'});assert response.status==422
+        blocked=page.request.post(base+'/admin/login',form={'csrf':csrf(),'name':info['name'],'password':info['password']});assert blocked.status==422
         fixture_action('clear-attempts');login()
         assert page.url.endswith('/admin/enroll'),(page.url,page.title(),page.locator('body').inner_text()[:220])
         second_sid=next(c['value'] for c in context.cookies() if c['name']=='edfund_owner');assert first_sid!=second_sid

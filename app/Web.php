@@ -75,11 +75,11 @@ final class Web
             if (isset($_SESSION['owner_id'])) {$this->signedIn();$this->redirect('/admin/');}
             $error='';
             if ($method==='POST') {
-                $user=$this->auth->passwordLogin($this->input('email'),$this->input('password',128),$this->source);
+                $user=$this->auth->passwordLogin($this->input('name',400),$this->input('password',128),$this->source);
                 if ($user) {$this->clear();$_SESSION['pending_id']=(int)$user['id'];$_SESSION['pending_since']=time();$_SESSION['pending_version']=(int)$user['session_version'];$this->redirect($user['mfa_enabled_at']?'/admin/mfa':'/admin/enroll');}
                 http_response_code(422);$error='Sign-in could not be completed. Check your details or wait 15 minutes before trying again.';
             }
-            $this->render('Sign in','<p>Use your owner account to manage EdFund.</p><form method="post">'.$this->formToken().'<label>Email<input type="email" name="email" maxlength="190" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form><p class="help">Your authenticator or a recovery code is required after your password. For a forgotten password, use the private account recovery procedure.</p>',null,$error);return;
+            $this->render('Sign in','<p>Use your owner account to manage EdFund.</p><form method="post">'.$this->formToken().'<label>Name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form><p class="help">Your authenticator or a recovery code is required after your password. For a forgotten password, use the private account recovery procedure.</p>',null,$error);return;
         }
         if ($path==='/admin/mfa') {
             $user=$this->pending();if (!$user['mfa_enabled_at']) {$this->redirect('/admin/enroll');}$error='';
@@ -99,7 +99,7 @@ final class Web
                 if ($codes) {$this->finish((int)$user['id']);$_SESSION['new_codes']=$codes;$_SESSION['codes_since']=time();$this->redirect('/admin/recovery-codes');}
                 http_response_code(422);$error='The authenticator code could not be accepted. Check the account key and your device time, then use a fresh code.';
             }
-            $this->render('Set up your authenticator','<p>In your authenticator app, add an account manually with these settings. This key is shown only during setup; keep it private.</p><dl><dt>Account</dt><dd>'.self::e($user['email']).'</dd><dt>Issuer</dt><dd>EdFund Uganda Foundation</dd><dt>Setup key</dt><dd><code class="setup-key">'.self::e($secret).'</code></dd><dt>Type</dt><dd>Time-based · 6 digits · 30 seconds · SHA-1</dd></dl><form method="post">'.$this->formToken().'<label>Current authenticator code<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label><button>Confirm authenticator</button></form>',null,$error);return;
+            $this->render('Set up your authenticator','<p>In your authenticator app, add an account manually with these settings. This key is shown only during setup; keep it private.</p><dl><dt>Account</dt><dd>'.self::e($user['name']).'</dd><dt>Issuer</dt><dd>EdFund Uganda Foundation</dd><dt>Setup key</dt><dd><code class="setup-key">'.self::e($secret).'</code></dd><dt>Type</dt><dd>Time-based · 6 digits · 30 seconds · SHA-1</dd></dl><form method="post">'.$this->formToken().'<label>Current authenticator code<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label><button>Confirm authenticator</button></form>',null,$error);return;
         }
         $user=$this->signedIn();
         if (isset($_SESSION['new_codes']) && $path!=='/admin/recovery-codes' && $path!=='/admin/logout') {$this->redirect('/admin/recovery-codes');}

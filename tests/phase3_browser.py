@@ -24,7 +24,7 @@ try:
  p=sync_playwright().start();browser=p.chromium.launch(executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless=True);ctx=browser.new_context(viewport={'width':1500,'height':1050});page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)));anon=browser.new_context().request
  for path in ['/admin/posts','/admin/post?id=1','/admin/media','/admin/posts-data','/admin/media-data']:
   assert anon.get(base+path,max_redirects=0).status==303
- page.goto(base+'/admin/login');page.locator('[name=email]').fill(info['email']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click()
+ page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click();secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click()
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
  def api(path,body):return page.request.post(base+path,form={'csrf':csrf(),'data':json.dumps(body)})
  def upload(name,mime,data,token=True):return page.request.post(base+'/admin/media-data',multipart={**({'csrf':csrf()} if token else {}),'action':'upload','image':{'name':name,'mimeType':mime,'buffer':data}})

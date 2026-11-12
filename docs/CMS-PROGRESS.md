@@ -24,7 +24,7 @@ Updated 12 November 2026.
 
 ## Needed from the owner
 
-1. Run `php bin/cms.php owner:create` privately from the repository, choose the real owner email/name/passphrase, then complete authenticator enrollment and save recovery codes.
+1. Run `php bin/cms.php owner:create` privately from the repository, choose the real owner name/password, then complete authenticator enrollment and save recovery codes.
 2. Start the local preview as documented in CMS-PHASE-1-SETUP.md. Keep XAMPP MySQL running; use the documented Unix socket configuration.
 3. Update to a currently patched supported PHP runtime before public hosting. The local 8.5.7 and XAMPP 8.2.4 installations are older than current security fixes. The production configuration guard refuses outdated runtimes; provider version/extensions/HTTPS/storage checks remain Phase 5 requirements.
 
@@ -130,3 +130,11 @@ Phase 4 is complete for this request. Stop before Phase 5: no release archive, p
 ## Needed to deploy
 
 See CMS-RELEASE-STATUS.md for the exact private checklist: secure SSH/SFTP/cPanel/provider access and fingerprint, confirmed domain/root/all overlapping web roots, patched web+CLI PHP/extensions and handler/cache configuration, private CMS DB/runtime/migration details, external writable data/config/key locations, actual owner/MFA provisioning and tested provider/offsite backups. Credentials must be entered privately, never in chat or Git. No deployment is claimed. The validated package and runbook are ready for that controlled host setup/cutover.
+
+
+## Owner sign-in adjustment — 12 November 2026
+
+- At the user’s request, owner creation/recovery requires a name and password with a four-character minimum; no email prompt. Login also uses the owner’s existing name, and authenticator enrollment identifies the account by name. Existing owners/passwords/MFA/recovery data are preserved. No database migration or owner reset is required; the legacy email column is retained for compatibility, empty for newly created owners and unused for sign-in.
+- Passwords remain natively hashed with existing byte limits/NUL checks; the minimum counts UTF-8 characters. Password/MFA throttling, CSRF, session controls and MFA/recovery remain active. All name spelling/case attempts share the single-owner account limit.
+- Verified with isolated core/CLI/browser checks: three-character rejection/four-character hashing, name-only CLI provisioning, four-character login, case/whitespace normalization, email/wrong-name denial, concurrent throttling and MFA/recovery flows. Existing visual editor/publishing regressions use the new name field.
+- This local source adjustment does not rebuild or deploy the existing Phase 5 ZIP. Rebuild and validate a new archive only when requested; the earlier archive remains the previously tested release.

@@ -16,7 +16,7 @@ Open http://127.0.0.1:8089/admin/login. The public site is at http://127.0.0.1:8
 
 Use `/usr/local/bin/php`, currently PHP 8.5.7, or another supported project-compatible PHP 8.3+ binary. The XAMPP PHP executable is 8.2.4 and does not meet this application's minimum. The database can still be the existing XAMPP MariaDB service reached through its Unix socket. The dev router serves this project only; no global XAMPP/Apache configuration was changed.
 
-The real owner account has deliberately not been preassigned a developer-chosen email/password. Run owner:create in your own terminal. It asks for name, email and passphrase, with password echo disabled. Do not paste credentials in chat, shell arguments or Git. The command refuses a second owner. If you interrupt it, no partial owner is committed.
+The real owner account has deliberately not been preassigned a developer-chosen name/password. Run owner:create in your own terminal. It asks for name and a password of at least four characters, with password echo disabled. Do not paste credentials in chat, shell arguments or Git. Sign in using that name and password; email is not required. The command refuses a second owner. If you interrupt it, no partial owner is committed.
 
 After password sign-in, add the displayed key manually to your authenticator (issuer EdFund Uganda Foundation, time-based, SHA-1, 6 digits, 30 seconds). Confirm a current code, then save the ten recovery codes in your password manager. They appear only until acknowledged, for at most ten minutes. No key is sent to an external QR service.
 

@@ -1,6 +1,8 @@
 # Phase 5 release and deployment status
 
-Date: 12 November 2026. **Production deployment has not been performed.** The requested domain is known, but no confirmed hosting account/document-root mapping or secure SSH/SFTP/cPanel connection is available in this workspace. No remote writes, owner provisioning, indexing change or production database migration has occurred.
+Date: 12 November 2026.
+
+**Source update after the packaged release:** owner setup/login now uses name/password with a four-character minimum. The existing ZIP still represents its earlier tested commit; it has not been rebuilt for this adjustment. A requested future rebuild and archive test must include this change. **Production deployment has not been performed.** The requested domain is known, but no confirmed hosting account/document-root mapping or secure SSH/SFTP/cPanel connection is available in this workspace. No remote writes, owner provisioning, indexing change or production database migration has occurred.
 
 ## Deliverables
 

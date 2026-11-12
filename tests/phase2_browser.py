@@ -31,7 +31,7 @@ try:
  page.on('pageerror',lambda e:errors.append(str(e)))
  anonymous=browser.new_context();anon=anonymous.request
  for path in ['/admin/pages','/admin/content','/admin/preview?token='+'a'*32]:assert anon.get(base+path,max_redirects=0).status==303
- page.goto(base+'/admin/login');page.locator('[name=email]').fill(info['email']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click()
+ page.goto(base+'/admin/login');page.locator('[name=name]').fill(info['name']);page.locator('[name=password]').fill(info['password']);page.get_by_role('button',name='Continue',exact=True).click()
  secret=page.locator('.setup-key').inner_text();page.locator('[name=code]').fill(otp(secret));page.get_by_role('button',name='Confirm authenticator').click();page.get_by_role('button',name='I have saved my codes').click()
  page.goto(base+'/admin/pages');page.wait_for_selector('.section-choice');page.wait_for_function("() => document.querySelector('#page-preview').contentDocument?.querySelector('.hero-slider')")
  def csrf():return page.locator('input[name=csrf]').first.get_attribute('value')
