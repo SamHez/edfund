@@ -1,0 +1,70 @@
+{
+  "audits": [
+    {
+      "route": "/",
+      "width": 1440,
+      "violations": [],
+      "passes": 22,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "violations": [],
+      "passes": 22,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "route": "/our-team/",
+      "width": 1440,
+      "violations": [],
+      "passes": 18,
+      "incomplete": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 390,
+      "violations": [],
+      "passes": 22,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "route": "/contact/",
+      "width": 320,
+      "violations": [],
+      "passes": 21,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "route": "/stories-updates/teachers-holiday-digital-training/",
+      "width": 768,
+      "violations": [],
+      "passes": 19,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "route": "/privacy-policy/",
+      "width": 390,
+      "violations": [],
+      "passes": 19,
+      "incomplete": [
+        "color-contrast"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "notes": "Automated axe WCAG 2 A/AA + 2.1 AA checks; not a full manual accessibility certification."
+}

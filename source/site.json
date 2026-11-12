@@ -1,0 +1,387 @@
+{
+  "homepage_seo_title": "ED Fund Uganda Foundation | Education & Digital Skills",
+  "name": "EdFund Uganda Foundation",
+  "short_name": "EdFund",
+  "origin": "https://edfundfoundation.org",
+  "email": "info@edfundfoundation.org",
+  "phone": "+1 802-999-7254",
+  "telephone": "+18029997254",
+  "location": "Kamuli, Uganda",
+  "address": "7 Aspen Drive, South Burlington, VT 05403, USA",
+  "publish_ready": false,
+  "donation_url": null,
+  "hero_slide_interval_ms": 7000,
+  "socials": [
+    {
+      "name": "X",
+      "url": "https://x.com/EdfundUganda"
+    },
+    {
+      "name": "LinkedIn",
+      "url": "https://www.linkedin.com/in/edfund-foundation-7428773bb/"
+    },
+    {
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@edfundfoundationUganda"
+    }
+  ],
+  "mission": "To advance the social, personal and economic development of children and youth in Uganda through greater access to education, technology and other life-changing resources.",
+  "vision": "Help Uganda’s children today become Uganda’s leaders tomorrow.",
+  "team": [
+    {
+      "name": "Rebecca Day",
+      "role": "Director and Education Consultant",
+      "image": "rebecca",
+      "source": "https://edfundfoundation.org/lif_team/rebeccaday/"
+    },
+    {
+      "name": "John C. Giebink",
+      "role": "Founder and Executive Director",
+      "image": "john",
+      "source": "https://edfundfoundation.org/lif_team/johng/"
+    },
+    {
+      "name": "Dhizaala Stephen",
+      "role": "Director of Education and Facilities Management",
+      "image": "stephen",
+      "source": "https://edfundfoundation.org/lif_team/stephendhizaala/"
+    },
+    {
+      "name": "Robert Ssebuliba",
+      "role": "Director of Operations",
+      "image": "robert",
+      "source": "https://edfundfoundation.org/lif_team/robert/"
+    }
+  ],
+  "impact": [
+    {
+      "label": "Learners in P1–P7 helped",
+      "value": "2,500+",
+      "reported_value": "2,500+",
+      "verified": true,
+      "source": "https://edfundfoundation.org/",
+      "checked_on": "2026-10-27",
+      "icon": "people"
+    },
+    {
+      "label": "Teachers trained",
+      "value": "100+",
+      "reported_value": "100+",
+      "verified": true,
+      "source": "https://edfundfoundation.org/",
+      "checked_on": "2026-10-27",
+      "icon": "clipboard"
+    },
+    {
+      "label": "Technology lab patrons",
+      "value": "200+",
+      "reported_value": "200+",
+      "verified": true,
+      "source": "https://edfundfoundation.org/",
+      "checked_on": "2026-10-27",
+      "icon": "building"
+    },
+    {
+      "label": "Schools rebuilt",
+      "value": "5+",
+      "reported_value": "5+",
+      "verified": true,
+      "source": "https://edfundfoundation.org/",
+      "checked_on": "2026-10-27",
+      "icon": "leaf"
+    }
+  ],
+  "focus": [
+    {
+      "name": "Education",
+      "image": "school-courtyard",
+      "text": "Restoring school buildings and improving the spaces where children learn.",
+      "anchor": "education"
+    },
+    {
+      "name": "Technology",
+      "image": "computer-learning",
+      "text": "Opening access to computers and practical digital learning for students and educators.",
+      "anchor": "technology"
+    },
+    {
+      "name": "Community",
+      "image": "training-community",
+      "text": "Connecting schools, teachers and local people through shared learning.",
+      "anchor": "community"
+    }
+  ],
+  "stories": [
+    {
+      "slug": "teachers-holiday-digital-training",
+      "title": "Teachers’ holiday digital training in Kamuli",
+      "date": "2026-09-16",
+      "category": "Education",
+      "image": "digital-workshop",
+      "excerpt": "Teachers from schools in and around Kamuli built practical digital skills during the August–September school holiday.",
+      "source": "https://edfundfoundation.org/teachers-holiday-digital-training-programme-august-september-2026/",
+      "sections": [
+        {
+          "heading": "Practical skills for everyday teaching",
+          "text": "The Giebink Technology Center at Township Primary School hosted a digital training programme during the August–September 2026 school holiday. Sessions focused on using technology in teaching and school administration."
+        },
+        {
+          "heading": "From lesson plans to digital records",
+          "text": "Participants explored digital lesson plans, PowerPoint presentations, report cards and internet research. The training offered time to practise computer skills that teachers can apply in their daily work."
+        }
+      ],
+      "short_title": "Digital Teacher Training"
+    },
+    {
+      "slug": "community-digital-training",
+      "title": "Digital learning opens to the wider community",
+      "date": "2026-09-16",
+      "category": "Community",
+      "image": "young-learners",
+      "excerpt": "A community digital training programme launched in June 2026, beginning with a focus on young people and their business ideas.",
+      "source": "https://edfundfoundation.org/giebink-technology-center-launches-community-digital-training-programme-in-kamuli/",
+      "sections": [
+        {
+          "heading": "A new opportunity to learn",
+          "text": "In June 2026, the Giebink Technology Center began a community digital training programme in Kamuli. Its first initiative focused on digital skills for young people."
+        },
+        {
+          "heading": "Skills connected to local ambitions",
+          "text": "The programme was designed to help participants use practical technology skills to develop their business ideas. It extends the centre’s learning opportunities beyond the school community."
+        }
+      ],
+      "short_title": "Community Digital Skills"
+    },
+    {
+      "slug": "nabakazi-petralina-digital-learning",
+      "title": "Nabakazi Petralina: growing confidence with computers",
+      "date": "2026-09-16",
+      "category": "Personal stories",
+      "image": "training-presentation",
+      "excerpt": "A teacher from St. Mulumba Primary School shares how digital training changed her confidence and classroom preparation.",
+      "source": "https://edfundfoundation.org/from-computer-illiterate-to-computer-literate-nabakazi-petralinas-story/",
+      "sections": [
+        {
+          "heading": "Starting with the basics",
+          "text": "Nabakazi Petralina, a teacher at St. Mulumba Primary School in Kamuli District, describes beginning the training with little computer experience. She learned to operate a computer, type and save her work."
+        },
+        {
+          "heading": "Taking new skills back to school",
+          "text": "Her account describes using Word and Excel to prepare lesson plans and report cards, using email and finding information online. She plans to keep practising and share what she has learned with fellow teachers."
+        }
+      ],
+      "short_title": "Learning with Confidence"
+    }
+  ],
+  "gallery": [
+    "learning-together",
+    "digital-practice",
+    "training-presentation",
+    "young-learners",
+    "technology-centre",
+    "training-community",
+    "school-courtyard",
+    "school-interior",
+    "dormitory-opening",
+    "school-dormitories",
+    "dormitory-interior",
+    "classroom-learning"
+  ],
+  "hero_transition_ms": 1400,
+  "hero_slides": [
+    {
+      "image": "hero-main",
+      "eyebrow": "Education · Technology · Community",
+      "title": "Education and digital opportunity",
+      "accent": "for Eastern Uganda.",
+      "text": "Help rebuild schools and bring digital technology and education to primary schools in Eastern Uganda.",
+      "label": "A brighter future starts with access.",
+      "position": "center 30%"
+    },
+    {
+      "image": "computer-learning",
+      "eyebrow": "Practical skills. New possibilities.",
+      "title": "A world of knowledge.",
+      "accent": "Within reach.",
+      "text": "Digital skills for a brighter, more inclusive future. Connect learners, teachers and communities with new ways to learn.",
+      "label": "Giebink Technology Center · Kamuli",
+      "position": "center 50%"
+    },
+    {
+      "image": "school-courtyard",
+      "eyebrow": "Better places to learn",
+      "title": "Stronger schools.",
+      "accent": "Brighter tomorrows.",
+      "text": "Improved access to quality learning opportunities begins with safe, welcoming spaces for education.",
+      "label": "School infrastructure · Kamuli",
+      "position": "center 55%"
+    }
+  ],
+  "gallery_preview": [
+    "learning-together",
+    "school-courtyard",
+    "young-learners",
+    "training-community",
+    "classroom-learning"
+  ],
+  "hero_height_desktop_px": 504,
+  "hero_height_mobile_px": 550,
+  "who_we_are": {
+    "heading": "Who We Are",
+    "name": "EdFund Uganda Foundation, Inc.",
+    "paragraphs": [
+      "EdFund Uganda Foundation, Inc. is a US-based 501(c)(3) private educational nonprofit dedicated to restoring historic education infrastructure and bringing new technology into the classrooms of Eastern Uganda.",
+      "Many schools built in the 1950s fell into disrepair or closed following the political instability of the Idi Amin era. With inadequate government funding to renovate these structures, EdFund’s school rebuilding work fills a critical infrastructure gap.",
+      "By supporting institutions such as Kamuli Township Primary School, which serves 2,500 children, EdFund connects improvements to school buildings with better access to education and technology."
+    ],
+    "image": "classroom-learning",
+    "image_caption": "Education · Technology · Community",
+    "home_image_caption": "Building Space for Learning"
+  },
+  "videos": [
+    {
+      "id": "SexHEvWnk2w",
+      "title": "EdFund at Township Primary School",
+      "description": "A closer look at learning and digital access in Kamuli.",
+      "poster": "young-learners"
+    },
+    {
+      "id": "Ej5BHQa_Jkw",
+      "title": "Rebuilding spaces for education",
+      "description": "See the school rebuilding work behind the mission.",
+      "poster": "school-courtyard"
+    }
+  ],
+  "page_banners": {
+    "About EdFund": {
+      "title": "About Us",
+      "image": "school-courtyard"
+    },
+    "Our work": {
+      "title": "Our Work",
+      "image": "digital-workshop"
+    },
+    "Our team": {
+      "title": "Our Team",
+      "image": "training-community"
+    },
+    "Stories & updates": {
+      "title": "Stories & Updates",
+      "image": "training-presentation"
+    },
+    "Gallery": {
+      "title": "Gallery",
+      "image": "learning-together"
+    },
+    "Volunteer": {
+      "title": "Volunteer",
+      "image": "computer-learning"
+    },
+    "Contact": {
+      "title": "Contact Us",
+      "image": "technology-centre"
+    },
+    "Privacy policy": {
+      "title": "Privacy Policy",
+      "image": "school-courtyard"
+    },
+    "Page not found": {
+      "title": "Page Not Found",
+      "image": "school-courtyard"
+    }
+  },
+  "base_path": "",
+  "navigation_logo": {
+    "src": "/assets/images/logo-web.png",
+    "width": 500,
+    "height": 282
+  },
+  "favicon": "/assets/images/ed-fav.png",
+  "why_uganda": {
+    "eyebrow": "The place behind the purpose",
+    "title": "Why Uganda?",
+    "introduction": "From the streets of Kamuli to the classrooms where its children learn, see why this work matters.",
+    "chapters": [
+      {
+        "label": "Kamuli in 2020",
+        "title": "Our Journey of Transformation",
+        "images": [
+          "kamuli-roadside-cattle",
+          "kamuli-street-vendors",
+          "kamuli-market-street"
+        ],
+        "original_numbers": [
+          1,
+          2,
+          7
+        ],
+        "text": "These photographs show Kamuli Municipality as recently as 2020: unpaved roads, animals sharing the main roadways and vendors selling goods along the edges of the main street. With more than 50,000 residents, Kamuli Municipality is the administrative centre of a district with a population of roughly half a million.",
+        "paragraphs": [
+          "These photographs show Kamuli Municipality as recently as 2020: unpaved roads, animals sharing the main roadways and vendors selling goods along the edges of the main street.",
+          "With more than 50,000 residents, Kamuli Municipality is the administrative centre of a district with a population of roughly half a million."
+        ]
+      },
+      {
+        "label": "Changing streets",
+        "title": "Progress on the Infrastructure though Challenges remain.",
+        "images": [
+          "kamuli-paved-road",
+          "kamuli-road-improvements"
+        ],
+        "original_numbers": [
+          3,
+          4
+        ],
+        "text": "Government investment has improved infrastructure in recent years, and many streets in Kamuli Municipality are now paved. Yet poverty remains a significant challenge. World Bank estimates based on the 2019/20 household survey put around 42% of Uganda’s population below the then international poverty line of US$2.15 per person per day (2017 purchasing power parity).",
+        "source_label": "Historical poverty estimate · World Bank",
+        "source": "https://documents1.worldbank.org/curated/en/099847201032542925/pdf/IDU-6a67d200-6500-4378-a414-3f9713553720.pdf",
+        "paragraphs": [
+          "Government investment has improved infrastructure in recent years, and many streets in Kamuli Municipality are now paved. Yet poverty remains a significant challenge.",
+          "World Bank estimates based on the 2019/20 household survey put around 42% of Uganda’s population below the then international poverty line of US$2.15 per person per day (2017 purchasing power parity)."
+        ]
+      },
+      {
+        "label": "The school funding gap",
+        "title": "School buildings also need investment.",
+        "images": [
+          "older-classroom-block",
+          "school-building-before"
+        ],
+        "original_numbers": [
+          6,
+          10
+        ],
+        "text": "Public funding for school improvements remains limited. Older school facilities need substantial investment, and many buildings date from the initial school construction of the 1950s.",
+        "paragraphs": [
+          "Public funding for school improvements remains limited.",
+          "Older school facilities need substantial investment, and many buildings date from the initial school construction of the 1950s."
+        ]
+      },
+      {
+        "label": "EdFund’s response",
+        "title": "Rebuilding spaces. Opening opportunities.",
+        "images": [
+          "rebuilt-school-courtyard",
+          "rebuilt-classroom-block",
+          "kamuli-school-campus"
+        ],
+        "original_numbers": [
+          8,
+          9,
+          5
+        ],
+        "text": "EdFund Uganda Foundation stepped in to help fill that gap. Over the past 15 years, EdFund-supported work has helped rebuild classrooms and dormitories at Kamuli Township Primary School, serving 2,500 boys and girls in grades P1–P7.",
+        "paragraphs": [
+          "EdFund Uganda Foundation stepped in to help fill that gap.",
+          "Over the past 15 years, EdFund-supported work has helped rebuild classrooms and dormitories at Kamuli Township Primary School, serving 2,500 boys and girls in grades P1–P7."
+        ]
+      }
+    ],
+    "editorial_notes": [
+      "Photo dates, recent infrastructure changes, school-building dates and the 15-year work history are supplied by the client; source originals remain unchanged.",
+      "Population figures retain the client’s rounded description; UBOS 2024 reports 76,758 in the municipality and 540,252 in the district.",
+      "The 42% statistic is explicitly historical: 2019/20 household survey, US$2.15/day in 2017 PPP. It is not presented as the current poverty rate or current poverty line.",
+      "The categorical claim that the government has no money is edited to limited public funding."
+    ]
+  }
+}

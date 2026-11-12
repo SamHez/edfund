@@ -1,0 +1,349 @@
+{
+  "viewports": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "pages": 12,
+  "results": [
+    {
+      "route": "/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/contact/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/privacy-policy/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-work/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/volunteer/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-team/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/community-digital-training/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/nabakazi-petralina-digital-learning/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/teachers-holiday-digital-training/",
+      "width": 320,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/contact/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/privacy-policy/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-work/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/volunteer/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-team/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/community-digital-training/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/nabakazi-petralina-digital-learning/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/teachers-holiday-digital-training/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/contact/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/privacy-policy/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-work/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/volunteer/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-team/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/community-digital-training/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/nabakazi-petralina-digital-learning/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/teachers-holiday-digital-training/",
+      "width": 768,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/contact/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/privacy-policy/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-work/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/volunteer/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/our-team/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/community-digital-training/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/nabakazi-petralina-digital-learning/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/stories-updates/teachers-holiday-digital-training/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "broken": []
+    }
+  ],
+  "console_errors": [],
+  "interactions": "menu, Escape/focus, slideshow, gallery filters, lightbox/focus and telephone links pass"
+}

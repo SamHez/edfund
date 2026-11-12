@@ -1,0 +1,13 @@
+{
+  "routes": [
+    "/edfund/",
+    "/edfund/about-us/",
+    "/edfund/gallery/",
+    "/edfund/contact/",
+    "/edfund/stories-updates/community-digital-training/"
+  ],
+  "console_errors": [],
+  "failed_requests": [],
+  "font_navigation_lightbox": "passed",
+  "scope": "Extracted archive served under /edfund/. Apache redirect execution not tested locally."
+}

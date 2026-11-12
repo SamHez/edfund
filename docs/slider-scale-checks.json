@@ -1,0 +1,25 @@
+{
+  "viewports": [
+    {
+      "width": 320,
+      "height": 550,
+      "slides_fit": true
+    },
+    {
+      "width": 390,
+      "height": 550,
+      "slides_fit": true
+    },
+    {
+      "width": 768,
+      "height": 504,
+      "slides_fit": true
+    },
+    {
+      "width": 1440,
+      "height": 504,
+      "slides_fit": true
+    }
+  ],
+  "console_errors": []
+}

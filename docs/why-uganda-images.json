@@ -1,0 +1,172 @@
+[
+  {
+    "original": "1.jpg",
+    "source_dimensions": [
+      4320,
+      3240
+    ],
+    "sha256": "a30db35c7e2094d63e6c8d0ff1a837d6f7138e1a0be2d0fad6a3c58056d98b63",
+    "output": "kamuli-roadside-cattle.webp",
+    "dimensions": [
+      1600,
+      1200
+    ],
+    "mobile_dimensions": [
+      720,
+      540
+    ]
+  },
+  {
+    "original": "2.jpg",
+    "source_dimensions": [
+      4320,
+      3240
+    ],
+    "sha256": "ab0e54f6260a854984f8a663ba87b08a5f4770225c80a3e7967cde4bae7a01e0",
+    "output": "kamuli-street-vendors.webp",
+    "dimensions": [
+      1600,
+      1200
+    ],
+    "mobile_dimensions": [
+      720,
+      540
+    ]
+  },
+  {
+    "original": "7.jpg",
+    "source_dimensions": [
+      4320,
+      3240
+    ],
+    "sha256": "04c8d67bdd67bc18eec96faa70236890e8bc0e7d16414ec217b542d3db3ff75f",
+    "output": "kamuli-market-street.webp",
+    "dimensions": [
+      1600,
+      1200
+    ],
+    "mobile_dimensions": [
+      720,
+      540
+    ]
+  },
+  {
+    "original": "3.jpeg",
+    "source_dimensions": [
+      963,
+      1280
+    ],
+    "sha256": "0557063e039fcf5d72ed9741c29c88667dc76ba28f49b0c5f9712f0f4991a68e",
+    "output": "kamuli-paved-road.webp",
+    "dimensions": [
+      903,
+      1200
+    ],
+    "mobile_dimensions": [
+      542,
+      720
+    ]
+  },
+  {
+    "original": "4.jpeg",
+    "source_dimensions": [
+      963,
+      1280
+    ],
+    "sha256": "f9b6e0a32a1a60293a094de141c3f5e0e8adb6c2ae34bad43239e3b5c22b513b",
+    "output": "kamuli-road-improvements.webp",
+    "dimensions": [
+      903,
+      1200
+    ],
+    "mobile_dimensions": [
+      542,
+      720
+    ]
+  },
+  {
+    "original": "6.JPG",
+    "source_dimensions": [
+      3024,
+      4032
+    ],
+    "sha256": "cd8b42cc02ec2d4e1d8f874793c58ef2fa22f3ce11914b1e112fd840d3097f46",
+    "output": "older-classroom-block.webp",
+    "dimensions": [
+      900,
+      1200
+    ],
+    "mobile_dimensions": [
+      540,
+      720
+    ]
+  },
+  {
+    "original": "10.JPG",
+    "source_dimensions": [
+      3024,
+      4032
+    ],
+    "sha256": "ab9248c19719bf803808ec4eec86213ece03c4f65cb1cc9478c9ab52b04edac2",
+    "output": "school-building-before.webp",
+    "dimensions": [
+      900,
+      1200
+    ],
+    "mobile_dimensions": [
+      540,
+      720
+    ]
+  },
+  {
+    "original": "8.JPG",
+    "source_dimensions": [
+      4320,
+      3240
+    ],
+    "sha256": "4e8ea0c8732d7a6c93408c41e262360c1c1e9b1c576398d09c84abe3f40c430d",
+    "output": "rebuilt-school-courtyard.webp",
+    "dimensions": [
+      1600,
+      1200
+    ],
+    "mobile_dimensions": [
+      720,
+      540
+    ]
+  },
+  {
+    "original": "9.JPG",
+    "source_dimensions": [
+      4032,
+      3024
+    ],
+    "sha256": "ec96dae462ed7cc1508af32109783be58b9d444dd4bab44487aeee6f2d60d842",
+    "output": "rebuilt-classroom-block.webp",
+    "dimensions": [
+      1600,
+      1200
+    ],
+    "mobile_dimensions": [
+      720,
+      540
+    ]
+  },
+  {
+    "original": "5.jpeg",
+    "source_dimensions": [
+      1280,
+      963
+    ],
+    "sha256": "98fd5bf54545915014e64a83c79dc7c8f62cb7b4d001c36cbb8cbf2c7c383e58",
+    "output": "kamuli-school-campus.webp",
+    "dimensions": [
+      1280,
+      963
+    ],
+    "mobile_dimensions": [
+      720,
+      542
+    ]
+  }
+]

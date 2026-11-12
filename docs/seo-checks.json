@@ -1,0 +1,174 @@
+{
+  "pages": [
+    {
+      "page": "about-us/index.html",
+      "title": "About Us | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "contact/index.html",
+      "title": "Contact | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "gallery/index.html",
+      "title": "Gallery | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "index.html",
+      "title": "ED Fund Uganda Foundation | Education & Digital Skills",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "our-team/index.html",
+      "title": "Our Team | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "our-work/index.html",
+      "title": "Our Work | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "privacy-policy/index.html",
+      "title": "Privacy Policy | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "stories-updates/community-digital-training/index.html",
+      "title": "Digital learning opens to the wider community | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "stories-updates/index.html",
+      "title": "Stories & Updates | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "stories-updates/nabakazi-petralina-digital-learning/index.html",
+      "title": "Nabakazi Petralina: growing confidence with computers | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "stories-updates/teachers-holiday-digital-training/index.html",
+      "title": "Teachers\u2019 holiday digital training in Kamuli | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    },
+    {
+      "page": "volunteer/index.html",
+      "title": "Volunteer | EdFund Uganda Foundation",
+      "checks": {
+        "unique_title": true,
+        "unique_description": true,
+        "canonical": true,
+        "sitemap": true,
+        "indexing_mode": true,
+        "description": true,
+        "social_url": true,
+        "structured_data": true
+      }
+    }
+  ],
+  "errors": [],
+  "scope": "Local technical SEO checks; live indexing, server redirects and field performance require deployment."
+}

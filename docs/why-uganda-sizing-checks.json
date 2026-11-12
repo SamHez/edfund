@@ -1,0 +1,117 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "chapter": 1,
+      "font_px": 14,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 2,
+      "font_px": 14,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 3,
+      "font_px": 14,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 4,
+      "font_px": 14,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 1,
+      "font_px": 14,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 2,
+      "font_px": 14,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 3,
+      "font_px": 14,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 4,
+      "font_px": 14,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 1,
+      "font_px": 17,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 2,
+      "font_px": 17,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 3,
+      "font_px": 17,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 4,
+      "font_px": 17,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 1,
+      "font_px": 20,
+      "photo_fit": "contain",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 2,
+      "font_px": 20,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 3,
+      "font_px": 20,
+      "photo_fit": "cover",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 4,
+      "font_px": 20,
+      "photo_fit": "contain",
+      "overflow": false
+    }
+  ],
+  "console_errors": []
+}

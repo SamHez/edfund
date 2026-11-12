@@ -1,0 +1,121 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "chapter": 1,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 2,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 3,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 4,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 1,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 2,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 3,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 4,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 1,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 2,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 3,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 4,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 1,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 2,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 3,
+      "image_count": 2,
+      "copy_below_images": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 4,
+      "image_count": 3,
+      "copy_below_images": true,
+      "overflow": false
+    }
+  ],
+  "console_errors": [],
+  "http_errors": [],
+  "keyboard_controls": "Arrow/Home/End, previous/next wrap and focus pass",
+  "no_javascript": "All four chapters remain visible",
+  "mobile_scroll": "All image strips scroll horizontally at 320 and 390px"
+}

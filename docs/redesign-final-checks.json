@@ -1,0 +1,26 @@
+{
+  "narrow_pages": [
+    "/",
+    "/contact/",
+    "/about-us/",
+    "/privacy-policy/",
+    "/gallery/",
+    "/our-work/",
+    "/volunteer/",
+    "/our-team/",
+    "/stories-updates/",
+    "/stories-updates/community-digital-training/",
+    "/stories-updates/nabakazi-petralina-digital-learning/",
+    "/stories-updates/teachers-holiday-digital-training/"
+  ],
+  "about_accessibility": [
+    {
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "width": 390,
+      "violations": []
+    }
+  ]
+}

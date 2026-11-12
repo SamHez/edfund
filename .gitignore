@@ -1,0 +1,42 @@
+# Local OS/editor files
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python build caches
+__pycache__/
+*.py[cod]
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+config/local.php
+config/*.local.php
+config/secrets.php
+*.pem
+*.key
+
+# CMS runtime data; never replace client content from Git
+/storage/
+/runtime/
+/public/uploads/
+/public/media-cache/
+/database/dumps/
+/backups/
+*.sql.gz
+*.log
+
+# Local dependency installation; package separately for releases
+/vendor/
+/node_modules/
+
+# Generated release archives and bulky review screenshots
+/artifacts/
+/deployment/
+/docs/previews/
+*.zip

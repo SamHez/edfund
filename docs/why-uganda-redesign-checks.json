@@ -1,0 +1,138 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "chapter": 1,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 330,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 2,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 290,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 3,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 290,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "chapter": 4,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 330,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 1,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 360,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 2,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 330,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 3,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 330,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "chapter": 4,
+      "textLeft": false,
+      "textAbove": true,
+      "photosHeight": 360,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 1,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 480,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 2,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 528.515625,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 3,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 480,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "chapter": 4,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 480,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 1,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 490,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 2,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 490,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 3,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 490,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "chapter": 4,
+      "textLeft": true,
+      "textAbove": false,
+      "photosHeight": 490,
+      "overflow": false
+    }
+  ],
+  "console_errors": [],
+  "failed_requests": [],
+  "keyboard": "Arrow/Home/End and previous/next wrap pass; focus stays on the selected tab for keyboard navigation.",
+  "no_javascript": "All chapters remain visible.",
+  "kpi_order": "Hero, Who We Are, KPIs, videos.",
+  "footer": "Same supplied PNG as header, white panel."
+}

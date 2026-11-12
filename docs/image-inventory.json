@@ -1,0 +1,384 @@
+[
+  {
+    "original": ".DS_Store",
+    "bytes": 14340,
+    "sha256": "63c407bc2759457814e69eebb433a01e0493b8c3b8c3a09e445e8cc1d013600d",
+    "selection": "excluded: metadata or video (no still-photo use)"
+  },
+  {
+    "original": "INSIDE  (2).jpeg",
+    "bytes": 46366,
+    "sha256": "a78232b56e65794e3d5f6a43372c8c2f5159ddcbd5c42ca96591bb9270b8df00",
+    "selection": "school-interior",
+    "dimensions": [
+      1080,
+      810
+    ]
+  },
+  {
+    "original": "SAT (19).jpeg",
+    "bytes": 109758,
+    "sha256": "459f3aed291eae8ce5ec4855c24740b4494e422170e2b970d9ee2aafd2494c71",
+    "selection": "school-courtyard",
+    "dimensions": [
+      1080,
+      810
+    ]
+  },
+  {
+    "original": "SAT (21).jpeg",
+    "bytes": 100439,
+    "sha256": "d163806f3827e3917f93db4355e554acb664d63245a5e1bb8e274ed78970c873",
+    "selection": "not selected",
+    "dimensions": [
+      1080,
+      810
+    ]
+  },
+  {
+    "original": "Township New Girls Dorm funded by EdFund Uganda Opening Ceremony.2025,compressed.jpeg",
+    "bytes": 102374,
+    "sha256": "4fea718acbbc479b0825b5798f46d18af002dddff987d8afb170ad8f14cabe3f",
+    "selection": "dormitory-opening",
+    "dimensions": [
+      640,
+      480
+    ]
+  },
+  {
+    "original": "Township New Girls Dorms funded by EdFund Uganda next to Old Girls Housing.2025.jpeg",
+    "bytes": 111795,
+    "sha256": "da2b52b65f485be2e228f1dade7590c2a26bc965cc3ee7b6230bd2395e4794e5",
+    "selection": "school-dormitories",
+    "dimensions": [
+      640,
+      480
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.22.jpeg",
+    "bytes": 210527,
+    "sha256": "260261e76f4f8c596de632096b4afa3c0b6996de2501976dd088cc3dd1ffea4a",
+    "selection": "training-community",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.23.jpeg",
+    "bytes": 188615,
+    "sha256": "855e6740330e9644dab9f5f78b0a0a67d4ebeeed0682385ab4bd1da61e48a392",
+    "selection": "not selected",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.24 (1).jpeg",
+    "bytes": 97277,
+    "sha256": "000cf1545effae8e8bfa96cfe62101a33d2aa7bf9fcc311630ab7add08d03fe6",
+    "selection": "not selected",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.24.jpeg",
+    "bytes": 169352,
+    "sha256": "0b3cc732c4aa077fbf0675eca4bc3fe390092c8fb65f44a5ab7ac5e13a778b53",
+    "selection": "not selected",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.25.jpeg",
+    "bytes": 227837,
+    "sha256": "f68dda2e760af44a2ea06ed160467a55b294cab2622ff4885f60ac194988b65a",
+    "selection": "digital-workshop",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.26.jpeg",
+    "bytes": 142503,
+    "sha256": "018d51d0515317eb8c88cbe6762245610cfcb3e84dee5b508f8f65dafc1becc2",
+    "selection": "technology-centre",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.27.jpeg",
+    "bytes": 200439,
+    "sha256": "c29d6458d8c8d7085006fcdc9a209ff3cbb35ed03224125bf57d57179293508e",
+    "selection": "computer-learning",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.35.jpeg",
+    "bytes": 191379,
+    "sha256": "069f82f731df4f76209a89cd7fcb5d850199eec04e38d9a58905804134c7e6db",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.37.jpeg",
+    "bytes": 237448,
+    "sha256": "a48974408a7f4477ca707c6112b065e5353581ab4b1c166b44b3e3904f9e21ca",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.39.jpeg",
+    "bytes": 207756,
+    "sha256": "a7113eafb48f0c7439793776151a1cfee2106e73c4f98502b0f0d932ad3f968d",
+    "selection": "not selected",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.46.jpeg",
+    "bytes": 211619,
+    "sha256": "96ef79fc6b9937bab17ddc0cc3f4a5bcbdea240e9e2b96b0641568f63f84f1e6",
+    "selection": "not selected",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.48.jpeg",
+    "bytes": 153303,
+    "sha256": "1db36ecf1b62a74c28b239ea4be812d4883d0386a9f2e983bd63959eda1c036b",
+    "selection": "not selected",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.50.jpeg",
+    "bytes": 134224,
+    "sha256": "d202a808e45d45c5f596008dd363bb7f9b35b87054fc8f2d0ac6f9348b680d9f",
+    "selection": "digital-practice",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.52.jpeg",
+    "bytes": 80031,
+    "sha256": "db04e1d90b6f543387aa688dae0bc0e698726c85c35c91b139e59ff6b779e4ce",
+    "selection": "not selected",
+    "dimensions": [
+      768,
+      1020
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.53.jpeg",
+    "bytes": 138922,
+    "sha256": "988416296e2db74275bd1c35ddfd70be88d28c623513ca5234bc0dae0304e973",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.55.jpeg",
+    "bytes": 123693,
+    "sha256": "2c0bd82685c54f48ce29f3daba9bf3dd2abcf5ac75cde53ad6747b15394ad554",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.56.jpeg",
+    "bytes": 79418,
+    "sha256": "b717f97f2a17f4fadc3a8a1ac33f201b6742a9d9fdf63c4585f041ce52da2d49",
+    "selection": "training-presentation",
+    "dimensions": [
+      963,
+      1280
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.57.jpeg",
+    "bytes": 129265,
+    "sha256": "5fdb0e7090c878ead1c78e89fcca1347aa02d4534f6750e82533c7fd7f18fce1",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.18.59.jpeg",
+    "bytes": 63561,
+    "sha256": "ea744fe92da1caeba744d6fbed17eeaa17a1af719fd2a218c5304b470d1746fd",
+    "selection": "not selected",
+    "dimensions": [
+      768,
+      1020
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.00.jpeg",
+    "bytes": 111822,
+    "sha256": "326cf972b749273f33cc2635e2ab9842238b4365eb1f639a5fa8ca2ad703804e",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.01.jpeg",
+    "bytes": 154137,
+    "sha256": "46fef57c90b61998ee93a2503f6a0996ddabd8d45552d80536d05fe286f5ad76",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.02.jpeg",
+    "bytes": 62174,
+    "sha256": "13e3f4dcf0f97313cc62572a447d1877a4588e313cb4a5f4276ec34a592db47f",
+    "selection": "not selected",
+    "dimensions": [
+      1020,
+      768
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.03.jpeg",
+    "bytes": 137720,
+    "sha256": "b04abf341d33b9909180b25e6d5742857e9a0d7596a991cdbe8b590ab23d2334",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      720
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.04.jpeg",
+    "bytes": 203036,
+    "sha256": "a65505891b81f3caaac086454a1b4cda02f4fc83eea90f567f24f969a86d0942",
+    "selection": "learning-together",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.05.jpeg",
+    "bytes": 176931,
+    "sha256": "692618650cfde31fdeeb02ef3f9781372a198009c7fe7162a3a4fb983c9971fd",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.06.jpeg",
+    "bytes": 119397,
+    "sha256": "9707af6d5ea8e20662867a5ecb7ab965b8fd8df8d6b8a46c3aa291a59fc2b54b",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.10.jpeg",
+    "bytes": 115520,
+    "sha256": "ea8d1a0e257bbf7801fee3c832b2f8d43f4b1344556d154bfdf50dfd2d10749b",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.14.jpeg",
+    "bytes": 186762,
+    "sha256": "9ea0c24fffeaf696da4a7f8b5abfa2144914759c6b4cc9f269a56af0019d6bdd",
+    "selection": "young-learners",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.15 (1).jpeg",
+    "bytes": 185016,
+    "sha256": "2adf1782afa8830b822dab8d4b67f32417fc69a233e1f36479380b26ef2e1780",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-25 at 10.19.15.jpeg",
+    "bytes": 218705,
+    "sha256": "83c0578fca4029b21dea479d5919237d2440561144624411adcb34d970e37a68",
+    "selection": "not selected",
+    "dimensions": [
+      1280,
+      963
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-26 at 21.02.22 (1).jpeg",
+    "bytes": 494447,
+    "sha256": "39e364bfffe8afd0c2bb3bfa8256b451b8098a711556cefb78f497868f98e742",
+    "selection": "dormitory-interior",
+    "dimensions": [
+      1600,
+      1204
+    ]
+  },
+  {
+    "original": "WhatsApp Image 2026-09-26 at 21.02.22.jpeg",
+    "bytes": 511581,
+    "sha256": "91f282d23af2936d58f4d94ded8aff864efdac33715965187aa963c8a821f77a",
+    "selection": "classroom-learning",
+    "dimensions": [
+      1600,
+      1204
+    ]
+  },
+  {
+    "original": "WhatsApp Video 2026-09-25 at 10.19.16.mp4",
+    "bytes": 23744889,
+    "sha256": "1831f2a48bb619950968d0ae3488b097e3afa27a4542747160f1a504d5b51b94",
+    "selection": "excluded: metadata or video (no still-photo use)"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "new_image_and_preload": true,
+      "arrows_wrap": true,
+      "keyboard_Enter_Space": true,
+      "all_slides_clear_of_arrows": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "new_image_and_preload": true,
+      "arrows_wrap": true,
+      "keyboard_Enter_Space": true,
+      "all_slides_clear_of_arrows": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "new_image_and_preload": true,
+      "arrows_wrap": true,
+      "keyboard_Enter_Space": true,
+      "all_slides_clear_of_arrows": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "new_image_and_preload": true,
+      "arrows_wrap": true,
+      "keyboard_Enter_Space": true,
+      "all_slides_clear_of_arrows": true,
+      "overflow": false
+    }
+  ],
+  "console_errors": [],
+  "original_photo": "unchanged"
+}

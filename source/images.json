@@ -1,0 +1,403 @@
+{
+  "school-interior": {
+    "width": 1080,
+    "height": 810,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Inside a school building with light entering through the windows",
+    "category": "School infrastructure",
+    "source": "INSIDE  (2).jpeg"
+  },
+  "school-courtyard": {
+    "width": 1080,
+    "height": 810,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Renovated school buildings around a courtyard",
+    "category": "School infrastructure",
+    "source": "SAT (19).jpeg"
+  },
+  "dormitory-opening": {
+    "width": 640,
+    "height": 480,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Community gathered outside the new girls’ dormitory at its opening",
+    "category": "School infrastructure",
+    "source": "Township New Girls Dorm funded by EdFund Uganda Opening Ceremony.2025,compressed.jpeg"
+  },
+  "school-dormitories": {
+    "width": 640,
+    "height": 480,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "New and older girls’ accommodation beside the school grounds",
+    "category": "School infrastructure",
+    "source": "Township New Girls Dorms funded by EdFund Uganda next to Old Girls Housing.2025.jpeg"
+  },
+  "training-community": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Participants gathered at the community technology centre",
+    "category": "Community",
+    "source": "WhatsApp Image 2026-09-25 at 10.18.22.jpeg"
+  },
+  "digital-workshop": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Adults learning together at computers in the technology centre",
+    "category": "Digital learning",
+    "source": "WhatsApp Image 2026-09-25 at 10.18.25.jpeg"
+  },
+  "technology-centre": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Entrance to the community centre and technology centre",
+    "category": "Community",
+    "source": "WhatsApp Image 2026-09-25 at 10.18.26.jpeg"
+  },
+  "computer-learning": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Learners practising computer skills together",
+    "category": "Digital learning",
+    "source": "WhatsApp Image 2026-09-25 at 10.18.27.jpeg"
+  },
+  "digital-practice": {
+    "width": 963,
+    "height": 1280,
+    "mobile_width": 481,
+    "mobile_height": 640,
+    "alt": "A participant practising at a desktop computer",
+    "category": "Digital learning",
+    "source": "WhatsApp Image 2026-09-25 at 10.18.50.jpeg"
+  },
+  "training-presentation": {
+    "width": 963,
+    "height": 1280,
+    "mobile_width": 481,
+    "mobile_height": 640,
+    "alt": "A trainer presenting to the group beside a projection screen",
+    "category": "Digital learning",
+    "source": "WhatsApp Image 2026-09-25 at 10.18.56.jpeg"
+  },
+  "learning-together": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Learners and trainers working together in the computer laboratory",
+    "category": "Digital learning",
+    "source": "WhatsApp Image 2026-09-25 at 10.19.04.jpeg"
+  },
+  "young-learners": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Young learners using desktop computers at the technology centre",
+    "category": "Digital learning",
+    "source": "WhatsApp Image 2026-09-25 at 10.19.14.jpeg"
+  },
+  "dormitory-interior": {
+    "width": 1600,
+    "height": 1204,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Rows of beds inside school accommodation",
+    "category": "School infrastructure",
+    "source": "WhatsApp Image 2026-09-26 at 21.02.22 (1).jpeg"
+  },
+  "classroom-learning": {
+    "width": 1600,
+    "height": 1204,
+    "mobile_width": 640,
+    "mobile_height": 482,
+    "alt": "Children learning at desks inside a classroom",
+    "category": "Education",
+    "source": "WhatsApp Image 2026-09-26 at 21.02.22.jpeg"
+  },
+  "rebecca": {
+    "width": 588,
+    "height": 710,
+    "alt": "Rebecca Day",
+    "source": "https://edfundfoundation.org/wp-content/uploads/2025/01/rebeccad-588x710_c.png"
+  },
+  "john": {
+    "width": 588,
+    "height": 710,
+    "alt": "John C. Giebink",
+    "source": "https://edfundfoundation.org/wp-content/uploads/2025/01/johng-588x710_c.png"
+  },
+  "stephen": {
+    "width": 588,
+    "height": 710,
+    "alt": "Dhizaala Stephen",
+    "source": "https://edfundfoundation.org/wp-content/uploads/2025/01/dh-588x710_c.png"
+  },
+  "robert": {
+    "width": 588,
+    "height": 710,
+    "alt": "Robert Ssebuliba",
+    "source": "https://edfundfoundation.org/wp-content/uploads/2025/01/robert-588x710_c.png"
+  },
+  "kamuli-roadside-cattle": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 720,
+    "mobile_height": 540,
+    "alt": "Cattle beside an unpaved street with bicycles and people in Kamuli",
+    "category": "Why Uganda",
+    "source": "../images/1.jpg"
+  },
+  "kamuli-street-vendors": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 720,
+    "mobile_height": 540,
+    "alt": "People and goods outside roadside shops in Kamuli",
+    "category": "Why Uganda",
+    "source": "../images/2.jpg"
+  },
+  "kamuli-market-street": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 720,
+    "mobile_height": 540,
+    "alt": "People, livestock and roadside stalls along an unpaved market street in Kamuli",
+    "category": "Why Uganda",
+    "source": "../images/7.jpg"
+  },
+  "kamuli-paved-road": {
+    "width": 903,
+    "height": 1200,
+    "mobile_width": 542,
+    "mobile_height": 720,
+    "alt": "A motorcycle travelling along a paved road in Kamuli",
+    "category": "Why Uganda",
+    "source": "../images/3.jpeg"
+  },
+  "kamuli-road-improvements": {
+    "width": 903,
+    "height": 1200,
+    "mobile_width": 542,
+    "mobile_height": 720,
+    "alt": "A paved road and junction with street lighting in Kamuli",
+    "category": "Why Uganda",
+    "source": "../images/4.jpeg"
+  },
+  "older-classroom-block": {
+    "width": 900,
+    "height": 1200,
+    "mobile_width": 540,
+    "mobile_height": 720,
+    "alt": "An older school building with open windows and people inside",
+    "category": "Why Uganda",
+    "source": "../images/6.JPG"
+  },
+  "school-building-before": {
+    "width": 900,
+    "height": 1200,
+    "mobile_width": 540,
+    "mobile_height": 720,
+    "alt": "A school building with weathered walls, timber posts and an older roof",
+    "category": "Why Uganda",
+    "source": "../images/10.JPG"
+  },
+  "rebuilt-school-courtyard": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 720,
+    "mobile_height": 540,
+    "alt": "School buildings with renewed roofing around a planted courtyard",
+    "category": "Why Uganda",
+    "source": "../images/8.JPG"
+  },
+  "rebuilt-classroom-block": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 720,
+    "mobile_height": 540,
+    "alt": "A renewed classroom block with a covered walkway",
+    "category": "Why Uganda",
+    "source": "../images/9.JPG"
+  },
+  "kamuli-school-campus": {
+    "width": 1280,
+    "height": 963,
+    "mobile_width": 720,
+    "mobile_height": 542,
+    "alt": "An elevated view across school buildings and the surrounding neighbourhood",
+    "category": "Why Uganda",
+    "source": "../images/5.jpeg"
+  },
+  "hero-main": {
+    "width": 1080,
+    "height": 810,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "School buildings surrounding a paved courtyard",
+    "category": "School infrastructure",
+    "source": "public/assets/images/HERO MAIN PICTURE.jpeg",
+    "sha256": "4ae338996dd79777052fb0704e7275c72b27e2463c1ec01f84f938260a94e3f4"
+  }
+,
+  "kitchen-dining-inside-2012": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Children eating at tables inside the new dining hall in 2012",
+    "category": "Kitchen and dining",
+    "source": "New 2012 Inside Sanitary Dining Hall Along with New Kitchen.JPG",
+    "source_sha256": "4487666cdf042fc18f9339b289591fba3b5f01546a01a3f00d0865b6ed7f918f"
+  },
+  "kitchen-dining-completed-2012": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "The completed kitchen and dining hall in 2012",
+    "category": "Kitchen and dining",
+    "source": "New 2012 School Kitchen and Dining Hall Completed.JPG",
+    "source_sha256": "5326dce22a0d5e3179bb03b514e1e2aa4066f66936ea3d27711d19d4da660ec6"
+  },
+  "kitchen-dining-construction-2012": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "The kitchen and dining hall under construction in 2012",
+    "category": "Kitchen and dining",
+    "source": "New 2012 School Kitchen and Dining Under Construction.JPG",
+    "source_sha256": "b47fb9a3e0f1c2628bae4dfbf6ac2bf2ca79063ec84a0055add04c36ab523bbe"
+  },
+  "kitchen-stove-2015": {
+    "width": 480,
+    "height": 640,
+    "mobile_width": 480,
+    "mobile_height": 640,
+    "alt": "A cook using a fuel-efficient stove in the school kitchen in 2015",
+    "category": "Kitchen and dining",
+    "source": "New 2015 Fuel-Efficient School Kitchen Stove.jpg",
+    "source_sha256": "9e8b7f9effd82001231100b7eef2fae22b3b3721966457c7a7cdc7b83514c2ba"
+  },
+  "kitchen-efficient-stoves-2015": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Fuel-efficient stoves inside the new school kitchen in 2015",
+    "category": "Kitchen and dining",
+    "source": "New 2015 School Kitchen with Fuel Efficient Stoves.jpg",
+    "source_sha256": "8f343d59d94cc79de7be801388b7fae20152b60826a81f27f59dbe4b6ba0286c"
+  },
+  "kitchen-drums-2010": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Cooking in large drums over open fires in the old kitchen in 2010",
+    "category": "Kitchen and dining",
+    "source": "Old 2010 School Cooking in 55 Gallon Drums.JPG",
+    "source_sha256": "efd5d9d73023b7d6d3b8c783eb1ae331cd6aaafcdcdfaac35bb964073e868761"
+  },
+  "kitchen-beans-posho-2010": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Beans and posho cooking in drums over open fires in 2010",
+    "category": "Kitchen and dining",
+    "source": "Old 2010 School Kitchen Cooking Beans and Poshu in 55 Gallon Drums Over Open Fires.JPG",
+    "source_sha256": "8578958623a590102f9bf33069b087efb1af34ab926cbdee3cb1f3b0eb363ef3"
+  },
+  "kitchen-open-fires-2010": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Cooking over open fires inside the old school kitchen in 2010",
+    "category": "Kitchen and dining",
+    "source": "Old 2010 School Kitchen Cooking Over Open fires.jpg",
+    "source_sha256": "d0db98d23d0d88bb55fba2fd7ebb4a0cfa9eb74763386e284e4ee0c574506520"
+  },
+  "kitchen-outdoor-meals-2010": {
+    "width": 1600,
+    "height": 1200,
+    "mobile_width": 640,
+    "mobile_height": 480,
+    "alt": "Children eating outdoors beside the old kitchen in 2010",
+    "category": "Kitchen and dining",
+    "source": "Old 2010 Student Eating Outdside from Old Kitchen.jpg",
+    "source_sha256": "88f7d10a57a5931ecbf2275e625a71f9ccf3da6b4b17feca5a27b5332475c64a"
+  }
+,
+  "girls-dormitory-new-interior": {
+    "width": 480,
+    "height": 640,
+    "alt": "Rows of bunk beds inside the new girls’ dormitory",
+    "category": "Dormitory reconstruction",
+    "source": "Township New Girls Dorm by EdFund Uganda Inside.2.2025.jpg",
+    "source_sha256": "5b0c8134292590272b7d37982354fea62901d1ab87c2aa182c019086749b91de"
+  },
+  "girls-dormitory-opening-2025": {
+    "width": 640,
+    "height": 480,
+    "alt": "Pupils and guests outside the new girls’ dormitory at its 2025 opening ceremony",
+    "category": "Dormitory reconstruction",
+    "source": "Township New Girls Dorm funded by EdFund Uganda Opening Ceremony.2025,compressed.jpg",
+    "source_sha256": "4fea718acbbc479b0825b5798f46d18af002dddff987d8afb170ad8f14cabe3f"
+  },
+  "girls-dormitory-old-interior-1": {
+    "width": 480,
+    "height": 640,
+    "alt": "The interior and roof structure of the girls’ older accommodation",
+    "category": "Dormitory reconstruction",
+    "source": "Township Old Housing for Girls Inside.1.2025.jpg",
+    "source_sha256": "ac3f8d5597043c7b2888a754af3e0564d0e3874d9d268dca942180507526ff9c"
+  },
+  "girls-dormitory-old-interior-2": {
+    "width": 480,
+    "height": 640,
+    "alt": "Beds inside the girls’ older accommodation",
+    "category": "Dormitory reconstruction",
+    "source": "Township Old Housing for Girls Inside.2.2025.jpg",
+    "source_sha256": "bf29efa990ce26c2adadf7b72dd67a86b5c030be94c8629646e52b2602077f8c"
+  },
+  "girls-teachers-old-housing": {
+    "width": 480,
+    "height": 640,
+    "alt": "The exterior of the older housing for girls and teachers",
+    "category": "Dormitory reconstruction",
+    "source": "Township Old Housing for Girls and Teachers.2.2025.jpg",
+    "source_sha256": "f44f5c6418bbbab3236e5456625a287cb2cd2ecf6c816b207d68d14f2f944343"
+  }
+,
+  "classrooms-before": {
+    "width": 525,
+    "height": 523,
+    "alt": "The older classroom building with weathered walls, timber posts and a covered walkway",
+    "category": "Classroom reconstruction",
+    "source": "Classrooms before.jpg",
+    "source_sha256": "ecd9eff762ee133f6cabeeb7a9268fb82fa3ba417c4f779ecbfd18ec8aecc4c5"
+  },
+  "classrooms-renovated": {
+    "width": 1586,
+    "height": 793,
+    "alt": "Two views of the renovated classroom building, showing renewed walls, windows and the covered walkway",
+    "category": "Classroom reconstruction",
+    "source": "Classroom Building Renovation 1.jpg",
+    "source_sha256": "20af084f3074609c0e35cdf25b504f8c8da5ae1fd017168445ea7c27a020b8e0",
+    "mobile_width": 640,
+    "mobile_height": 320
+  }
+}

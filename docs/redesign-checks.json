@@ -1,0 +1,140 @@
+{
+  "checks": [
+    {
+      "route": "/",
+      "width": 320,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 320,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 320,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 390,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 390,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 768,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 768,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 1440,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 1440,
+      "overflow": false,
+      "broken": []
+    }
+  ],
+  "accessibility": [
+    {
+      "route": "/",
+      "width": 320,
+      "violations": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 320,
+      "violations": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 320,
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "violations": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 768,
+      "violations": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 768,
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "route": "/about-us/",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "route": "/gallery/",
+      "width": 1440,
+      "violations": []
+    }
+  ],
+  "console_errors": [],
+  "interactions": "Manual controls, keyboard arrows, reduced motion, hover autoplay, zoom transforms, pause, gallery filters and dialog focus restoration pass."
+}
