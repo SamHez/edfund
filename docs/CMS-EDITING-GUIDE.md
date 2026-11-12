@@ -10,6 +10,14 @@ The header shows your current screen. **View website** opens the public site in 
 
 Loading and saving messages appear beside the screen’s actions. Wait for them to finish before continuing. Errors explain what needs attention; they do not publish content automatically. While switching pages, the previous fields are locked until the selected page has loaded.
 
+## Edit while browsing the website
+
+After signing in, open **View website**. A compact navy toolbar stays at the top of the real website, including individual stories. It is visible only to the signed-in owner. Existing sessions from the previous version gain toolbar access after visiting any admin screen once.
+
+Use **Edit Home**, **Edit About**, the current page’s Edit link, or **Edit Story** to go straight to its editor. The page editor selects the section occupying the most space in your current view when it can match it to the saved page. Your Why Uganda chapter is retained where possible. Save a draft or Publish, then use **Return to page** / **Return to story** in the editor header. This opens that public page in the same tab and restores the saved browsing position/chapter when browser storage is available. If a story URL changes on publication, the return link uses its new URL. New/unpublished stories return to the story listing.
+
+The toolbar also opens the Dashboard or Media Library. **Create New Story** creates a private draft and opens its editor directly. On narrow screens, Media Library is in **Account**. Account also contains security and Sign out. Closing the browser’s session, session expiry or owner recovery removes toolbar authorization; public visitors never receive it.
+
 ## Pages
 
 1. Open **Pages** and choose Homepage, About Us, Our Work, Our Team, Volunteer, Contact, Gallery, Privacy Policy or Stories & Updates.

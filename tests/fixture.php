@@ -47,6 +47,14 @@ if (in_array($action,['legacy-pending-session','legacy-factor-session'],true)) {
     if($action==='legacy-pending-session'){$_SESSION+=['pending_id'=>(int)$owner['id'],'pending_version'=>(int)$owner['session_version'],'pending_since'=>time()];}else{$_SESSION+=['owner_id'=>(int)$owner['id'],'version'=>(int)$owner['session_version']];}session_write_close();echo session_id();exit;
 }
 if ($action==='legacy-factor-data') {$secret=(new Crypto(base64_decode($config['app_key'])))->seal(base64_encode(random_bytes(32)));$s=$db->prepare('UPDATE cms_users SET mfa_secret=?,mfa_enabled_at=UTC_TIMESTAMP()');$s->execute([$secret]);exit;}
+if ($action==='revoke-owner-session') {$db->exec('UPDATE cms_users SET session_version=session_version+1');echo 'Fixture owner sessions revoked';exit;}
+if ($action==='toolbar-session') {
+    $mode=$argv[3] ?? '';if(!in_array($mode,['idle','absolute','password','pending'],true)){throw new InvalidArgumentException('Invalid fixture session mode');}
+    session_save_path($config['storage_path'].'/sessions');session_name('edfund_owner');session_id(bin2hex(random_bytes(16)));session_start();$owner=$db->query('SELECT id,session_version FROM cms_users LIMIT 1')->fetch();
+    $_SESSION=['started'=>time()-($mode==='absolute'?28801:0),'seen'=>time()-($mode==='idle'?1801:0),'csrf'=>bin2hex(random_bytes(32))];
+    if($mode!=='pending'){$_SESSION+=['owner_id'=>(int)$owner['id'],'version'=>(int)$owner['session_version'],'auth_method'=>'password'];}
+    session_write_close();echo session_id();exit;
+}
 if ($action==='reset-factor-step') {$db->exec('UPDATE cms_users SET last_totp_step=-1');exit;}
 if ($action==='clear-attempts') {$db->exec('DELETE FROM cms_auth_attempts');exit;}
 if ($action==='snapshot') {

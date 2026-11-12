@@ -14,13 +14,7 @@ final class Web
         if ($config['environment']==='local' && !in_array($this->source,['127.0.0.1','::1'],true)) {$this->abort(403,'Local access only.');}
         $https=isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']!=='off';
         if ($config['environment']==='production' && !$https) {$this->abort(400,'HTTPS is required.');}
-        ini_set('display_errors','0');ini_set('session.use_strict_mode','1');ini_set('session.use_only_cookies','1');ini_set('session.use_trans_sid','0');
-        session_save_path($config['storage_path'].'/sessions');session_name('edfund_owner');session_cache_limiter('');ini_set('session.gc_maxlifetime','28800');
-        session_set_cookie_params(['lifetime'=>0,'path'=>'/admin','secure'=>$https,'httponly'=>true,'samesite'=>'Strict']);
-        if (!session_start()) {throw new \RuntimeException('Session unavailable.');}
-        $now=time();
-        if (isset($_SESSION['started']) && ($now-$_SESSION['started']>28800 || $now-($_SESSION['seen'] ?? 0)>1800)) {$this->clear();}
-        $_SESSION['started'] ??= $now;$_SESSION['seen']=$now;$_SESSION['csrf'] ??= bin2hex(random_bytes(32));
+        OwnerSession::start($config);
         $this->auth=new Auth(Database::connect($config['db']),new Crypto($config['key_bytes']));
         if (random_int(1,50)===1) {$this->auth->prune();}
     }
@@ -31,7 +25,7 @@ final class Web
         header("Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
         header('X-Frame-Options: DENY');header('Content-Type: text/html; charset=utf-8');
     }
-    private function clear(): void {$_SESSION=[];session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));$_SESSION['started']=time();$_SESSION['seen']=time();}
+    private function clear(): void {OwnerSession::clear();}
     private function redirect(string $path): never {header('Location: '.$path,true,303);exit;}
     private function abort(int $status,string $message): never {http_response_code($status);echo htmlspecialchars($message,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');exit;}
     private function csrf(): void
@@ -41,8 +35,8 @@ final class Web
     private function input(string $key,int $max=200): string { $value=$_POST[$key] ?? '';return is_string($value) && strlen($value)<=$max ? $value : ''; }
     private function signedIn(): array
     {
-        $user=$this->auth->user((int)($_SESSION['owner_id'] ?? 0));
-        if (!$user || ($_SESSION['auth_method'] ?? '')!=='password' || (int)$user['session_version']!==(int)($_SESSION['version'] ?? 0)) {$this->clear();$this->redirect('/admin/login');}
+        $user=OwnerSession::user($this->auth);
+        if(!$user){$this->clear();$this->redirect('/admin/login');}
         return $user;
     }
     private function finish(array $user): void
@@ -54,7 +48,7 @@ final class Web
     private static function e(string $value): string {return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
     private function render(string $title,string $content,?array $user=null,string $error=''): void
     {
-        AdminLayout::render($title,$content,$user,$this->formToken(),$error);
+        AdminLayout::render($title,$content,$user,$this->formToken(),$error,$user?EditingContext::editor(Database::connect($this->config['db']),$this->config,parse_url($_SERVER['REQUEST_URI'] ?? '',PHP_URL_PATH) ?: ''):null);
     }
     public function run(string $path): void
     {
@@ -79,13 +73,17 @@ final class Web
             $this->clear();$this->redirect('/admin/login');
         }
         $user=$this->signedIn();
+        if($path==='/admin/new-story'){
+            if($method!=='POST'){header('Allow: POST');$this->abort(405,'Use the create story button.');}
+            $state=(new Posts(Database::connect($this->config['db']),$this->config))->create((int)$user['id'],$user['name']);$this->redirect('/admin/post?id='.$state['id']);
+        }
         if (in_array($path,['/admin/posts-data','/admin/media-data'],true) || str_starts_with($path,'/admin/media-file/')) {PublishingAdmin::api($this->config,$path,$method,$user);return;}
         if ($method==='GET' && in_array($path,['/admin/posts','/admin/post','/admin/media'],true)) {$title=match($path){'/admin/posts'=>'Posts','/admin/post'=>'Story editor',default=>'Media'};$content=match($path){'/admin/posts'=>PublishingAdmin::postsScreen(),'/admin/post'=>PublishingAdmin::editorScreen(),default=>PublishingAdmin::mediaScreen()};$this->render($title,$this->formToken().$content,$user);return;}
         if (in_array($path,['/admin/content','/admin/preview'],true)) {Editor::handle($this->config,$path,$method,(int)$user['id']);return;}
         if ($path==='/admin/pages' && $method==='GET') {$this->render('Pages',$this->formToken().Editor::screen(),$user);return;}
         if ($path==='/admin/logout') {
             if ($method!=='POST') {header('Allow: POST');$this->abort(405,'Use the sign-out button.');}
-            $this->auth->audit('logout',(int)$user['id'],$this->source);$_SESSION=[];session_destroy();setcookie(session_name(),'', ['expires'=>time()-3600,'path'=>'/admin','secure'=>parse_url($this->config['base_url'],PHP_URL_SCHEME)==='https','httponly'=>true,'samesite'=>'Strict']);$this->redirect('/admin/login');
+            $this->auth->audit('logout',(int)$user['id'],$this->source);OwnerSession::logout();$this->redirect('/admin/login');
         }
         if ($path==='/admin/security') {
             if($method!=='GET'){header('Allow: GET');$this->abort(405,'Method not allowed.');}

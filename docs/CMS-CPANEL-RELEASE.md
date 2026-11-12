@@ -19,6 +19,14 @@ Default main-domain layout: `/home/ACCOUNT/public_html`, `/home/ACCOUNT/edfund-a
 
 The private `public/` directory contains the exact current source HTML solely for explicit first import and trusted assets. It is not a second document root and must never be exposed. Public .html pages, robots.txt and sitemap.xml are deliberately absent from the live payload; PHP serves their published equivalents. No usable public installer, user/password, database export, live configuration, backup key or runtime upload is included.
 
+## Public admin toolbar cache policy
+
+The same owner session now uses a host-only `edfund_owner` cookie with `Path=/`, HttpOnly, SameSite Strict and Secure on HTTPS. Visit an admin screen once to upgrade an existing `/admin` cookie after installing this source version. No database conversion is required.
+
+Before cutover, have the provider/CDN bypass HTML cache whenever the Cookie header contains `edfund_owner=` (the application conservatively bypasses all cookie, Authorization and query requests). Continue bypassing `/admin` and private previews/APIs. Respect `Cache-Control: no-store, private, max-age=0`, `Set-Cookie` and `Vary: Cookie, Authorization`; never strip these headers or cache personalized HTML. Purge older public HTML when enabling this version so logged-in visits reach PHP.
+
+Verify the same public URL in two separate browser profiles: the signed-in owner gets a fixed toolbar, `X-EdFund-Cache: BYPASS` and private/no-store; the cookie-free profile has no toolbar, account name or CSRF fields and can receive MISS/HIT. A signed-out/preauthentication cookie also bypasses cache but grants no toolbar. Check the browse → Edit → Publish → Return workflow for a page and a story, then Sign out and confirm the toolbar disappears on the next public load. These host checks are still required at the eventual production deployment.
+
 ## Required private information / host setup
 
 Provide the maintainer with an existing SSH alias or secure private access configuration, verified host fingerprint, SSH/SFTP host and port, account/user and the domain’s absolute document root. Passwords/tokens/private keys/database values must go through the host’s private configuration or secure credential channel, never chat, Git or a public file. SFTP alone still needs cPanel Terminal/SSH or provider execution of the CLI steps below. No plain FTP.

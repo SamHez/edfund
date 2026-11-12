@@ -6,6 +6,15 @@ Updated 12 November 2026.
 
 **Current state: Phase 5 release prepared and validated locally; production deployment pending secure access and confirmed hosting configuration.**
 
+## Admin UI redesign — Phase 2: public toolbar (12 November 2026)
+
+- Added an owner-only fixed navy toolbar to real public HTML pages and individual stories. Dashboard, context-aware Edit, CSRF-protected Create New Story, Media Library, Account/security and POST Sign out use the existing owner authorization and models. No new authentication mechanism, database migration, content import or dependency.
+- Extracted the existing session lifecycle/owner version checks into `OwnerSession` for reuse by admin and public rendering. The same host-only HttpOnly/SameSite Strict session cookie now uses `/`, with Secure on HTTPS, existing 30-minute idle/eight-hour absolute expiry, ID rotation and recovery revocation. A legacy `/admin` cookie upgrades on an admin visit and is removed on upgrade/logout. Anonymous public visitors without that cookie never start a PHP session. Public rendering releases its session lock before rendering.
+- Cookie-bearing HTML bypasses private disk caching, receives private/no-store responses and varies on Cookie/Authorization. Toolbar/account/CSRF markup is added only after the generic page is rendered; it never enters shared cache files or content snapshots. Back/forward-restored toolbar pages reload. Preview iframes remain toolbar-free. Hosting cache requirements are recorded in the release runbook.
+- Edit links go directly to the mapped page or story. Editor headers return to that exact public route; story publication/rename updates the target. Optional tab-local browsing state preserves scroll, anchor and Why Uganda chapter. Owner-only published section annotations select the corresponding editor section; missing/deleted sections safely fall back. Return destinations come from database mappings, never an arbitrary submitted URL.
+- Verified with `tests/public_toolbar_browser.py`: all nine pages plus imported/new stories; anonymous content/image preservation; fixed toolbar at 1440/820/390/320px; edit/draft/publish/return and chapter/scroll restoration; renamed story return; protected creation/logout; anonymous/cache separation; idle/absolute expiry, partial/stale-session rejection and exact legacy cookie upgrade. Existing authentication, page-editor and full SEO/cache/backup/restore regressions run in isolated disposable databases. Local screenshots are ignored under `docs/previews/public-toolbar-*.png`.
+- No release ZIP rebuilt and no production deployment. The existing packaged ZIP remains behind these source changes.
+
 ## Admin UI redesign — Phase 1 (12 November 2026)
 
 - Added a shared presentation class, `AdminLayout`, while retaining the existing PHP controllers, authentication, API contracts, models and database schema. The public website and imported/client content are untouched.

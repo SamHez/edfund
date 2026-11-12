@@ -2,7 +2,7 @@
 
 Date: 12 November 2026.
 
-**Source update after the packaged release:** owner setup/login now uses name/password with a four-character minimum, and authenticator/recovery-code steps have been removed. The existing ZIP still represents its earlier tested commit; it has not been rebuilt for this adjustment. The Phase 1 admin UI redesign also exists only in source. A requested future rebuild and archive test must include both updates. **Production deployment has not been performed.** The requested domain is known, but no confirmed hosting account/document-root mapping or secure SSH/SFTP/cPanel connection is available in this workspace. No remote writes, owner provisioning, indexing change or production database migration has occurred.
+**Source update after the packaged release:** owner setup/login now uses name/password with a four-character minimum, and authenticator/recovery-code steps have been removed. The existing ZIP still represents its earlier tested commit; it has not been rebuilt for this adjustment. The Phase 1 admin UI redesign and Phase 2 authenticated public toolbar also exist only in source. A requested future rebuild and archive test must include all of these updates. **Production deployment has not been performed.** The requested domain is known, but no confirmed hosting account/document-root mapping or secure SSH/SFTP/cPanel connection is available in this workspace. No remote writes, owner provisioning, indexing change or production database migration has occurred.
 
 ## Deliverables
 
