@@ -31,20 +31,20 @@ final class Content
                 if($node instanceof \DOMElement && preg_match('/^h[1-6]$/',$node->tagName)){$level=(int)substr($node->tagName,1);foreach(array_keys($headings) as $l){if($l>=$level){unset($headings[$l]);}}$headings[$level]=trim($node->textContent);$group=implode(' / ',$headings);}
                 $groups[$node->getNodePath()]=$group;
             }
-            foreach($t['fields'] as &$field){$field['group']=$groups[$field['path']] ?? $t['label'];unset($field['path']);}unset($field);
+            foreach($t['fields'] as &$field){$bound=$xp->query($field['path'])->item(0);if($bound && $xp->query('ancestor-or-self::article[contains(concat(" ",normalize-space(@class)," ")," story-card ")]',$bound)->length){$field['managed_post']=true;}$field['group']=$groups[$field['path']] ?? $t['label'];unset($field['path']);}unset($field);
             unset($t['html']);$result[$id]=$t;
         }return $result;
     }
     public function validate(array $data,string $slug): array
     {
-        if(array_keys($data)!==['sections'] || !is_array($data['sections']) || !array_is_list($data['sections']) || count($data['sections'])<1 || count($data['sections'])>30){throw new \InvalidArgumentException('Use between 1 and 30 sections.');}
+        if(array_diff(array_keys($data),['sections','seo']) || !isset($data['sections']) || !is_array($data['sections']) || !array_is_list($data['sections']) || count($data['sections'])<1 || count($data['sections'])>30){throw new \InvalidArgumentException('Use between 1 and 30 sections.');}
         $this->document($slug);$q=$this->db->prepare('SELECT id FROM cms_revisions WHERE document_slug=? AND action=? ORDER BY id LIMIT 1');$q->execute([$slug,'import']);$initial=$this->revision((int)$q->fetchColumn(),$slug);
         $allowed=array_column($initial['sections'],'template');
         $ids=[];$seenTemplates=[];$hero=0;$h1=0;$media=array_column($this->media(),null,'id');
         foreach($data['sections'] as $i=>&$section){
             if(!is_array($section) || count($section)!==3 || !isset($section['id'],$section['template'],$section['values']) || !is_string($section['id']) || !preg_match('/\A[a-f0-9]{24}\z/',$section['id']) || isset($ids[$section['id']]) || !is_string($section['template']) || !is_array($section['values'])){throw new \InvalidArgumentException('Invalid section structure.');}
             $ids[$section['id']]=true;$t=$this->template($section['template']);
-            if(!in_array($t['id'],$allowed,true) && (!$t['approved'] || $slug!=='home')){throw new \InvalidArgumentException('This layout is not approved for this page.');}
+            if(!in_array($t['id'],$allowed,true) && (!$t['approved'] || $slug==='shared')){throw new \InvalidArgumentException('This layout is not approved for this page.');}
             if(!$t['approved'] && isset($seenTemplates[$t['id']])){throw new \InvalidArgumentException('Use the approved layouts when adding a section.');}$seenTemplates[$t['id']]=true;
             $hero+=($t['kind']==='hero');$h1+=substr_count(strtolower($t['html']),'<h1');
             if(count($section['values'])!==count($t['fields'])){throw new \InvalidArgumentException('Section fields have changed. Reload the editor.');}
@@ -59,6 +59,8 @@ final class Content
             }
         }unset($section);
         if($slug==='home' && ($hero!==1 || $h1!==1 || $this->template($data['sections'][0]['template'])['kind']!=='hero')){throw new \InvalidArgumentException('Keep the single hero first, with one page heading.');}
+        if(!in_array($slug,['home','shared'],true) && ($h1!==1 || $this->template($data['sections'][0]['template'])['kind']!=='banner')){throw new \InvalidArgumentException('Keep the page banner first, with one H1 heading.');}
+        if(isset($data['seo'])){if($slug==='shared' || !is_array($data['seo'])){throw new \InvalidArgumentException('Use the page SEO settings.');}$data['seo']=(new Seo($this->db,[]))->validate($data['seo'],$slug);}
         if($slug==='shared' && array_column($data['sections'],'template')!==$allowed){throw new \InvalidArgumentException('Keep the shared header and footer structure.');}
         if(strlen(json_encode($data,JSON_THROW_ON_ERROR))>400000){throw new \InvalidArgumentException('Page is too large.');}return $data;
     }
@@ -67,7 +69,7 @@ final class Content
         if(preg_match('/[\x00-\x20\x7f\\\\<>"\']/', $v)){return false;}
         if(str_starts_with($v,'/') && !str_starts_with($v,'//')){return !str_contains($v,'/../');}
         if(preg_match('/\A#[A-Za-z][\w:.-]*\z/',$v)){return true;}
-        if(str_starts_with($v,'mailto:')){return (bool)filter_var(substr($v,7),FILTER_VALIDATE_EMAIL);}
+        if(str_starts_with($v,'mailto:')){[$address,$query]=array_pad(explode('?',substr($v,7),2),2,'');if(!filter_var($address,FILTER_VALIDATE_EMAIL)){return false;}if($query!==''){parse_str($query,$fields);if(array_diff(array_keys($fields),['subject','body'])){return false;}foreach($fields as $value){if(!is_string($value) || preg_match('/[\x00-\x1f\x7f]/',$value)){return false;}}}return true;}
         if(preg_match('/\Atel:\+?[0-9()-]{5,25}\z/',$v)){return true;}
         $p=parse_url($v);return $p && ($p['scheme'] ?? '')==='https' && !empty($p['host']) && !isset($p['user']) && !isset($p['pass']) && (bool)filter_var($v,FILTER_VALIDATE_URL);
     }
@@ -82,20 +84,26 @@ final class Content
     public function state(string $slug): array
     {
         $d=$this->document($slug);$s=$this->db->prepare('SELECT id,action,created_at FROM cms_revisions WHERE document_slug=? ORDER BY id DESC LIMIT 50');$s->execute([$slug]);
-        return ['version'=>(int)$d['version'],'draft'=>(int)$d['draft_id'],'published'=>(int)$d['published_id'],'content'=>$this->revision((int)$d['draft_id'],$slug),'history'=>$s->fetchAll()];
+        $content=$this->revision((int)$d['draft_id'],$slug);$page=(new Pages($this->db))->bySlug($slug);if($page && !isset($content['seo'])){$content['seo']=json_decode($page['seo_defaults'],true,16,JSON_THROW_ON_ERROR);}
+        return ['version'=>(int)$d['version'],'draft'=>(int)$d['draft_id'],'published'=>(int)$d['published_id'],'content'=>$content,'history'=>$s->fetchAll()];
     }
     public function change(string $slug,int $version,string $action,?array $data,?int $revision,int $owner): array
     {
         if(!in_array($action,['save','publish','restore'],true)){throw new \InvalidArgumentException('Unknown action.');}
-        $this->db->beginTransaction();
+        $publication=new PublicationLock($this->db);$this->db->beginTransaction();
         try {
             $s=$this->db->prepare('SELECT version FROM cms_documents WHERE slug=? FOR UPDATE');$s->execute([$slug]);$current=$s->fetchColumn();
             if($current===false || (int)$current!==$version){throw new ContentConflict('A newer version exists. Reload to review it; your unsaved fields have not been overwritten.');}
             $data=$this->validate($action==='restore'?$this->revision($revision ?? 0,$slug):($data ?? []),$slug);
+            if($action==='publish'){if(isset($data['seo'])){(new Seo($this->db,[]))->unique($data['seo']['title'],$data['seo']['description'],$slug);} $this->validateAccessible($data);}
             $s=$this->db->prepare('INSERT INTO cms_revisions (document_slug,content,action,owner_id,created_at) VALUES (?,?,?,?,UTC_TIMESTAMP())');$s->execute([$slug,json_encode($data,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),$action,$owner]);$id=(int)$this->db->lastInsertId();Media::lockReferences($this->db,$data);Media::reference($this->db,'page',(string)$id,$data);
             $s=$this->db->prepare('UPDATE cms_documents SET version=version+1,draft_id=?,'.($action==='publish'?'published_id=?,':'').'updated_at=UTC_TIMESTAMP() WHERE slug=?');$s->execute($action==='publish'?[$id,$id,$slug]:[$id,$slug]);
             $s=$this->db->prepare('INSERT INTO cms_audit (user_id,event,source_hash,created_at) VALUES (?,?,?,UTC_TIMESTAMP())');$s->execute([$owner,'content.'.$slug.'.'.$action,$this->crypto?->digest('ip:'.($_SERVER['REMOTE_ADDR'] ?? 'cli')) ?? hash('sha256','cli')]);$this->db->commit();return $this->state($slug);
-        }catch(\Throwable $e){if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}
+        }catch(\Throwable $e){if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}finally{$publication->release();}
+    }
+    private function validateAccessible(array $data): void
+    {
+        foreach($data['sections'] as $s){$html=$this->section($s);$dom=self::dom($html);$xp=new \DOMXPath($dom);foreach($xp->query('//img[not(@aria-hidden="true")]') as $img){if(trim($img->getAttribute('alt'))===''){throw new \InvalidArgumentException('Describe every meaningful picture before publishing.');}}foreach($xp->query('//h1|//h2|//h3|//h4') as $heading){if(trim($heading->textContent)===''){throw new \InvalidArgumentException('Headings cannot be empty.');}}}
     }
     public function section(array $section,bool $preview=false): string
     {

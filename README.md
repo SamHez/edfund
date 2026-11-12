@@ -1,6 +1,17 @@
 # EdFund Uganda Foundation
 
-A local demonstration website for education, technology and community development in Kamuli, Uganda. Python generates static HTML; no framework, npm, database or paid runtime is needed. Nothing has been published.
+A purpose-specific PHP/MariaDB CMS for the existing EdFund website. Phases 1–4 are implemented and verified locally: secure owner/MFA login, visual page editing, posts/media/YouTube blocks, SEO and encrypted recovery. Nothing has been deployed.
+
+Start with the [client editing guide](docs/CMS-EDITING-GUIDE.md), [local operation and hosting requirements](docs/CMS-PHASE-4-OPERATIONS.md), and [progress record](docs/CMS-PROGRESS.md).
+
+```sh
+composer install --no-interaction --prefer-dist
+php -S 127.0.0.1:8089 -t public router.php
+```
+
+Keep XAMPP MySQL running. Existing local database/configuration are preserved; provision the real owner privately with `php bin/cms.php owner:create` if needed. Open `http://127.0.0.1:8089/admin/login` using the supported project PHP binary.
+
+**The static instructions below are historical. Do not rebuild source HTML over manual edits or CMS content. The static ZIP commands are retired and refuse to run. Only the separately authorised Phase 5 creates the CMS release package and deploys it.**
 
 ## Preview and validate
 
@@ -43,11 +54,11 @@ This single command builds fresh HTML for `https://edfundfoundation.org/`, enabl
 
 Upload and extract the ZIP directly into the domain’s document root (usually `public_html`). `index.html`, `.htaccess` and `assets/` must be directly inside that root. No wrapping folder or subfolder configuration is needed. Nothing is uploaded automatically.
 
-## Planned PHP CMS
+## Historical PHP CMS plan
 
 The next stage is a basic PHP/MariaDB CMS with a visual section preview and owner-managed pages/posts/media. See [the five phase prompts](docs/CMS-PHASE-PROMPTS.md) and [the implementation plan](docs/CMS-IMPLEMENTATION-PLAN.md). Phase 1 owner authentication is implemented; visual page editing begins in Phase 2. The existing XAMPP database is `edfund`; setup checks and its local socket are documented in the phase guide. Preserve manual content edits and keep runtime data/secrets outside Git.
 
-## Phase 1: local PHP administration
+## Initial local PHP administration
 
 The Phase 1 owner login/dashboard is implemented. See [local setup and recovery](docs/CMS-PHASE-1-SETUP.md), [CMS progress](docs/CMS-PROGRESS.md) and [recovered team profiles](docs/TEAM-PROFILE-RECOVERY.md).
 

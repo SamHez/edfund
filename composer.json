@@ -11,7 +11,8 @@
     "ext-fileinfo": "*",
     "ext-gd": "*",
     "spomky-labs/otphp": "^11.3",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "ext-sodium": "*"
   },
   "autoload": {
     "psr-4": {

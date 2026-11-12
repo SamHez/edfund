@@ -26,7 +26,7 @@ final class PostView
         if($data['featured_image']){$m=(new Media($db,$config))->usable($data['featured_image']);$x->query('//meta[@property="og:image"]')->item(0)->setAttribute('content','https://edfundfoundation.org'.$m['path']);$x->query('//meta[@property="og:image:alt"]')->item(0)->setAttribute('content',$data['featured_alt']);}
         $schema=['@context'=>'https://schema.org','@type'=>'BlogPosting','headline'=>$data['title'],'description'=>$description,'url'=>$url,'author'=>['@type'=>$data['author']==='EdFund Uganda Foundation'?'Organization':'Person','name'=>$data['author']],'publisher'=>['@type'=>'Organization','name'=>'EdFund Uganda Foundation']];if($data['published_at']){$schema['datePublished']=str_replace(' ','T',$data['published_at']).'Z';}$script=$d->createElement('script');$script->setAttribute('type','application/ld+json');$script->appendChild($d->createTextNode(json_encode($schema,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR)));$d->getElementsByTagName('head')->item(0)->appendChild($script);
         foreach($x->query('//nav//a') as $a){$a->removeAttribute('aria-current');if($a->getAttribute('href')==='/stories-updates/'){$a->setAttribute('aria-current','page');}}
-        return self::output($d);
+        return (new Seo($db,$config))->render(self::output($d),'/stories-updates/'.$data['slug'].'/',['title'=>$title,'description'=>$description,'image'=>$data['featured_image'],'image_alt'=>$data['featured_alt']],$data,null,$preview);
     }
     public static function updateCards(\PDO $db,string $html,bool $home): string
     {

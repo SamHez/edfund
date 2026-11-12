@@ -15,7 +15,7 @@ final class ContentImport
             $s->execute([hash('sha256',$path),$path,basename($path),$size[0],$size[1],$srcset]);
         }
     }
-    private function template(string $html,string $kind,string $label,bool $approved=false): array
+    public function template(string $html,string $kind,string $label,bool $approved=false): array
     {
         $dom=Content::dom($html);$xp=new \DOMXPath($dom);$fields=[];$values=[];$group=$label;$headings=[];
         $nodes=iterator_to_array($xp->query('//*[@id="cms-root"]//* | //*[@id="cms-root"]//text()'));

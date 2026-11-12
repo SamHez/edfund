@@ -2,6 +2,8 @@
 
 Updated 12 November 2026.
 
+**Current state: Phase 4 implemented and verified locally. Stop before Phase 5 packaging/deployment.**
+
 ## Phase 1 — implemented and verified locally
 
 - Small PHP 8.3+ application entry point, development router and private app/config/runtime directories. Existing static website and production Apache routing preserved; no Phase 2 editor implemented.
@@ -77,3 +79,32 @@ The real owner must still run `php bin/cms.php owner:create` privately and compl
 ## Next
 
 Stop after Phase 3 for this request. Phase 4 finishes all other editable pages, synchronized site-wide SEO, caching and backup/restore reliability. Phase 5 alone builds the CMS release package and performs the authorized cPanel routing/cutover. Preserve all manual and CMS changes; do not reset existing imports or storage.
+
+
+## Phase 4 — implemented and verified locally
+
+- Added explicit repeat-safe import of About, Our Work, Our Team (including full recovered biographies), Volunteer, Contact, Gallery, Privacy Policy and Stories & Updates. All nine public page mappings have separate editable SEO. Shared navigation/contact/footer remain independently publishable. Exact current main text, image ordering, alt/responsive attributes and anchor IDs were checked against every source page. Source HTML, design CSS/JavaScript and user-selected image files were not rebuilt or reverted.
+- The actual page preview now renders the selected page, with existing click-to-select fields, approved section layouts, ordering, desktop/mobile views, drafts/publication and restoration. Save/publish refreshes the preview even when clicked before the edit debounce. Blog cards are explicitly managed through Posts rather than competing page fields. Old shared homepage metadata fields stay in historical snapshots but are hidden in the shared editor in favour of page SEO.
+- Additive migration 004 creates cms_pages/cms_redirects. Real edfund now has 16 tables, 10 documents, nine page mappings, 10 page revisions, three original posts/three original post revisions, no uploaded test pictures and no owner credentials. The original home/shared revisions and all existing authentication data were preserved. Repeated page import adds zero rows. New page social defaults use the intact source DOM; empty defaults from this phase’s first import were completed only for unedited imported pages, without changing content revisions.
+- Synchronized titles/descriptions/canonical/OG/Twitter/social images, NGO/WebSite/WebPage/Breadcrumb/BlogPosting data, published-only sitemap/UTC dates, dynamic robots, verified navigation/story redirects, index/slash canonicalization, real 404 and trashed-post 410. Homepage title prefix, unique metadata, meaningful alt text and page H1 structure are enforced. Existing contact mailto subject links are preserved with header-injection rejection.
+- Central public controller and Apache PHP rules prevent existing HTML files from bypassing published CMS content. No host configuration or live cutover was performed. Local content is noindex; production defaults to protected/noindex staging until explicitly released. Public deployment remains blocked on a patched runtime and hosting verification.
+- Bounded private cache: five minutes, 64 entries/32 MiB, 1 MiB entry cap, atomic writes, published-pointer/code/default-metadata keys, cookie/auth/query bypass and graceful cache-write failure. Publication advisory locks and repeatable-read transactions protect snapshots and cross-page/post metadata checks. Private generic errors and existing owner publication/restoration audit records remain active.
+- Added native Sodium secretstream encrypted backups of CMS tables, application configuration/key and stored uploaded originals/derivatives. Independent private backup key, verified frames/hashes, bounded restore records, safe completed-file retention (default seven) and private CLI-only recovery. Restore refuses edfund/source/nonempty databases and existing/public output folders; authenticates before schema writes, uses versioned migrations, validates relationships and revokes old sessions. Real pre-migration and completed-Phase-4 checkpoint backups are ignored/private; no deployment ZIP was generated.
+- Read the available WordPress export offline into a public-title/slug inventory only. Agreed current stories and four recovered profiles remain imported exactly once. Three additional historical training/personal stories and obsolete home/donation/Elementor variants are listed for later editorial selection; no unrelated WordPress users/options/plugin content was imported or executed.
+
+## Phase 4 verification
+
+- Phase 1 core/CLI/browser MFA, recovery, throttling, session, CSRF/origin and private-path regressions pass. Phase 2 visual editor/content-preservation and Phase 3 publishing/upload/media-security browser/service suites pass after final preview/routing changes.
+- Phase 4 tests pass in disposable databases: every imported page validates and publishes unchanged; imports do not reset revisions; exact text/images/srcset/sizes/IDs survive; unique metadata, homepage prefix and image-alt rejection; draft HTML/cache/sitemap isolation; cache bounds/expiry/oversize/failure handling; robots/indexing policy; canonical/verified redirects; 404/private path denial and cookie/query bypass.
+- Real Chrome owner flow passes for About text/SEO editing, actual preview, private drafts, publication, revision restoration, all remaining page previews, independent site-wide shared publication and anonymous preview denial. A new owner post publishes into the homepage, mapped listing and sitemap, carries Article dates/schema, then leaves them and returns 410 when trashed.
+- Encrypted restore rehearsed against an isolated alternate empty database with enrolled MFA and a real uploaded image. All CMS row counts, original published homepage and four media hashes match; original app/MFA keys/passwords persist and session versions increment. Tampered/truncated/wrong-key streams create no target tables. Source/nonempty database restore is refused. CLI disaster recovery also succeeds with the original configuration/database unavailable.
+- All nine public pages checked at 1500/390/320px without horizontal overflow; hero arrows, Why Uganda grouped lightboxes, team dialogs and no-JS profile fallback pass. Original 13 static pages/586 internal links and 12-route SEO checks pass. PHP syntax and editor JS parsing pass. Composer has no reported advisories; schema validation retains the pre-existing missing-project-licence warning. No ownership/licence was invented.
+- Local execution remains PHP 8.5.7 / MariaDB 10.4.27. Required extensions, including Sodium, are available. PHP 8.3 execution, patched production PHP, Apache/cPanel routing, hosting limits and independent scheduled/offsite backup transfer must be verified in Phase 5; local checks do not establish live indexing, performance scores or production deployment.
+
+## Needed from the owner after Phase 4
+
+Read [CMS-EDITING-GUIDE.md](CMS-EDITING-GUIDE.md) and [CMS-PHASE-4-OPERATIONS.md](CMS-PHASE-4-OPERATIONS.md). Provision the real owner privately and enroll MFA. Securely copy the independent backup key and encrypted backup offsite. Before Phase 5, confirm cPanel account/domain/document root/access, patched PHP web/CLI and extensions, private database credentials/storage, HTTPS, cron/backup destination and client review of preserved privacy/donation wording. No SMTP is needed for existing email links or private CLI account recovery. Additional WordPress historical articles require editorial selection.
+
+## Next
+
+Phase 4 is complete for this request. Stop before Phase 5: no release archive, production upload, public indexing or deployment. Follow the agreed Phase 5 prompt only when requested, preserving all database content, media, private keys and manual edits.

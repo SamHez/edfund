@@ -1,0 +1,132 @@
+{
+  "source_file": "edfundf_wp718.sql",
+  "source_sha256": "b08f225986082a3995ea059e583660f82461100dc3184fd978f31a6ef5af7fe8",
+  "scope": "Offline published public title/slug inventory only. No SQL executed; no users/options/plugins/credentials exported.",
+  "records": [
+    {
+      "type": "page",
+      "title": "Donation Successful",
+      "slug": "donation-successful"
+    },
+    {
+      "type": "page",
+      "title": "EDFUND-HOME-5",
+      "slug": "edfund-home-5"
+    },
+    {
+      "type": "page",
+      "title": "EDFUND-HOME-OLD",
+      "slug": "edfund-home-old"
+    },
+    {
+      "type": "page",
+      "title": "EDFUND-HOME-4",
+      "slug": "edfund-home-4"
+    },
+    {
+      "type": "lif_team",
+      "title": "Rebecca Day",
+      "slug": "rebeccaday"
+    },
+    {
+      "type": "page",
+      "title": "Home",
+      "slug": "home-organization"
+    },
+    {
+      "type": "lif_team",
+      "title": "John C. Giebink",
+      "slug": "johng"
+    },
+    {
+      "type": "lif_team",
+      "title": "Dhizaala Stephen",
+      "slug": "stephendhizaala"
+    },
+    {
+      "type": "page",
+      "title": "Our Gallery",
+      "slug": "gallery"
+    },
+    {
+      "type": "lif_team",
+      "title": "Robert Ssebuliba",
+      "slug": "robert"
+    },
+    {
+      "type": "page",
+      "title": "Our Team",
+      "slug": "meet-the-team"
+    },
+    {
+      "type": "page",
+      "title": "Become a Volunteer",
+      "slug": "become-a-volunteer"
+    },
+    {
+      "type": "page",
+      "title": "EDFUND-HOME-3",
+      "slug": "edfund-home-3"
+    },
+    {
+      "type": "page",
+      "title": "About Us",
+      "slug": "about-us"
+    },
+    {
+      "type": "page",
+      "title": "Contact Us",
+      "slug": "contact"
+    },
+    {
+      "type": "page",
+      "title": "EDFUND-HOME-2",
+      "slug": "edfund-home-2"
+    },
+    {
+      "type": "page",
+      "title": "Donate Our Charity",
+      "slug": "donate-our-charity"
+    },
+    {
+      "type": "page",
+      "title": "Stories & Updates",
+      "slug": "stories-updates"
+    },
+    {
+      "type": "post",
+      "title": "Giebink Technology Center Launches Community Digital Training Programme in Kamuli",
+      "slug": "giebink-technology-center-launches-community-digital-training-programme-in-kamuli"
+    },
+    {
+      "type": "post",
+      "title": "Refresher Digital Training for School Computer Lab Technicians and Patrons in Kamuli",
+      "slug": "refresher-digital-training-for-school-computer-lab-technicians-and-patrons-in-kamuli"
+    },
+    {
+      "type": "post",
+      "title": "Teachers’ Holiday Digital Training Programme – August–September 2026",
+      "slug": "teachers-holiday-digital-training-programme-august-september-2026"
+    },
+    {
+      "type": "post",
+      "title": "From Computer Illiterate to Computer Literate: Nabakazi Petralina’s Story",
+      "slug": "from-computer-illiterate-to-computer-literate-nabakazi-petralinas-story"
+    },
+    {
+      "type": "post",
+      "title": "Ribbon cutting of the new classroom building with then Speaker of National Parliament, the Right Honorable Rebecca Kadaga",
+      "slug": "ribbon-cutting-of-the-new-classroom-building-with-then-speaker-of-national-parliament-the-right-honorable-rebecca-kadaga"
+    },
+    {
+      "type": "post",
+      "title": "Renovation of the Main Classroom Building at Kamuli Township Primary School",
+      "slug": "celebrating-the-reconstruction-of-the-main-classroom-building-at-kamuli-township-primary-school"
+    },
+    {
+      "type": "page",
+      "title": "Kitchen and Dining",
+      "slug": "elementor-page-39548"
+    }
+  ]
+}

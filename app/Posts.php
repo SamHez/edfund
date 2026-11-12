@@ -58,7 +58,7 @@ final class Posts
     public function change(int $id,int $version,string $action,?array $data,?int $restore,int $owner,bool $rename=false): array
     {
         if(!in_array($action,['save','publish','restore','trash','untrash'],true)){throw new \InvalidArgumentException('Unknown post action.');}
-        $lock='edfund-post-routes-'.substr(hash('sha256',(string)$this->db->query('SELECT DATABASE()')->fetchColumn()),0,20);$s=$this->db->prepare('SELECT GET_LOCK(?,10)');$s->execute([$lock]);if((int)$s->fetchColumn()!==1){throw new ContentConflict('Another post is publishing. Try again.');}
+        $publication=new PublicationLock($this->db);$lock='edfund-post-routes-'.substr(hash('sha256',(string)$this->db->query('SELECT DATABASE()')->fetchColumn()),0,20);$s=$this->db->prepare('SELECT GET_LOCK(?,10)');$s->execute([$lock]);if((int)$s->fetchColumn()!==1){throw new ContentConflict('Another post is publishing. Try again.');}
         $this->db->beginTransaction();try{
             $row=$this->row($id,true);if((int)$row['version']!==$version){throw new ContentConflict('This post changed in another tab. Reload before saving; unsaved fields remain here.');}
             if(in_array($action,['trash','untrash'],true)){$data=$this->revision((int)$row['draft_id'],$id);}
@@ -69,11 +69,12 @@ final class Posts
                 $s=$this->db->prepare('SELECT post_id FROM cms_post_routes WHERE slug=?');$s->execute([$data['slug']]);$reserved=$s->fetchColumn();if($reserved && (int)$reserved!==$id){throw new ContentConflict('That slug belongs to another story or its previous URL.');}
                 $s=$this->db->prepare('INSERT IGNORE INTO cms_post_routes (slug,post_id) VALUES (?,?)');$s->execute([$data['slug'],$id]);$data['published_at']=$data['published_at'] ?: ($row['published_id']?$this->revision((int)$row['published_id'],$id)['published_at']:gmdate('Y-m-d H:i:s'));
             }
+            if($action==='publish'){(new Seo($this->db,$this->config))->unique($data['seo_title'] ?: $data['title'].' | EdFund Uganda Foundation',$data['seo_description'] ?: $data['excerpt'],null,$id);}
             $revision=$this->insert($id,$data,$action,$owner);$updates=['version=version+1','draft_id=?','updated_at=UTC_TIMESTAMP()'];$values=[$revision];
             if($action==='publish'){$updates[]='published_id=?';$values[]=$revision;$updates[]='published_slug=?';$values[]=$data['slug'];}
             if($action==='trash'){$updates[]='trashed_at=UTC_TIMESTAMP()';}if($action==='untrash'){$updates[]='trashed_at=NULL';$updates[]='published_id=NULL';}
             $values[]=$id;$s=$this->db->prepare('UPDATE cms_posts SET '.implode(',',$updates).' WHERE id=?');$s->execute($values);$this->audit('post.'.$action,$owner);$this->db->commit();return $this->state($id);
-        }catch(\Throwable $e){if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}finally{$s=$this->db->prepare('SELECT RELEASE_LOCK(?)');$s->execute([$lock]);}
+        }catch(\Throwable $e){if($this->db->inTransaction()){$this->db->rollBack();}throw $e;}finally{$s=$this->db->prepare('SELECT RELEASE_LOCK(?)');$s->execute([$lock]);$publication->release();}
     }
     public function route(string $slug): ?array
     {
