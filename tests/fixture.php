@@ -11,10 +11,10 @@ if ($action==='create') {
     $dsn=preg_replace('/dbname=edfund(?=;|$)/','dbname='.$id,$admin['dsn']);$connection=['dsn'=>$dsn,'user'=>$admin['user'],'password'=>$admin['password']];
     $fixture=Database::connect($connection);
     $fixture->exec('CREATE TABLE legacy_sentinel (id INT PRIMARY KEY, content VARCHAR(100))');$fixture->exec("INSERT INTO legacy_sentinel VALUES (1,'preserve existing content')");
-    $applied=Migrations::run($fixture);if(count($applied)!==1 || Migrations::run($fixture)!==[] || $fixture->query('SELECT content FROM legacy_sentinel')->fetchColumn()!=='preserve existing content'){throw new RuntimeException('Migrations failed preservation/idempotence.');}
+    $applied=Migrations::run($fixture);if(count($applied)!==count(glob($root.'/database/migrations/*.sql')) || Migrations::run($fixture)!==[] || $fixture->query('SELECT content FROM legacy_sentinel')->fetchColumn()!=='preserve existing content'){throw new RuntimeException('Migrations failed preservation/idempotence.');}
     $user='edfund_test_'.bin2hex(random_bytes(4));$pass=bin2hex(random_bytes(24));
     $db->exec('CREATE USER '.$db->quote($user)."@'localhost' IDENTIFIED BY ".$db->quote($pass));
-    foreach (['cms_users','cms_recovery_codes','cms_auth_attempts','cms_audit'] as $table) {$db->exec('GRANT SELECT,INSERT,UPDATE,DELETE ON `'.$id.'`.`'.$table.'` TO '.$db->quote($user)."@'localhost'");}
+    foreach (['cms_users','cms_recovery_codes','cms_auth_attempts','cms_audit','cms_templates','cms_media','cms_documents','cms_revisions'] as $table) {$db->exec('GRANT SELECT,INSERT,UPDATE,DELETE ON `'.$id.'`.`'.$table.'` TO '.$db->quote($user)."@'localhost'");}
     $db->exec('GRANT SELECT ON `'.$id.'`.`cms_migrations` TO '.$db->quote($user)."@'localhost'");
     $runtime=['dsn'=>$dsn,'user'=>$user,'password'=>$pass];$app=Database::connect($runtime);
     try {$app->exec('CREATE TABLE forbidden_probe (id INT)');throw new RuntimeException('Runtime user unexpectedly has DDL rights');}catch(PDOException $expected){}

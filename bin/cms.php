@@ -46,7 +46,7 @@ try {
         echo "Local application configured with a dedicated, table-scoped database user.\nPrivate credentials were saved locally and were not printed.\nNext: php bin/cms.php owner:create\n";exit(0);
     }
     if ($command==='help') {
-        echo "EdFund Phase 1 CLI\n  local:configure [--defaults]  Configure only the local XAMPP edfund database\n  migrate                     Apply repeat-safe migrations with private migration credentials\n  owner:create                Privately provision the single owner\n  owner:recover               Privately reset owner password and require new MFA\n  preflight                   Inspect this runtime/configuration without revealing secrets\n";exit(0);
+        echo "EdFund CMS CLI\n  local:configure [--defaults]  Configure only the local XAMPP edfund database\n  migrate                     Apply repeat-safe migrations with private migration credentials\n  owner:create                Privately provision the single owner\n  owner:recover               Privately reset owner password and require new MFA\n  content:import              Import current HTML once; never reset client content\n  layouts:sync                Register approved layouts without changing revisions\n  preflight                   Inspect this runtime/configuration without revealing secrets\n";exit(0);
     }
     $config=Config::load();$db=Database::connect($config['db']);$auth=new Auth($db,new Crypto($config['key_bytes']));
     if ($command==='migrate') {
@@ -56,6 +56,8 @@ try {
         if ($config['environment']==='local') {grantLocal($admin,$config);}
         echo count($done)." migration(s) applied.\n";exit(0);
     }
+    if ($command==='layouts:sync') {(new \EdFund\ContentImport($db))->registerLayouts();echo "Approved layouts registered; page revisions untouched.\n";exit(0);}
+    if ($command==='content:import') {echo (new \EdFund\ContentImport($db))->run() ? "Current homepage and shared content imported once.\n" : "Content already exists; nothing was overwritten.\n";exit(0);}
     if ($command==='preflight') {echo json_encode(Preflight::report($config),JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES).PHP_EOL;exit(0);}
     if ($command==='owner:create' || $command==='owner:recover') {
         $lock='edfund-owner-'.substr(hash('sha256',(string)$db->query('SELECT DATABASE()')->fetchColumn()),0,20);

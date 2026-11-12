@@ -1,4 +1,4 @@
-"""Create a static upload archive locally; never upload or deploy.
+"""Retired static packager; refuses to bypass CMS-managed content.
 
 Use --production for a separately validated, indexable Plesk archive.
 The working checkout's publish_ready setting and public files stay unchanged.
@@ -40,6 +40,7 @@ def archive(public, filename):
 
 
 def main():
+    raise SystemExit('The static release builder is retired for the CMS. It can bypass client content. Use the CMS release workflow in Phase 5; no CMS ZIP is available in Phase 2.')
     global DEST
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--production', action='store_true', help='Build and validate an indexable production copy without changing local settings.')

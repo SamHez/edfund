@@ -15,7 +15,7 @@ final class Preflight
     public static function report(array $config): array
     {
         $gd=extension_loaded('gd')?gd_info():[];$extensions=[];
-        foreach(['pdo_mysql','fileinfo','gd','exif','mbstring','openssl','session'] as $extension) {$extensions[$extension]=extension_loaded($extension);}
+        foreach(['dom','pdo_mysql','fileinfo','gd','exif','mbstring','openssl','session'] as $extension) {$extensions[$extension]=extension_loaded($extension);}
         return [
             'PHP'=>PHP_VERSION,'Web/CLI handler'=>PHP_SAPI,'Environment'=>$config['environment'],
             'Minimum PHP 8.3'=>PHP_VERSION_ID>=80300?'pass':'fail',

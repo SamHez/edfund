@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build one cPanel-ready ZIP for https://edfundfoundation.org/.
+"""Retired static packager; the CMS release workflow is provided in Phase 5.
 
 Run: python3 build_deployment.py
 Output: deployment/edfund-cpanel-ready.zip
@@ -20,6 +20,7 @@ FILENAME = 'edfund-cpanel-ready.zip'
 
 
 def main():
+    raise SystemExit('The static release builder is retired for the CMS. It can bypass client content. Use the CMS release workflow in Phase 5; no CMS ZIP is available in Phase 2.')
     if len(sys.argv) != 1:
         raise SystemExit('Usage: python3 build_deployment.py')
     with tempfile.TemporaryDirectory(prefix='edfund-cpanel-') as temporary:
