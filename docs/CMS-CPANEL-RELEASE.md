@@ -1,3 +1,5 @@
+> **Simple path for hosts without terminal/SSH:** use [CPANEL-DEPLOY-GUIDE.md](CPANEL-DEPLOY-GUIDE.md) (also `START-HERE.md` in the ZIP). It replaces the CLI steps below with a phpMyAdmin SQL import, a three-line `edfund-data/config.php` and the browser-based `/admin/setup`. The rest of this document remains the full operator reference.
+
 > Current source uses name/password only (minimum four characters); no authenticator is required. The earlier generated ZIP has not been rebuilt for this change. Follow the current source policy during the next explicitly requested build.
 
 # EdFund CMS cPanel installation, release and recovery

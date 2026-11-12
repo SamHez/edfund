@@ -67,6 +67,31 @@ final class Web
             }
             $this->render('Sign in','<form method="post">'.$this->formToken().'<label>Name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password<input type="password" name="password" maxlength="128" autocomplete="current-password" required></label><button>Continue</button></form>',null,$error);return;
         }
+        // First-run owner setup for hosts without a terminal. Needs the private setup_key from config.php and closes itself once an owner exists.
+        if ($path==='/admin/setup') {
+            $key=(string)($this->config['setup_key'] ?? '');$db=Database::connect($this->config['db']);
+            $owner=$db->query('SELECT id FROM cms_users ORDER BY id LIMIT 1')->fetch();
+            $reset=($this->config['allow_owner_reset'] ?? false)===true;
+            if (strlen($key)<12 || ($owner && !$reset)) {$this->abort(404,'Page not found.');}
+            $error='';
+            if ($method==='POST') {
+                $this->csrf();usleep(1500000);
+                $name=trim($this->input('name',200));$password=$this->input('password',128);
+                if (!hash_equals($key,$this->input('setup_key',300))) {$error='The setup key does not match the one in your configuration file.';}
+                elseif ($name==='' || !mb_check_encoding($name,'UTF-8') || mb_strlen($name,'UTF-8')>100 || preg_match('/[\x00-\x1f\x7f]/',$name)) {$error='Enter a name between 1 and 100 characters.';}
+                elseif (!hash_equals($password,$this->input('confirm',128))) {$error='The two passwords do not match.';}
+                else {
+                    try {
+                        $hash=Passwords::hash($password);$db->beginTransaction();
+                        if ($owner) {$s=$db->prepare('UPDATE cms_users SET name=?,password_hash=?,mfa_secret=NULL,mfa_enabled_at=NULL,last_totp_step=-1,session_version=session_version+1,updated_at=UTC_TIMESTAMP() WHERE id=?');$s->execute([$name,$hash,$owner['id']]);$id=(int)$owner['id'];}
+                        else {$s=$db->prepare('INSERT INTO cms_users (email,name,password_hash,created_at,updated_at) VALUES (?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP())');$s->execute(['',$name,$hash]);$id=(int)$db->lastInsertId();}
+                        $this->auth->audit($owner?'owner.web_reset':'owner.web_setup',$id,$this->source);$db->commit();$this->redirect('/admin/login');
+                    } catch (\InvalidArgumentException $e) {if($db->inTransaction()){$db->rollBack();}$error=$e->getMessage();}
+                }
+                http_response_code(422);
+            }
+            $this->render($owner?'Reset owner password':'Set up your owner account','<p>'.($owner?'Choose a new name and password for the existing owner.':'Create the one account used to manage this website.').'</p><form method="post">'.$this->formToken().'<label>Setup key<input type="password" name="setup_key" maxlength="300" autocomplete="off" required></label><label>Your name<input type="text" name="name" maxlength="100" autocomplete="username" required></label><label>Password (at least 4 characters)<input type="password" name="password" maxlength="128" autocomplete="new-password" required></label><label>Confirm password<input type="password" name="confirm" maxlength="128" autocomplete="new-password" required></label><button>Create account</button></form><p class="help">The setup key is the phrase you typed into <code>edfund-data/config.php</code>.</p>',null,$error);return;
+        }
         // Retired MFA URLs never authorize a legacy pending session.
         if (in_array($path,['/admin/mfa','/admin/enroll','/admin/recovery-codes'],true)) {
             if(isset($_SESSION['owner_id'])){$this->signedIn();$this->redirect('/admin/');}

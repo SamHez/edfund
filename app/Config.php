@@ -17,7 +17,18 @@ final class Config
         }
         if(Paths::publicPath($real,$config)){throw new \RuntimeException('Configuration must be outside every document root.');}
         if(defined('EDFUND_DOCUMENT_ROOT') && isset($config['document_root']) && realpath($config['document_root'])!==realpath(EDFUND_DOCUMENT_ROOT)){throw new \RuntimeException('Configured document root does not match the web entry point.');}
-        $key = base64_decode($config['app_key'] ?? '', true);
+        // No terminal on shared hosting: create the application key once, privately, beside the configuration.
+        $given = (string)($config['app_key'] ?? '');
+        if ($given === '' || str_starts_with($given, 'AUTO') || str_starts_with($given, 'GENERATE')) {
+            $keyFile = dirname($real).'/app.key';
+            if (!is_file($keyFile)) {
+                $handle = @fopen($keyFile, 'x');
+                if ($handle) {fwrite($handle, base64_encode(random_bytes(32)));fclose($handle);@chmod($keyFile, 0600);}
+            }
+            $given = trim((string)@file_get_contents($keyFile));
+        }
+        $config['app_key'] = $given;
+        $key = base64_decode($config['app_key'], true);
         if ($key === false || strlen($key) !== 32) { throw new \RuntimeException('Invalid application key.'); }
         $url = parse_url($config['base_url'] ?? '');
         if (!$url || !isset($url['host'], $url['scheme']) || !in_array($url['scheme'], ['http','https'], true) || isset($url['user']) || !empty($url['path'])) {
@@ -25,7 +36,9 @@ final class Config
         }
         if ($config['environment'] === 'production' && $url['scheme'] !== 'https') { throw new \RuntimeException('Production requires HTTPS.'); }
         if ($config['environment'] === 'local' && !in_array($url['host'], ['127.0.0.1','localhost','[::1]'], true)) { throw new \RuntimeException('Local mode requires a loopback origin.'); }
-        $storage = $config['storage_path'] ?? $root.'/storage';
+        // Uploads, sessions, logs and backups default to the private data folder, so code updates never touch them.
+        $config['backup_key_file'] ??= dirname($real).'/backup.key';
+        $storage = $config['storage_path'] ?? (($config['environment'] ?? '')==='production' ? dirname($real).'/storage' : $root.'/storage');
         if(Paths::publicPath($storage,$config)){throw new \RuntimeException('Storage must be outside every document root.');}
         if (!is_dir($storage) && !mkdir($storage, 0700, true)) { throw new \RuntimeException('Cannot create private storage.'); }
         $storage = realpath($storage);

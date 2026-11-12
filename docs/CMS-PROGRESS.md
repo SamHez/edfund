@@ -192,3 +192,12 @@ See CMS-RELEASE-STATUS.md for the exact private checklist: secure SSH/SFTP/cPane
 - Built-in analytics: migration 005 adds `cms_visit_daily` and `cms_visit_visitors`. `Analytics::record` counts GET page/story views server-side (cache hits included), skips owners, bots and Do-Not-Track, stores only daily per-path totals and a salted one-way daily visitor hash (no IP, user agent or cookies) and prunes old rows. The dashboard shows 30-day views, visitors, top page, stories read, a 14-day chart and top pages; it shows a notice until the migration is applied (`php bin/cms.php migrate`). The runtime database user needs INSERT/UPDATE/DELETE/SELECT on the two new tables.
 - Dashboard action cards are colour-coded with icon and title on one row. Pages list is compact with live search; Stories are cards with live search, New story and View published stories on one row, and pagination (12 per page); Media is paginated (24 per page).
 - Favicon added to every admin page.
+
+
+## cPanel package without terminal — 12 November 2026
+
+- New `edfund-cpanel-ready.zip` layout: `public_html/`, `edfund-app/`, `edfund-data/config.php` (placeholders only), `edfund-database.sql`, `START-HERE.md`. Extract into the account home; edit three lines in `edfund-data/config.php`; import the SQL in phpMyAdmin; create the owner at `/admin/setup`.
+- `tools/build_install_sql.py` builds the SQL from a throw-away database filled by the normal imports. It never drops tables and holds no owner, sessions, audit or analytics rows.
+- `Config` creates `app.key` automatically beside the config file and defaults storage/backup key to `edfund-data` in production, so code updates never touch uploads. `/admin/setup` needs the private `setup_key`, throttles guesses, closes once an owner exists and can reset a forgotten password only while `allow_owner_reset` is true.
+- SEO polish listed in SEO-LAUNCH.md. `tests/cpanel_install_rehearsal.py` extracts the real ZIP, imports the SQL into a disposable database, edits only the documented settings and verifies the live site, indexing signals, sitemap/robots, setup and login. It disables the PHP patch-floor guard in its extracted copy only, because the developer PHP (8.5.7) is below the production floor.
+- `tests/phase5_release.py` still targets the earlier CLI-based archive layout and was not updated.
