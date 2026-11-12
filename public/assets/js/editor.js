@@ -24,7 +24,7 @@
     $('up').disabled=slug==='shared'||i<=1;$('down').disabled=slug==='shared'||i===0||i===state.content.sections.length-1;
     $('remove').disabled=slug==='shared'||i===0;$('add').disabled=slug==='shared';$('layout').disabled=slug==='shared';
   }
-  function select(id){if(!state.content.sections.some(s=>s.id===id))return;selected=id;sections();groups();}
+  function select(id){if(!state)return;if(!state.content.sections.some(s=>s.id===id))return;selected=id;sections();groups();}
   function groups(){
     const t=templates[active().template];$('field-title').textContent=t.label;$('field-group').replaceChildren();
     [...new Set(Object.values(t.fields).map(f=>f.group))].forEach(g=>$('field-group').add(new Option(g,g)));fields();
@@ -51,6 +51,7 @@
     const draw=()=>{
       $('media-grid').replaceChildren();const term=$('media-search').value.toLowerCase();
       media.filter(m=>!m.deleted_at&&m.label.toLowerCase().includes(term)).forEach(m=>{const b=document.createElement('button');b.type='button';const img=document.createElement('img');img.src=m.thumbnail||m.path;img.loading='lazy';img.alt='';const text=document.createElement('span');text.textContent=m.label;b.append(img,text);b.onclick=()=>{active().values[key]=m.id;picker.close();fields();markDirty();};$('media-grid').append(b);});
+    if(!$('media-grid').children.length){const empty=document.createElement('p');empty.className='empty-state';empty.textContent='No pictures match your search. Try another name or upload a picture.';$('media-grid').append(empty);}
     };$('media-search').oninput=draw;draw();picker.showModal();
   }
   async function preview(){
@@ -61,17 +62,19 @@
     }catch(e){if(sequence===previewSequence)notice(e.message);}
   }
   async function load(){
+    busy=true;previewSequence++;status('Loading page…');$('editor').inert=true;$('editor').setAttribute('aria-busy','true');
     try{const r=await request();state=r.state;templates=r.templates;media=r.media;selected=state.content.sections[0].id;dirty=false;if(r.documents){$('document').replaceChildren();r.documents.forEach(d=>$('document').add(new Option(d.label,d.slug)));$('document').value=slug;}
       $('layout').replaceChildren(new Option('Choose a layout…',''));Object.values(templates).filter(t=>Number(t.approved)===1).forEach(t=>$('layout').add(new Option(t.label,t.id)));
       seoFields();sections();groups();history();status(state.draft===state.published?'Published · version '+state.version:'Saved draft · version '+state.version);$('editor').setAttribute('aria-busy','false');await preview();
-    }catch(e){notice(e.message);}
+    }catch(e){state=null;notice(e.message);status('Unable to load page. Reload to try again.');}
+    finally{busy=false;$('editor').inert=false;$('editor').setAttribute('aria-busy','false');document.querySelector('.editor-grid').inert=!state;['save','publish','restore'].forEach(id=>$(id).disabled=!state);}
   }
   function seoFields(){const seo=state.content.seo;$('page-seo').hidden=!seo;if(!seo)return;for(const [key,id] of [['title','seo-title'],['description','seo-description'],['image_alt','seo-image-alt']]){$(id).value=seo[key];$(id).oninput=()=>{state.content.seo[key]=$(id).value;markDirty();};}$('seo-image').replaceChildren(new Option('Choose social picture…',''));media.filter(m=>!m.deleted_at).forEach(m=>$('seo-image').add(new Option(m.label,m.id)));$('seo-image').value=seo.image;$('seo-image').onchange=()=>{state.content.seo.image=$('seo-image').value;const m=media.find(m=>m.id===state.content.seo.image);if(m?.alt){state.content.seo.image_alt=m.alt;$('seo-image-alt').value=m.alt;}markDirty();};}
   async function mutate(action){
-    if(busy)return;
+    if(busy||!state)return;
     if(action==='publish'&&!confirm('Publish these changes to the website?'))return;
     if(action==='restore'&&!confirm('Restore this revision as a new draft? Unsaved changes will be replaced.'))return;
-    busy=true;clearTimeout(timer);previewSequence++;$('editor').inert=true;['save','publish','restore'].forEach(id=>$(id).disabled=true);
+    busy=true;status(action==='publish'?'Publishing…':action==='restore'?'Restoring draft…':'Saving draft…');clearTimeout(timer);previewSequence++;$('editor').inert=true;['save','publish','restore'].forEach(id=>$(id).disabled=true);
     try{const body={action,version:state.version};if(action==='restore')body.revision=Number($('revision').value);else body.content=state.content;
       const r=await request(body);const group=$('field-group').value;state=r.state;dirty=false;notice('');seoFields();history();if(action==='restore'){select(state.content.sections[0].id);await preview();}else{sections();groups();if([...$('field-group').options].some(o=>o.value===group)){$('field-group').value=group;fields();}}
       if(action!=='restore')await preview();
@@ -88,9 +91,10 @@
   $('up').onclick=()=>move(-1);$('down').onclick=()=>move(1);
   $('remove').onclick=()=>{if(slug==='shared'||state.content.sections[0].id===selected||!confirm('Remove this section from the draft? Revision history will retain previous versions.'))return;const i=state.content.sections.findIndex(s=>s.id===selected);state.content.sections.splice(i,1);select(state.content.sections[Math.max(0,i-1)].id);markDirty();};
   $('add').onclick=()=>{const t=templates[$('layout').value];if(!t||slug==='shared')return;const id=Array.from(crypto.getRandomValues(new Uint8Array(12)),n=>n.toString(16).padStart(2,'0')).join('');state.content.sections.push({id,template:t.id,values:structuredClone(t.defaults)});select(id);markDirty();};
-  $('document').onchange=()=>{if(dirty&&!confirm('Leave unsaved changes?')){$('document').value=slug;return;}slug=$('document').value;window.history.replaceState(null,'','/admin/pages?document='+slug);clearTimeout(timer);load();};
+  $('document').onchange=()=>{if(dirty&&!confirm('Leave unsaved changes?')){$('document').value=slug;return;}slug=$('document').value;window.history.replaceState(null,'','/admin/pages?document='+slug);document.dispatchEvent(new Event('edfund:document-changed'));clearTimeout(timer);load();};
   $('reload').onclick=()=>{if(!dirty||confirm('Discard unsaved changes and load the newest saved version?'))load();};
   window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data||Object.keys(event.data).sort().join(',')!=='id,type'||event.data.type!=='edfund:select'||typeof event.data.id!=='string')return;select(event.data.id);});
   window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
+  $('desktop').setAttribute('aria-pressed','true');$('mobile').setAttribute('aria-pressed','false');
   load();
 })();

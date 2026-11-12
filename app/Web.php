@@ -54,9 +54,7 @@ final class Web
     private static function e(string $value): string {return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
     private function render(string $title,string $content,?array $user=null,string $error=''): void
     {
-        $token=$this->formToken();$nav=$user ? '<nav aria-label="Admin"><a href="/admin/">Dashboard</a><a href="/admin/pages">Pages</a><a href="/admin/posts">Posts</a><a href="/admin/media">Media</a><a href="/admin/pages?document=shared">Settings</a><a href="/admin/security">Account security</a><a href="/">Visit website ↗</a><form action="/admin/logout" method="post">'.$token.'<button class="text-button">Sign out</button></form></nav>' : '<a href="/">← Website</a>';
-        $alert=$error!=='' ? '<p class="alert" role="alert">'.self::e($error).'</p>' : '';
-        echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>'.self::e($title).' | EdFund administration</title><link rel="stylesheet" href="/assets/css/admin.css?v='.substr(hash_file('sha256',dirname(__DIR__).'/public/assets/css/admin.css'),0,12).'"></head><body><header><a class="brand" href="/admin/"><img src="/assets/images/logo-web.png" alt="EdFund Foundation" width="500" height="282"></a>'.$nav.'</header><main id="main" class="'.(in_array($title,['Pages','Story editor','Media'],true)?'editor-main':'').'"><p class="eyebrow">EdFund administration</p><h1>'.self::e($title).'</h1>'.$alert.$content.'</main></body></html>';
+        AdminLayout::render($title,$content,$user,$this->formToken(),$error);
     }
     public function run(string $path): void
     {
@@ -99,7 +97,7 @@ final class Web
             $this->render('System status','<table>'.$rows.'</table>',$user);return;
         }
         if ($path==='/admin/' && $method==='GET') {
-            $this->render('Welcome, '.$user['name'],'<p>You are signed in with your owner name and password.</p><div class="status-card"><h2>Manage your website</h2><p><a class="button" href="/admin/pages">Open visual page editor</a></p><p>Use the page editor, posts and media library to manage your website.</p><a class="button" href="/admin/security">Manage account security</a></div><p><a href="/admin/health">View system status</a></p>',$user);return;
+            $this->render('Dashboard',AdminLayout::dashboard($user['name']),$user);return;
         }
         $this->abort(404,'Page not found.');
     }

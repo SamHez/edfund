@@ -6,6 +6,16 @@ Updated 12 November 2026.
 
 **Current state: Phase 5 release prepared and validated locally; production deployment pending secure access and confirmed hosting configuration.**
 
+## Admin UI redesign — Phase 1 (12 November 2026)
+
+- Added a shared presentation class, `AdminLayout`, while retaining the existing PHP controllers, authentication, API contracts, models and database schema. The public website and imported/client content are untouched.
+- Replaced horizontal navigation with a fixed navy sidebar, persisted compact mode, clear active states and five destinations: Dashboard, Pages, Stories & Updates, Media Library and Settings. Settings follows the existing shared-content editor; changing its document updates the header/navigation state.
+- Added a compact sticky header, public-site shortcut and native account dropdown containing account security and the existing CSRF-protected POST sign-out. Password-only login and session protections remain unchanged.
+- Standardized admin typography, form controls, primary/secondary actions, panels, alerts, status feedback, image selection and empty/search states. Added a practical task dashboard and explicit loading locks while switching page documents.
+- Mobile/tablet navigation uses a dismissible drawer with keyboard focus containment, Escape/close control, inert background and scroll lock. Native account navigation and an expanded mobile sidebar remain usable without JavaScript. Reduced-motion preference is respected.
+- Updated the client guide. No new dependency, migration, release ZIP or production deployment.
+- Verification: PHP/JavaScript syntax and diff checks; `tests/admin_layout_browser.py` for navigation, collapse persistence, account/logout, Settings selection, loading/error feedback, mobile keyboard control and no-JavaScript fallback at 1440/1024/820/390/320px. Existing authentication, page editing, story/media upload/security and full-page/SEO/backup/restore browser suites passed in isolated databases. Public manual content and image comparisons still match. Local review screenshots are ignored in `docs/previews/admin-*.png`.
+
 ## Phase 1 — implemented and verified locally
 
 - Small PHP 8.3+ application entry point, development router and private app/config/runtime directories. Existing static website and production Apache routing preserved; no Phase 2 editor implemented.

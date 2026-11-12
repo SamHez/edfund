@@ -2,6 +2,14 @@
 
 Open `/admin/login` and enter your owner name and password. Email and authenticator setup/codes are not required. New passwords have a minimum of four characters. One owner account manages the site. If you forget the password, ask the maintainer to use the private owner recovery command; it sets a new password and revokes old sessions.
 
+## Finding your way around
+
+The left sidebar contains **Dashboard**, **Pages**, **Stories & Updates**, **Media Library** and **Settings**. The highlighted item shows where you are. **Collapse sidebar** gives the preview more room; your browser remembers that preference. On a phone or tablet, use the menu button at the top left to open navigation and × or Escape to close it.
+
+The header shows your current screen. **View website** opens the public site in another tab. Open the account menu at the top right for **Account security** and **Sign out**. The Dashboard has shortcuts to the homepage editor, stories and pictures.
+
+Loading and saving messages appear beside the screen’s actions. Wait for them to finish before continuing. Errors explain what needs attention; they do not publish content automatically. While switching pages, the previous fields are locked until the selected page has loaded.
+
 ## Pages
 
 1. Open **Pages** and choose Homepage, About Us, Our Work, Our Team, Volunteer, Contact, Gallery, Privacy Policy or Stories & Updates.
@@ -18,11 +26,11 @@ The homepage Why Uganda chapter titles, narrative, reconstruction captions and s
 
 ## Stories, pictures and videos
 
-Open **Posts**, create a post, enter a title, short excerpt, URL slug, category, byline, featured image and image description. Use the small formatting toolbar for paragraphs, headings, bold, italic, lists and links. Add text, image or YouTube blocks; paste a normal YouTube link rather than iframe code. Uploading video files is not supported.
+Open **Stories & Updates**, choose **New story**, enter a title, short excerpt, URL slug, category, byline, featured image and image description. Use the small formatting toolbar for paragraphs, headings, bold, italic, lists and links. Add text, image or YouTube blocks; paste a normal YouTube link rather than iframe code. Uploading video files is not supported.
 
-Preview the post, Save draft and Publish when ready. Its publication time is recorded when first published. It appears in Stories & Updates and the homepage’s story listing. Page-editor story cards are managed through Posts, so you do not have to edit both places. URL changes require confirmation and keep an automatic permanent redirect from the previous slug. Trash removes a story from listings/sitemap; restoring from trash requires publishing again.
+Preview the post, Save draft and Publish when ready. Its publication time is recorded when first published. It appears in Stories & Updates and the homepage’s story listing. Page-editor story cards are managed through Stories & Updates, so you do not have to edit both places. URL changes require confirmation and keep an automatic permanent redirect from the previous slug. Trash removes a story from listings/sitemap; restoring from trash requires publishing again.
 
-**Media** searches existing assets and uploaded pictures. JPEG, PNG and WebP are accepted within the limits shown in the interface (normally 2 MiB/4 million pixels). Resize large photographs first. Add useful descriptions/captions. Uploads are safely re-encoded; originals are private. Draft-only uploads are unavailable to anonymous visitors. Images referenced by saved revisions are protected from deletion so restoration continues to work. Unused uploads can be removed/restored; bundled website images cannot be deleted here.
+**Media Library** searches existing assets and uploaded pictures. JPEG, PNG and WebP are accepted within the limits shown in the interface (normally 2 MiB/4 million pixels). Resize large photographs first. Add useful descriptions/captions. Uploads are safely re-encoded; originals are private. Draft-only uploads are unavailable to anonymous visitors. Images referenced by saved revisions are protected from deletion so restoration continues to work. Unused uploads can be removed/restored; bundled website images cannot be deleted here.
 
 ## Before finishing
 

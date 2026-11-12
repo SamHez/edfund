@@ -42,7 +42,7 @@ try:
         fresh=browser.new_context()
         for path in ['/admin/enroll','/admin/mfa','/admin/recovery-codes']:
             r=fresh.request.get(base+path,max_redirects=0);assert r.status==303 and r.headers['location']=='/admin/login'
-        fresh.close();fixture_action('legacy-factor-data');page.get_by_role('button',name='Sign out').click();login();assert page.url.endswith('/admin/')
+        fresh.close();fixture_action('legacy-factor-data');page.locator('.account-menu summary').click();page.get_by_role('button',name='Sign out').click();login();assert page.url.endswith('/admin/')
         print('PASS retired enroll/MFA/recovery URLs and old sessions require a fresh password; legacy enrolled owners can sign in directly',flush=True)
         # Private password recovery revokes earlier sessions without another factor step.
         new_password='1234';master,slave=pty.openpty();child=subprocess.Popen([PHP,'bin/cms.php','owner:recover'],cwd=ROOT,env=env,stdin=slave,stdout=slave,stderr=slave);os.close(slave);buffer=b''

@@ -5,7 +5,7 @@ final class PublishingAdmin
 {
     public static function postsScreen(): string
     {
-        return '<div id="posts-app"><div class="editor-toolbar"><button type="button" id="new-post">New story</button><a href="/stories-updates/">View published stories ↗</a><span id="post-status" role="status"></span></div><p id="post-error" role="alert"></p><div id="post-list"></div></div><script src="/assets/js/posts.js?v='.self::hash('js/posts.js').'" defer></script>';
+        return '<div id="posts-app"><p class="screen-intro">Write and publish news from EdFund. Drafts stay private until you publish.</p><div class="editor-toolbar"><button type="button" id="new-post">New story</button><a href="/stories-updates/">View published stories ↗</a><span id="post-status" role="status"></span></div><p id="post-error" role="alert"></p><div id="post-list"></div></div><script src="/assets/js/posts.js?v='.self::hash('js/posts.js').'" defer></script>';
     }
     public static function editorScreen(): string
     {
@@ -14,7 +14,7 @@ final class PublishingAdmin
     }
     public static function mediaScreen(): string
     {
-        return '<div id="library-app"><p id="library-limits"></p><form id="library-upload"><label>Choose JPEG, PNG or WebP<input type="file" name="image" accept="image/jpeg,image/png,image/webp" required></label><button>Upload picture</button></form><p id="library-status" role="status"></p><p id="library-error" role="alert"></p><label>Find pictures<input type="search" id="library-search"></label><div class="library-layout"><div id="library-grid"></div><aside id="library-details"><p>Select a picture to edit its description or review its use.</p></aside></div></div><script src="/assets/js/media.js?v='.self::hash('js/media.js').'" defer></script>';
+        return '<div id="library-app"><p class="screen-intro">Keep your website pictures in one place. Select a picture to edit its description or see where it’s used.</p><p id="library-limits"></p><form id="library-upload"><label>Choose JPEG, PNG or WebP<input type="file" name="image" accept="image/jpeg,image/png,image/webp" required></label><button>Upload picture</button></form><p id="library-status" role="status"></p><p id="library-error" role="alert"></p><label>Find pictures<input type="search" id="library-search"></label><div class="library-layout"><div id="library-grid"></div><aside id="library-details"><p>Select a picture to edit its description or review its use.</p></aside></div></div><script src="/assets/js/media.js?v='.self::hash('js/media.js').'" defer></script>';
     }
     private static function hash(string $path): string {return substr(hash_file('sha256',dirname(__DIR__).'/public/assets/'.$path),0,12);}
     public static function preview(string $html): string
