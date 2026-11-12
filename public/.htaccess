@@ -3,6 +3,9 @@ DirectoryIndex index.php
 Options -Indexes -MultiViews
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# Preserve provider-managed TLS validation files without routing them into the CMS.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^\.well-known/(?:acme-challenge|pki-validation)/[A-Za-z0-9_-]+(?:\.txt)?$ - [L]
 # Bundled, trusted assets only; HTML pages, media and errors go through PHP.
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^assets/.*\.(?:css|js|json|webp|png|jpe?g|svg|ico|ttf|woff2?)$ - [L,NC]

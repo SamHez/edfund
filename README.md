@@ -1,6 +1,6 @@
 # EdFund Uganda Foundation
 
-A purpose-specific PHP/MariaDB CMS for the existing EdFund website. Phases 1–4 are implemented and verified locally: secure owner/MFA login, visual page editing, posts/media/YouTube blocks, SEO and encrypted recovery. Nothing has been deployed.
+A purpose-specific PHP/MariaDB CMS for the existing EdFund website. Phases 1–4 are implemented and verified locally: secure owner/MFA login, visual page editing, posts/media/YouTube blocks, SEO and encrypted recovery. The Phase 5 cPanel release can now be built and validated; production deployment remains pending confirmed secure hosting access. Nothing has been deployed.
 
 Start with the [client editing guide](docs/CMS-EDITING-GUIDE.md), [local operation and hosting requirements](docs/CMS-PHASE-4-OPERATIONS.md), and [progress record](docs/CMS-PROGRESS.md).
 
@@ -11,7 +11,11 @@ php -S 127.0.0.1:8089 -t public router.php
 
 Keep XAMPP MySQL running. Existing local database/configuration are preserved; provision the real owner privately with `php bin/cms.php owner:create` if needed. Open `http://127.0.0.1:8089/admin/login` using the supported project PHP binary.
 
-**The static instructions below are historical. Do not rebuild source HTML over manual edits or CMS content. The static ZIP commands are retired and refuse to run. Only the separately authorised Phase 5 creates the CMS release package and deploys it.**
+Build the CMS package with `python3 build_deployment.py`. Download `deployment/edfund-cpanel-ready.zip` and its `.sha256`; read [the installation/cutover/rollback runbook](docs/CMS-CPANEL-RELEASE.md) **before uploading**. Private application code/data belong outside every document root. See [release status and missing private setup](docs/CMS-RELEASE-STATUS.md). Server requests and CLI installation require PHP/MariaDB only; production dependencies are included.
+
+Validate the extracted archive with `python3 tests/phase5_release.py` on this development machine (isolated Apache/CGI and disposable DBs). This is not production verification.
+
+**The static instructions below are historical. Do not rebuild source HTML over manual edits or CMS content. The old static ZIP workflow is retired. The current build_deployment.py creates the PHP CMS package without regenerating HTML or copying runtime data. Production upload/cutover requires confirmed secure target access and host verification.**
 
 ## Preview and validate
 

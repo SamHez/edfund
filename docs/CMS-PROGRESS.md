@@ -2,7 +2,7 @@
 
 Updated 12 November 2026.
 
-**Current state: Phase 4 implemented and verified locally. Stop before Phase 5 packaging/deployment.**
+**Current state: Phase 5 release prepared and validated locally; production deployment pending secure access and confirmed hosting configuration.**
 
 ## Phase 1 — implemented and verified locally
 
@@ -108,3 +108,25 @@ Read [CMS-EDITING-GUIDE.md](CMS-EDITING-GUIDE.md) and [CMS-PHASE-4-OPERATIONS.md
 ## Next
 
 Phase 4 is complete for this request. Stop before Phase 5: no release archive, production upload, public indexing or deployment. Follow the agreed Phase 5 prompt only when requested, preserving all database content, media, private keys and manual edits.
+
+
+## Phase 5 — release prepared and validated; production pending
+
+- Replaced the retired static build_deployment.py with a PHP CMS-only builder. It never regenerates public HTML, seeds a database, copies private configuration/uploads or changes source content. One ignored deployment/edfund-cpanel-ready.zip contains an explicit public_html/ payload and private edfund-app/ code/CLI/migrations/import snapshots/docs/vendor tree, with CRC validation, per-file integrity manifest, source commit/build metadata and companion SHA256. Fresh locked production dependencies are bundled with no plugins/scripts/dev installation. Runtime needs PHP/MariaDB only, not server Composer, Node, Python or workers.
+- Public bridge resolves private application/configuration paths, defines the actual web root and returns a generic maintenance response on missing/unsafe setup. Private Paths guards now cover the actual and additional account document roots, including storage, migration credentials, restore outputs and independent backup-key configuration. Persistent edfund-data is absent from the ZIP and remains outside versioned code so updates cannot overwrite client data/keys. Existing local configuration remains valid. Local migration grant refresh now uses the selected database instead of a hard-coded name, and migration/runtime database mismatches are refused before schema work.
+- Added production.example.php placeholders and CLI release:check. It fails on unpatched/incompatible production runtime, missing extensions/storage/key, missing published page imports/owner MFA, wrong/extra migration versions/checksums, elevated runtime DB grants, stale public HTML/PHP/WordPress entry points and altered release files. Explicit loopback-only local rehearsal never reports production readiness. A privately reviewed .htaccess hash is the only allowed provider-specific payload override; other hashes remain mandatory. Stock rules preserve existing ACME/PKI validation files.
+- Added CMS-CPANEL-RELEASE.md covering private configuration fields, file/root mapping, explicit additive migration/import, hidden CLI owner setup/MFA, protected staging, cPanel/PHP/cache/HTTPS requirements, acceptance checks, publication/indexing cutover, scheduled/offsite backups, isolated recovery, content-preserving upgrades and rollback. CMS-RELEASE-STATUS.md records exact pending access/configuration and the verification limits. Editing/recovery guides are included in the archive.
+- Preserved every source HTML page, design stylesheet/main script, manually selected picture, caption, reconstruction order and biography source. No production writes, schema changes or updates to existing real edfund content/owners/uploads occurred. A private local encrypted checkpoint backup was retained; keys/backups/exports/uploads remain ignored. No usable installer or demo credential is shipped.
+
+## Phase 5 verification
+
+- tests/phase5_release.py extracts the real ZIP and checks CRC/manifest/secrets exclusions, then uses an isolated local Apache 2.4.68 / PHP-CGI 8.5.7 instance and disposable MariaDB databases. No global server settings or sibling projects are modified. The real .htaccess/public bridge is exercised rather than relying only on the development router.
+- Passing checks include explicit repeat-safe migration/import, bundled dependency execution without host build tools, actual Apache canonical/legacy routing, 404/private-path denial, TLS challenge pass-through, owner MFA, page draft/private preview/publish/restore, upload/private draft images, post formatting/YouTube/publishing/listing/sitemap/rename/trash, file/hash/stale-entry denial, privately reviewed provider-rule hash, and production preflight refusal under the old local runtime.
+- Code-folder switching and public path rollback retain the same private config/database, client field/revision and uploaded derivative hash; repeated imports remain no-ops. Encrypted backup/isolated restore proves retained app/MFA/password material, revoked sessions, matching CMS row counts/published HTML/media hashes, and rejection of tampering/truncation/wrong keys/nonempty/source targets. Tests stop their own server processes and remove their own test databases.
+- Mobile 390/320px hero controls, Why Uganda grouped lightbox and team dialogs pass. Full Phase 1–4 core/CLI/browser security/content/editor/upload/SEO/cache/recovery regressions pass after the private-path changes. Existing 13-page/586-link and 12-route static SEO checks pass. Composer audit has no reported advisories; no project licence was invented.
+- Read-only verified-HTTPS public comparison returned 200 for nine top-level routes. Eight pages’ main text and image order match the checkout. Team’s core narrative and portrait cards match; the newly requested recovered-biography/modal UI is the expected pending addition. Homepage SEO title on the current live site still predates the agreed ED Fund prefix. No manual live content was overwritten. Recheck for later live edits before cutover.
+- Current live response shows Nginx/backend-cache HIT and HSTS. cPanel account/document root, backend handler/cache policy and secure deployment connection remain unconfirmed. Local Python HTTPS trust was unavailable for direct comparison; system curl verified HTTPS successfully. Development PHP 8.5.7 is not approved for public hosting, and no production patch guard was bypassed. Host PHP 8.3/patches, HTTPS/proxy/cache/permissions, live owner workflow, production backups/cron/offsite transfer and rollback remain unverified until access is available.
+
+## Needed to deploy
+
+See CMS-RELEASE-STATUS.md for the exact private checklist: secure SSH/SFTP/cPanel/provider access and fingerprint, confirmed domain/root/all overlapping web roots, patched web+CLI PHP/extensions and handler/cache configuration, private CMS DB/runtime/migration details, external writable data/config/key locations, actual owner/MFA provisioning and tested provider/offsite backups. Credentials must be entered privately, never in chat or Git. No deployment is claimed. The validated package and runbook are ready for that controlled host setup/cutover.

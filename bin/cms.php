@@ -18,11 +18,12 @@ function privateFile(string $path,array $value): void {
     finally {umask($mask);}
 }
 function grantLocal(PDO $db,array $config): void {
-    $user=$db->quote($config['db']['user']);
-    foreach ($db->query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='edfund' AND TABLE_NAME LIKE 'cms\\_%'")->fetchAll(PDO::FETCH_COLUMN) as $table) {
+    $user=$db->quote($config['db']['user']);$database=(string)$db->query('SELECT DATABASE()')->fetchColumn();$identifier=str_replace('`','``',$database);
+    $tables=$db->prepare("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_NAME LIKE 'cms\\_%'");$tables->execute([$database]);
+    foreach ($tables->fetchAll(PDO::FETCH_COLUMN) as $table) {
         if (!preg_match('/\Acms_[a-z_]+\z/',$table)) {throw new RuntimeException('Unexpected CMS table name.');}
         $privileges=$table==='cms_migrations'?'SELECT':'SELECT,INSERT,UPDATE,DELETE';
-        $db->exec("GRANT {$privileges} ON `edfund`.`{$table}` TO {$user}@'localhost'");
+        $db->exec("GRANT {$privileges} ON `{$identifier}`.`{$table}` TO {$user}@'localhost'");
     }
 }
 try {
@@ -46,25 +47,26 @@ try {
         echo "Local application configured with a dedicated, table-scoped database user.\nPrivate credentials were saved locally and were not printed.\nNext: php bin/cms.php owner:create\n";exit(0);
     }
     if ($command==='help') {
-        echo "EdFund CMS CLI\n  local:configure [--defaults]  Configure only the local XAMPP edfund database\n  migrate                     Apply repeat-safe migrations with private migration credentials\n  owner:create                Privately provision the single owner\n  owner:recover               Privately reset owner password and require new MFA\n  content:import              Import current HTML once; never reset client content\n  layouts:sync                Register approved layouts without changing revisions\n  posts:import                Import the current three stories once, without resets\n  pages:import                Import remaining current pages and verified aliases once\n  media:index                 Index existing content references for deletion protection\n  backup:key                  Create a private independent backup key once\n  backup:create               Create an encrypted private CMS/media backup\n  backup:restore              Restore only to an empty alternate database/folder\n  preflight                   Inspect this runtime/configuration without revealing secrets\n";exit(0);
+        echo "EdFund CMS CLI\n  local:configure [--defaults]  Configure only the local XAMPP edfund database\n  migrate                     Apply repeat-safe migrations with private migration credentials\n  owner:create                Privately provision the single owner\n  owner:recover               Privately reset owner password and require new MFA\n  content:import              Import current HTML once; never reset client content\n  layouts:sync                Register approved layouts without changing revisions\n  posts:import                Import the current three stories once, without resets\n  pages:import                Import remaining current pages and verified aliases once\n  media:index                 Index existing content references for deletion protection\n  backup:key                  Create a private independent backup key once\n  backup:create               Create an encrypted private CMS/media backup\n  backup:restore              Restore only to an empty alternate database/folder\n  release:check               Fail-closed release preflight [--local-rehearsal]\n  preflight                   Inspect this runtime/configuration without revealing secrets\n";exit(0);
     }
     // Recovery must work even when the source database/configuration is unavailable.
     if ($command==='backup:restore') {$options=[];foreach(array_slice($argv,2) as $arg){if(preg_match('/\A--(file|key-file|target-config|output)=(.+)\z/',$arg,$m)){$options[$m[1]]=$m[2];}else{throw new InvalidArgumentException('Use --file= --key-file= --target-config= --output=');}}if(count($options)!==4){throw new InvalidArgumentException('Restore needs file, key-file, private target-config and new output folder.');}$result=(new \EdFund\Backup(null,[]))->restore($options['file'],$options['key-file'],$options['target-config'],$options['output']);echo "Restored into the empty alternate database. Private configuration: ".$result.PHP_EOL;exit(0);}
     $config=Config::load();$db=Database::connect($config['db']);$auth=new Auth($db,new Crypto($config['key_bytes']));
     if ($command==='migrate') {
         $path=getenv('EDFUND_MIGRATION_CONFIG') ?: $root.'/config/migrations.local.php';
-        $migration=realpath($path);if(!$migration || str_starts_with($migration,$root.'/public/')){throw new RuntimeException('Private migration configuration is missing.');}
-        $admin=Database::connect(require $migration);$done=Migrations::run($admin);
+        $migration=realpath($path);if(!$migration || \EdFund\Paths::publicPath($migration,$config)){throw new RuntimeException('Private migration configuration is missing.');}
+        $admin=Database::connect(require $migration);if($admin->query('SELECT DATABASE()')->fetchColumn()!==$db->query('SELECT DATABASE()')->fetchColumn()){throw new RuntimeException('Migration and runtime configurations must select the same database.');}$done=Migrations::run($admin);
         if ($config['environment']==='local') {grantLocal($admin,$config);}
         echo count($done)." migration(s) applied.\n";exit(0);
     }
-    if ($command==='backup:key') {$path=$root.'/config/backup.key';\EdFund\Backup::keyFile($path);echo "Private backup key created. Keep an independent secure copy; it is not inside backups.\n";exit(0);}
-    if ($command==='backup:create') {$file=(new \EdFund\Backup($db,$config))->create($root.'/config/backup.key');echo "Encrypted private backup: ".$file.PHP_EOL;exit(0);}
+    if ($command==='backup:key') {$path=\EdFund\Paths::backupKey($config);\EdFund\Backup::keyFile($path);echo "Private backup key created. Keep an independent secure copy; it is not inside backups.\n";exit(0);}
+    if ($command==='backup:create') {$file=(new \EdFund\Backup($db,$config))->create(\EdFund\Paths::backupKey($config));echo "Encrypted private backup: ".$file.PHP_EOL;exit(0);}
     if ($command==='pages:import') {echo (new \EdFund\Pages($db))->import()." remaining pages imported; existing content untouched.\n";(new \EdFund\Media($db,$config))->indexExisting();exit(0);}
     if ($command==='posts:import') {echo (new \EdFund\PostsImport($db,$config))->run()." current stories imported; existing posts untouched.\n";(new \EdFund\Media($db,$config))->indexExisting();exit(0);}
     if ($command==='media:index') {(new \EdFund\Media($db,$config))->indexExisting();echo "Existing media references indexed without changing content.\n";exit(0);}
     if ($command==='layouts:sync') {(new \EdFund\ContentImport($db))->registerLayouts();echo "Approved layouts registered; page revisions untouched.\n";exit(0);}
     if ($command==='content:import') {echo (new \EdFund\ContentImport($db))->run() ? "Current homepage and shared content imported once.\n" : "Content already exists; nothing was overwritten.\n";exit(0);}
+    if ($command==='release:check') {$local=in_array('--local-rehearsal',$argv,true);$report=\EdFund\ReleaseCheck::run($config,$local);echo json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES).PHP_EOL;exit($report['passed']?0:1);}
     if ($command==='preflight') {echo json_encode(Preflight::report($config),JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES).PHP_EOL;exit(0);}
     if ($command==='owner:create' || $command==='owner:recover') {
         $lock='edfund-owner-'.substr(hash('sha256',(string)$db->query('SELECT DATABASE()')->fetchColumn()),0,20);
