@@ -237,3 +237,34 @@ if (whyViewer && typeof whyViewer.showModal === 'function') {
     if (Math.abs(dx) > 45 && Math.abs(dy) < 70) showPhoto(photoIndex + (dx < 0 ? 1 : -1));
   });
 }
+
+// Published WordPress biographies are plain text in accessible fallback details.
+const teamProfileDialog = document.querySelector('#team-profile-dialog');
+if (teamProfileDialog && typeof teamProfileDialog.showModal === 'function') {
+  let teamOpener;
+  document.body.classList.add('team-profiles-enhanced');
+  document.querySelectorAll('.team-profile-open').forEach(link => link.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const details = document.getElementById(link.hash.slice(1));
+    const profile = details?.querySelector('.team-profile-content');
+    if (!profile) return;
+    event.preventDefault(); teamOpener = link;
+    const copy = profile.cloneNode(true);
+    const title = copy.querySelector('h2'); title.id = 'team-profile-dialog-title';
+    teamProfileDialog.setAttribute('aria-labelledby', title.id);
+    teamProfileDialog.querySelector('.team-profile-slot').replaceChildren(copy);
+    copy.querySelectorAll('img').forEach(img => { img.loading = 'eager'; });
+    teamProfileDialog.showModal(); teamProfileDialog.scrollTop = 0;
+  }));
+  teamProfileDialog.querySelector('[data-team-close]').addEventListener('click', () => teamProfileDialog.close());
+  teamProfileDialog.addEventListener('close', () => {
+    teamProfileDialog.querySelector('.team-profile-slot').replaceChildren();
+    teamProfileDialog.removeAttribute('aria-labelledby');
+    teamOpener?.focus();
+  });
+  teamProfileDialog.addEventListener('click', event => {
+    if (event.target !== teamProfileDialog) return;
+    const r = teamProfileDialog.getBoundingClientRect();
+    if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) teamProfileDialog.close();
+  });
+}

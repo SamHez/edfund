@@ -45,4 +45,17 @@ Upload and extract the ZIP directly into the domain’s document root (usually `
 
 ## Planned PHP CMS
 
-The next stage is a basic PHP/MariaDB CMS with a visual section preview and owner-managed pages/posts/media. See [the five phase prompts](docs/CMS-PHASE-PROMPTS.md) and [the implementation plan](docs/CMS-IMPLEMENTATION-PLAN.md). The PHP CMS is not implemented yet. The existing XAMPP database is `edfund`; setup checks and its local socket are documented in the phase guide. Preserve manual content edits and keep runtime data/secrets outside Git.
+The next stage is a basic PHP/MariaDB CMS with a visual section preview and owner-managed pages/posts/media. See [the five phase prompts](docs/CMS-PHASE-PROMPTS.md) and [the implementation plan](docs/CMS-IMPLEMENTATION-PLAN.md). Phase 1 owner authentication is implemented; visual page editing begins in Phase 2. The existing XAMPP database is `edfund`; setup checks and its local socket are documented in the phase guide. Preserve manual content edits and keep runtime data/secrets outside Git.
+
+## Phase 1: local PHP administration
+
+The Phase 1 owner login/dashboard is implemented. See [local setup and recovery](docs/CMS-PHASE-1-SETUP.md), [CMS progress](docs/CMS-PROGRESS.md) and [recovered team profiles](docs/TEAM-PROFILE-RECOVERY.md).
+
+From this checkout, after `composer install`:
+
+```sh
+php bin/cms.php owner:create
+php -d session.upload_progress.enabled=0 -S 127.0.0.1:8089 -t public router.php
+```
+
+Open http://127.0.0.1:8089/admin/login. Use the project-compatible `php` binary, not the old XAMPP PHP executable. The existing local database is configured privately; choose your own owner credentials in the terminal and complete MFA. Page editing begins in Phase 2. The static release command above remains the legacy static-site packager; it is not a PHP CMS deployment package. Public CMS hosting requires the supported patched runtime and separate private/public deployment documented for Phase 5.

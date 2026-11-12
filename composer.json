@@ -1,0 +1,21 @@
+{
+  "name": "edfund/foundation-cms",
+  "description": "Purpose-specific EdFund CMS: Phase 1 foundation",
+  "type": "project",
+  "require": {
+    "php": "^8.3",
+    "ext-pdo": "*",
+    "ext-pdo_mysql": "*",
+    "ext-openssl": "*",
+    "ext-mbstring": "*",
+    "ext-fileinfo": "*",
+    "ext-gd": "*",
+    "spomky-labs/otphp": "^11.3"
+  },
+  "autoload": {"psr-4": {"EdFund\\": "app/"}},
+  "config": {
+    "platform": {"php": "8.3.0"},
+    "sort-packages": true,
+    "allow-plugins": {}
+  }
+}

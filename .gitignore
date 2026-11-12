@@ -40,3 +40,7 @@ config/secrets.php
 /deployment/
 /docs/previews/
 *.zip
+
+# Imported WordPress/database exports stay private; versioned migrations are tracked.
+/edfund*.sql
+/source-imports/

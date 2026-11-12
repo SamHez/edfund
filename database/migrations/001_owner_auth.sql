@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS cms_users (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ name VARCHAR(100) NOT NULL,
+ password_hash VARCHAR(255) NOT NULL,
+ mfa_secret TEXT NULL,
+ mfa_enabled_at DATETIME NULL,
+ last_totp_step BIGINT NOT NULL DEFAULT -1,
+ session_version INT UNSIGNED NOT NULL DEFAULT 1,
+ created_at DATETIME NOT NULL,
+ updated_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS cms_recovery_codes (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ code_hash CHAR(64) NOT NULL UNIQUE,
+ used_at DATETIME NULL,
+ created_at DATETIME NOT NULL,
+ CONSTRAINT cms_recovery_user_fk FOREIGN KEY (user_id) REFERENCES cms_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS cms_auth_attempts (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ bucket CHAR(64) NOT NULL,
+ created_at DATETIME NOT NULL,
+ INDEX cms_auth_bucket_time (bucket,created_at),
+ INDEX cms_auth_cleanup (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS cms_audit (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NULL,
+ event VARCHAR(64) NOT NULL,
+ source_hash CHAR(64) NOT NULL,
+ created_at DATETIME NOT NULL,
+ INDEX cms_audit_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

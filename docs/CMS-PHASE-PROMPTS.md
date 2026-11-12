@@ -117,3 +117,7 @@ For phases 1–4, the existing edfund database is sufficient. Keep XAMPP service
 For phase 5, production is a separate environment: cPanel access through an available secure method, confirmation of the domain document root, a production database and assigned application user, a patched supported PHP version, storage/backup access and SMTP settings if email recovery is used. cPanel commonly prefixes database/user names, so production names may differ from edfund. Enter secrets privately in the host configuration; do not paste them into a prompt or commit them.
 
 If migrating historical posts beyond the current project, provide a WordPress export or agreed source backup when available. Search Console access is needed only for verification/submission tasks that require that account.
+
+## Phase 1 environment update — 12 November 2026
+
+Phase 1 now uses the separate `/usr/local/bin/php` CLI (8.5.7 at verification) with the existing XAMPP MariaDB Unix socket. New private credentials and the dedicated runtime user are documented in CMS-PHASE-1-SETUP.md; do not repeat local:configure or recreate the database for Phase 2. Read CMS-PROGRESS.md before continuing. The real owner must choose credentials through the private owner:create CLI command. A patched runtime is still required before public hosting; the current local PHP patch and old XAMPP PHP are not production approval.

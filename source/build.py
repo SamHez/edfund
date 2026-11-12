@@ -100,6 +100,17 @@ def gallery(preview=False):
         items += f'<figure data-category="{E(im["category"])}">{visual}</figure>'
     return '<div class="gallery-grid '+('preview' if preview else 'gallery-mosaic')+'">'+items+'</div>'
 
+def team_profiles():
+    recovered = json.loads((ROOT / 'source/team-profiles.json').read_text())['members']
+    cards, profiles = [], []
+    for person in C['team']:
+        key = 'team-profile-'+person['image']
+        cards.append(f'<article class="team-card"><a class="team-profile-open" href="#{key}" aria-label="Read {E(person["name"])}’s profile">{photo(person["image"])}<div class="team-card-copy"><h2>{E(person["name"])}</h2><p>{E(person["role"])}</p><span class="team-profile-cta">Read profile ↗</span></div></a></article>')
+        paragraphs = ''.join(f'<p>{E(paragraph)}</p>' for paragraph in recovered[person['name']]['paragraphs'])
+        profiles.append(f'<details id="{key}" class="team-profile-fallback"><summary>{E(person["name"])} — full profile</summary><div class="team-profile-content"><div class="team-profile-heading">{photo(person["image"])}<div><h2>{E(person["name"])}</h2><p class="team-profile-role">{E(person["role"])}</p></div></div><div class="team-profile-biography">{paragraphs}</div></div></details>')
+    viewer = '<dialog id="team-profile-dialog" aria-label="Team member profile"><div class="team-profile-toolbar"><span>Meet the team</span><button type="button" data-team-close aria-label="Close team member profile">Close ×</button></div><div class="team-profile-slot"></div></dialog>'
+    return '<div class="team-grid">'+''.join(cards)+'</div><div class="team-profiles-fallback">'+''.join(profiles)+'</div>'+viewer
+
 def hero():
     slides = []
     for i, slide in enumerate(C['hero_slides']):
@@ -215,7 +226,7 @@ for name,image,title,body in [('education','school-courtyard','Spaces where lear
     work+=f'<div id="{name}" class="anchor-section">'+split(image,name,title,f'<p>{body}</p>'+button('Read the latest stories','/stories-updates/','outline'),name=='technology')+'</div>'
 work+=section(heading('In practice','Programmes with a local purpose.')+story_cards())+cta()
 add('/our-work/','Our Work','Explore school infrastructure, digital training and community support through EdFund and KAPIDA in Kamuli, Uganda.',work)
-team=banner('Our team','People behind the purpose.','Meet the team connecting education, local knowledge and practical experience.')+section('<div class="team-grid">'+''.join(f'<article class="team-card">{photo(t["image"])}<div><h2>{E(t["name"])}</h2><p>{E(t["role"])}</p></div></article>' for t in C['team'])+'</div>')+split('training-community','Working together','A shared commitment to Kamuli.','<p>EdFund’s partnership with KAPIDA brings local knowledge and project management to its education and community work.</p>'+button('Connect with the team','/contact/'))+cta()
+team=banner('Our team','People behind the purpose.','Meet the team connecting education, local knowledge and practical experience.')+section(team_profiles())+split('training-community','Working together','A shared commitment to Kamuli.','<p>EdFund’s partnership with KAPIDA brings local knowledge and project management to its education and community work.</p>'+button('Connect with the team','/contact/'))+cta()
 add('/our-team/','Our Team','Meet EdFund Uganda Foundation’s verified leadership team, supporting education, facilities and operations in Kamuli.',team)
 add('/stories-updates/','Stories & Updates','Read real stories from EdFund’s digital training programmes and the people learning at the Giebink Technology Center.',banner('Stories & updates','Learning. Shared.','News and perspectives from EdFund’s work in Kamuli.')+section(story_cards(rows=True))+cta())
 for s in C['stories']:
